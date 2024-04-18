@@ -28,6 +28,7 @@ const people = [
   }
 export default function HomePage({cardlist}) {
     const [selected, setSelected] = useState(people[3]);
+    console.log(cardlist,'43434343');
   return (
     <><section class="lg:px-10 px-5 pb-10">
     <div className="flex justify-between py-6 flex-wrap gap-4">

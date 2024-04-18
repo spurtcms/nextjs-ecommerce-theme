@@ -7,7 +7,7 @@ import { GET_POSTS_LIST_QUERY } from '@/api/query'
 
 export default async function HomeServerActions() {
   let variable={
-    "limit": 10,
+    "limit": 20,
     "offset": 0
   }
   let cardlist=await fetchGraphQl(GET_POSTS_LIST_QUERY,variable)
