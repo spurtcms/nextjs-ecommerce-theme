@@ -36,8 +36,7 @@ export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
       defaultPrice
         isActive
         discountPrice
-        specialPrice
-        
+        specialPrice 
       }
       count
     }
@@ -46,11 +45,9 @@ export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
 
 
   export const GET_POSTS_SLUG_QUERY = `query ecommerceProductDetails(
-    $productId: Int!,
-    
+    $productId: Int!, 
   ){
     ecommerceProductDetails(productId:$productId){
-   
       id
       categoriesId
       productName
@@ -63,9 +60,7 @@ export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
       isActive
       createdOn
       discountPrice
-      specialPrice
-  
-      
+      specialPrice 
   }
   }
   `;

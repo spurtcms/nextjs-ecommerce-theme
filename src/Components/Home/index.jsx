@@ -12,7 +12,6 @@ export default async function HomeServerActions() {
   }
   let cardlist=await fetchGraphQl(GET_POSTS_LIST_QUERY,variable)
   cardlist=cardlist?.ecommerceProductList
-  console.log(cardlist,'cardlist323232');
 
   return (
     <>
