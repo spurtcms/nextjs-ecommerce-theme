@@ -41,6 +41,7 @@ export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
       count
     }
   }
+  
   `;
 
 
@@ -64,3 +65,48 @@ export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
   }
   }
   `;
+
+  export const GET_MY_CART_QUERY=`query($limit: Int!,$offset: Int!,$id: Int!){
+    ecommerceCartList(limit: $limit,offset: $offset,customerId: $id){
+      cartList{
+        id
+        categoriesId
+        productName
+        productDescription
+        productImagePath
+        productVideoPath
+        sku
+        tax
+        totalcost
+        isActive
+        createdOn
+        createdBy
+        modifiedOn
+        modifiedBy
+        isDeleted
+        deletedOn
+        deletedBy
+        defaultPrice
+        discountPrice
+        specialPrice
+        ecommerceCart{
+          id
+          productId
+          customerId
+          quantity
+          createdOn
+          modifiedOn
+          isDeleted
+          deletedOn
+        }
+      }
+      Count
+      cartSummary{
+        subTotal
+        shippingAmount
+        totalTax
+        totalCost
+        totalQuantity
+      }
+    }
+  }`

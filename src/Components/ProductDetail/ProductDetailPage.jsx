@@ -1,4 +1,5 @@
 'use client'
+import { quantityList } from '@/utils/regexValidation';
 import React, { useState } from 'react'
 
 export default function ProductDetailPage({productDetail}) {
@@ -178,12 +179,22 @@ export default function ProductDetailPage({productDetail}) {
 
             <div className="flex gap-4 items-start mt-16">
               <a
-                href="javascript:void(0)"
-                className="flex items-center gap-2 min-w-20  min-h-9 w-fit justify-center border rounded-5 border-grey1 "
+              
+                className="flex items-center gap-2 min-w-20  min-h-9 w-fit justify-center rounded-5 "
               >
-                <span className="text-3-light">Qty</span>
+                {/* border-grey1  */}
+                {/* <form class="max-w-sm mx-auto"> */}
+
+  <select id="countries" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-300 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:[box-shadow:none]" >
+    {quantityList().map((data,index)=>(
+      <option value={data} > Qty {data}</option>
+    ))}
+    
+  </select>
+{/* </form> */}
+                {/* <span className="text-3-light">Qty</span>
                 <span className="text-3-light ">1</span>{" "}
-                <img src="/img/qty-arrow.svg" alt="arrow" />
+                <img src="/img/qty-arrow.svg" alt="arrow" /> */}
               </a>
 
               <a
