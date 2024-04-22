@@ -1,8 +1,11 @@
 'use client'
 import { Listbox, Transition } from '@headlessui/react'
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import Link from 'next/link';
 import ImageComponets from '../ImageComponent';
+import { useSearchParams } from 'next/navigation';
+import { fetchGraphQLDa } from '@/api/graphicql';
+import { GET_POSTS_LIST_QUERY, Get_CATEGORIES_LIST } from '@/api/query';
 
 const people = [
     {
@@ -26,9 +29,50 @@ const people = [
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
   }
-export default function HomePage({cardlist}) {
+export default function HomePage() {
     const [selected, setSelected] = useState(people[3]);
-    console.log(cardlist,'43434343');
+    const [cardListData,setCardListData]=useState()
+    const [catId,setCatId]=useState(null)
+
+
+    const searchParams = useSearchParams()
+    let catgoId=searchParams.get("catgoId")
+    
+
+const listData = async ()=>{
+  if(catgoId==null){
+  let list_varab={"limit":10,"offset":0,"filter":{"categoryId":catgoId}}
+  let postData = await fetchGraphQLDa(GET_POSTS_LIST_QUERY,list_varab)
+  setCardListData(postData?.ecommerceProductList?.productList)
+}else{
+  let list_varab={"limit":10,"offset":0,"filter":{"categoryId":catgoId}}
+  let postData = await fetchGraphQLDa(GET_POSTS_LIST_QUERY,list_varab)
+  setCardListData(postData?.ecommerceProductList?.productList)
+}
+  
+  // console.log(postData,"979hjhjhj")
+  
+}
+
+ const categorieList= async () =>{
+  let catgo_variab={"categoryGroupId":147}
+  let postData= await fetchGraphQLDa(Get_CATEGORIES_LIST,catgo_variab)
+  catgoId=postData?.categoriesList?.categories[0].id?.toString()
+  listData()
+}
+
+useEffect(()=>{
+  if(catgoId==null){
+    categorieList()
+  }
+
+  if(catgoId!=null){
+    listData()
+  }
+  
+},[catgoId])
+
+    console.log(cardListData,'43434343');
   return (
     <><section class="lg:px-10 px-5 pb-10">
     <div className="flex justify-between py-6 flex-wrap gap-4">
@@ -114,7 +158,7 @@ export default function HomePage({cardlist}) {
        </div>
        <div class=" grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4    border-t border-s border-grey">
             {/* card */}
-            {cardlist?.productList?.map((data,index)=>(
+            {cardListData?.map((data,index)=>(
               <div key={index} class="group p-5 hover:shadow-3xl transition-shadow border-e border-b border-grey">
               <Link href={`/product-detail/${data.id}`} className="grid place-items-center">
                 {/* <img src="\img\product-1.svg" alt="card-img" /> */}
@@ -128,7 +172,7 @@ export default function HomePage({cardlist}) {
                  {data.productName}
                 </a>
 
-                <p className="text-sm font-light leading-4 text-1-light mt-2 ">
+                <p className="text-sm font-light leading-4 text-1-light mt-2 line-clamp-2">
                   {data.productDescription}
                 </p>
                 <div className="flex gap-2 items-center justify-center mt-3">

@@ -110,3 +110,14 @@ export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
       }
     }
   }`
+
+  export const Get_CATEGORIES_LIST = `query($categoryGroupId: Int!){
+    categoriesList(categoryGroupId:$categoryGroupId){
+      categories{
+        id
+        categoryName
+        categorySlug
+        parentId
+      }
+    }
+  }`

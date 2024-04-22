@@ -1,8 +1,11 @@
 "use client";
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import Link from "next/link";
 import ImageComponets from "../ImageComponent";
+import { Get_CATEGORIES_LIST } from "@/api/query";
+import { fetchGraphQLDa, postGraphQl } from "@/api/graphicql";
+import { useRouter } from "next/navigation";
 
 const navigation = [
   { name: "Electronics", href: "#", current: true },
@@ -16,9 +19,25 @@ const navigation = [
 
 
 export default function Header() {
+
+  const [catgoData,setCatgoData]=useState()
+  const router=useRouter()
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
   }
+
+  const categorieList= async () =>{
+    let catgo_variab={"categoryGroupId":147}
+    let postData= await fetchGraphQLDa(Get_CATEGORIES_LIST,catgo_variab)
+    setCatgoData(postData)
+  }
+console.log(catgoData,"94rjrr")
+  useEffect(()=>{
+    categorieList()
+  },[])
+
+
+
   return (
     <>
      <Disclosure as="nav" className="bg-white border-b border-1-light">
@@ -39,28 +58,24 @@ export default function Header() {
 
                   <div className="hidden sm:ml-6 lg:block">
                     <div className="flex gap-6 ">
-                      {navigation.map((item) => (
-                        <a
-                          key={item.name}
-                          href={item.href}
-                          className="font-light xl:text-sm text-xs  text-black text-nowrap leading-tight flex flex-col gap-1 items-center hover:text-primary  after:content-[''] after:inline-block after:w-1 after:h-1  hover:after:bg-[url('/img/active-dot.svg')]  transition-all"
-                          aria-current={item.current ? "page" : undefined}
-                        >
-                          {item.name}
-                        </a>
+                      {catgoData?.categoriesList?.categories?.map((item) => (
+                        <Link href={catgoData?.categoriesList?.categories[0].id==item.id?`/`:`/?catgoId=${item.id}`}className="font-light xl:text-sm text-xs  text-black text-nowrap leading-tight flex flex-col gap-1 items-center hover:text-primary  after:content-[''] after:inline-block after:w-1 after:h-1  hover:after:bg-[url('/img/active-dot.svg')]  transition-all" >
+                          {item.categoryName}
+                        </Link>
                       ))}
                     </div>
                   </div>
 
                   <div className=" flex gap-4 items-center lg:ms-0 ms-auto">
                     <button type="button" className="">
-                      <img src="\img\search.svg" alt="search" />
+                      <img src="/img/search.svg" alt="search" />
                     </button>
 
-
+                   <Link href={"/my-cart"}>
                     <button type="button" className="">
-                      <img src="\img\cart.svg" alt="search" />
+                      <img src="/img/cart.svg" alt="search" />
                     </button>
+                    </Link>
 
                     {/* Profile dropdown */}
                     <Menu as="div" className="relative">
@@ -68,7 +83,7 @@ export default function Header() {
                         <Menu.Button className="relative flex rounded-full text-sm ">
                           <img
                             className="w-6 h-6 rounded-full"
-                            src="\img\profile.svg"
+                            src="/img/profile.svg"
                             alt="profile"
                           />
                         </Menu.Button>
@@ -93,7 +108,7 @@ export default function Header() {
                                 )}
                               >
                                 <img
-                                  src="\img\profile-drop.svg"
+                                  src="/img/profile-drop.svg"
                                   alt="profile"
                                 />{" "}
                                 My Profile
@@ -109,12 +124,12 @@ export default function Header() {
                                   "flex gap-4 px-3 py-2 text-sm font-light text-black leading-tight"
                                 )}
                               >
-                                <img src="\img\order.svg" alt="order" /> My
+                                <img src="/img/order.svg" alt="order" /> My
                                 Orders
                               </a>
                             )}
                           </Menu.Item>
-                          <Menu.Item>
+                          {/* <Menu.Item>
                             {({ active }) => (
                               <a
                                 href="javascript:void(0)"
@@ -124,15 +139,15 @@ export default function Header() {
                                 )}
                               >
                                 <img
-                                  src="\img\notification.svg"
+                                  src="/img/notification.svg"
                                   alt="notification"
                                 />{" "}
                                 Notifications
                               </a>
                             )}
-                          </Menu.Item>
+                          </Menu.Item> */}
 
-                          <Menu.Item>
+                          {/* <Menu.Item>
                             {({ active }) => (
                               <a
                                 href="javascript:void(0)"
@@ -141,11 +156,11 @@ export default function Header() {
                                   "flex gap-4 px-3 py-2 text-sm font-light text-black leading-tight"
                                 )}
                               >
-                                <img src="\img\coupons.svg" alt="coupons" />
+                                <img src="/img/coupons.svg" alt="coupons" />
                                 Coupons
                               </a>
                             )}
-                          </Menu.Item>
+                          </Menu.Item> */}
 
                           <Menu.Item>
                             {({ active }) => (
@@ -156,7 +171,7 @@ export default function Header() {
                                   "flex gap-4 px-3 py-2 text-sm font-light text-black leading-tight"
                                 )}
                               >
-                                <img src="\img\logout.svg" alt="logout" />
+                                <img src="/img/logout.svg" alt="logout" />
                                 Logout
                               </a>
                             )}
@@ -169,7 +184,7 @@ export default function Header() {
                   <div className=" lg:hidden flex items-center ">
                     {/* Mobile menu button*/}
                     <Disclosure.Button className="relative inline-flex items-center justify-center rotate-180 ">
-                      <img src="\img\menu.svg" alt="menu" />
+                      <img src="/img/menu.svg" alt="menu" />
                     </Disclosure.Button>
                   </div>
                 </div>
