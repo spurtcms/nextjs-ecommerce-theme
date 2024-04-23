@@ -27,6 +27,7 @@ export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
     ) {
       productList {
         id
+        tax
         categoriesId
         productName
         productDescription

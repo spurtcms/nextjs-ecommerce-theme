@@ -1,12 +1,48 @@
 'use client'
-import { quantityList } from '@/utils/regexValidation';
-import React, { useState } from 'react'
+import { TaxPriceValidation, quantityList } from '@/utils/regexValidation';
+import Link from 'next/link';
+import React, { Fragment, useState } from 'react'
+import ImageComponets from '../ImageComponent';
 
 export default function ProductDetailPage({productDetail}) {
   const [open, setOpen] = useState(false);
-
+  const [quantity,setQuantity]=useState(1)
+  
   const handleOpenAddtoCart = () => {
+    let qytArr=[]
+    productDetail.quantity=parseInt(quantity)
+    // console.log(localStorage.getItem("add-cart-list"),'localStorage.getItem("add-cart-list")');
+    if(localStorage.getItem("add-cart-list")){
+        let cartlist=JSON.parse(localStorage.getItem("add-cart-list"))
+        
+        if(cartlist.length){
+          let idCheck=false
+          cartlist.map((data)=>{
+            if(data.id==productDetail.id){
+              idCheck=true
+              data.quantity=data.quantity+parseInt(quantity)
+            }
+          })
+          if(idCheck==true){
+            localStorage.setItem("add-cart-list",JSON.stringify(cartlist))
+          }else{
+            cartlist.push(productDetail)
+            localStorage.setItem("add-cart-list",JSON.stringify(cartlist))
+          }
+          console.log(idCheck,'cartlist');
+        }
+    }else{
+      qytArr.push(productDetail)
+      localStorage.setItem("add-cart-list",JSON.stringify(qytArr))
+    }
+    
+
+    // console.log(quantity,productDetail,'quantity44444');
     setOpen(true);
+    setTimeout(()=>{
+      setOpen(false);
+    },3000)
+    
   };
   return (
    <>
@@ -164,10 +200,10 @@ export default function ProductDetailPage({productDetail}) {
             </h1>
             <div className="flex gap-2 items-center  mt-4">
               <strong className="flex gap-1 items-center text-2xl font-medium leading-7 text-black before:content-[''] before:inline-block before:w-3 before:bg-no-repeat before:h-4 before:bg-[url('/img/rupee-md.svg')]   ">
-               {productDetail.discountPrice}
+              {TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.defaultPrice,productDetail.tax,"")}
               </strong>
               <del className="text-base font-normal text-3-light leading-5   ">
-              {productDetail.specialPrice}
+              {TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.defaultPrice,productDetail.tax,"strike")}
               </del>
             </div>
             <h3 className="text-1-dark text-base leading-5 font-medium mt-8">
@@ -182,26 +218,21 @@ export default function ProductDetailPage({productDetail}) {
               
                 className="flex items-center gap-2 min-w-20  min-h-9 w-fit justify-center rounded-5 "
               >
-                {/* border-grey1  */}
-                {/* <form class="max-w-sm mx-auto"> */}
-
-  <select id="countries" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-300 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:[box-shadow:none]" >
-    {quantityList().map((data,index)=>(
-      <option value={data} > Qty {data}</option>
-    ))}
-    
-  </select>
-{/* </form> */}
-                {/* <span className="text-3-light">Qty</span>
-                <span className="text-3-light ">1</span>{" "}
-                <img src="/img/qty-arrow.svg" alt="arrow" /> */}
-              </a>
+               
+                  <select id="countries" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-300 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:[box-shadow:none]" onChange={(e)=>setQuantity(e.target.value)}>
+                    {quantityList().map((data,index)=>(
+                      <option value={data} > Qty {data}</option>
+                    ))}
+                    
+                  </select>
+               </a>
 
               <a
-                href="javascript:void(0)"
-                className=" bg-black text-white  font-normal text-base grid place-items-center rounded-5 leading-5 basis-2/3 min-h-9"
+               
+                className="bg-black text-white  font-normal text-base grid place-items-center rounded-5 leading-5 basis-2/3 min-h-9 cursor-pointer"
                 onClick={(e) => handleOpenAddtoCart(e)}
               >
+                
                 Add to Cart
               </a>
             </div>
@@ -213,7 +244,39 @@ export default function ProductDetailPage({productDetail}) {
 
           </div>
         </div>
+        
       </section>
+      {/* cart design */}
+      {open==true&&<div className="absolute top-7 right-14">
+                    <div className="absolute right-0 z-10 mt-9 w-36 origin-top-right bg-white shadow-lg ring-1 ring-black ring-opacity-5 rounded-lg focus:outline-none min-w-72  p-3">
+                            <h3 className="text-black-500 text-base pb-3 border-b border-1-light text-start">Added to cart</h3>
+                            
+                                <div className="flex gap-2 items-center mt-3 mb-7">
+                                  <ImageComponets path={productDetail.productImagePath} w={80} h={80} alt={productDetail.productName} />
+                                  <div>
+                                    <h3 className="text-black-500 font-normal text-base mb-3 line-clamp-1">{productDetail.productName}</h3>
+                                    <div className="flex items-center gap-5">
+                                      <p className="flex items-center gap-1.5 text-lg font-medium text-black-500">
+                                        <img src="/img/rupee.svg" />
+                                        {TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.defaultPrice,productDetail.tax,"")*quantity}
+                                      </p>
+                                      <span className="text-3-light text-sm font-light line-through">{TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.defaultPrice,productDetail.tax,"strike")*quantity}</span>
+                                    </div>
+                                  </div>
+                                </div>
+                             
+                            <div className="pt-3 border-t border-1-light">
+                              <Link href='/my-cart' className="text-base font-normal text-white py-2 w-full flex justify-center items-center h-9 bg-dark-500 rounded ">Go to Cart</Link>
+                            </div>
+                          </div>
+                          </div>}
+                    
    </>
   )
 }
+
+{/* <div>
+                          <div className="absolute -top-1 -right-2 flex justify-center items-center w-3 h-3 bg-dark-500 rounded-full">
+                            <span className="text-white text-[10px] leading-3">{cartCout}</span>
+                          </div>
+                        </div> */}

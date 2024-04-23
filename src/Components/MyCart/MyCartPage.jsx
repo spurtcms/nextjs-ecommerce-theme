@@ -1,7 +1,21 @@
-import React from 'react'
+'use client'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link';
+import ImageComponets from '../ImageComponent';
+import { TaxPriceValidation, quantityList } from '@/utils/regexValidation';
 
 export default function MyCartPage({mycartlist}) {
+      const [cartItmeList,setCartItemList]=useState([])
+    useEffect(()=>{
+      if(localStorage.getItem("add-cart-list")){
+        
+        setCartItemList(JSON.parse(localStorage.getItem("add-cart-list")))
+
+      }
+    },[])
+    const handleQuantityChange=()=>{
+
+    }
   return (
     <>
       <div className="md:p-10 p-4">
@@ -27,35 +41,46 @@ export default function MyCartPage({mycartlist}) {
                             </h3>
                         </div>
                         <div className="p-6 pb-9 border-b border-grey3 grid grid-cols-1 sm:grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-6">
-                            <div className="align-top">
+                            {cartItmeList?.map((data,index)=>(
+                                <>
+                                {console.log(data,'3434343')}
+                                 <div className="align-top">
                                 <div className="flex gap-6 items-center sm:items-start md:flex-row flex-col">
-                                    <img src="/img/checkList-product1.svg" />
-                                    <h3 className="text-base font-normal text-black-500 line-clamp-3 break-words">SAMSUNG 75" Class CU7000000 Crystal UHD 4K Smart TV UN757000FXZAZXCVBNM</h3>
+                                <ImageComponets path={data.productImagePath} w={80} h={80} alt={data.productName} />
+                                    <h3 className="text-base font-normal text-black-500 line-clamp-3 break-words">{data.productName}</h3>
                                 </div>
                             </div>
                             <div className=" align-top">
                                 <p className="flex items-center gap-1.5 text-lg font-medium text-black-500">
                                     <img src="/img/rupee.svg" />
-                                    15,299
+                                    {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")}
                                 </p>
                             </div>
                             <div className="align-top">
-                                <a href="javascript:void(0)" className="flex items-center gap-2 min-w-20  min-h-9 w-fit justify-center border rounded-5 border-grey1 " >
-                                    <span className="text-3-light">Qty</span>
-                                    <span className="text-3-light ">1</span>{" "}
-                                    <img src="/img/qty-arrow.svg" alt="arrow" />
+                                <a  className="flex items-center gap-2 min-w-20  min-h-9 w-fit justify-center rounded-5 " >
+                                <select id="countries" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-300 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:[box-shadow:none]" onChange={(e)=>handleQuantityChange(e.target.value,data)} value={data.quantity}>
+                                {/* <option selected value={data.quantity} > Qty {data.quantity}</option> */}
+                    {quantityList().map((sdata)=>(
+                      <option value={sdata}> Qty {sdata}</option>
+                    ))}
+                    
+                  </select>
                                 </a>
                             </div>
                             <div className="align-top flex lg:flex-col flex-row lg:justify-normal justify-between flex-wrap">
                                 <p className="flex items-center gap-1.5 text-lg font-medium text-black-500">
                                     <img src="/img/rupee.svg" />
-                                    15,299
+                                    {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")*data.quantity}
                                 </p>
                                 <button className="flex items-center gap-1 text-sm font-normal text-black-500 mt-0 lg:mt-[77px]">
                                     <img src="/img/remove.svg" />
                                     Remove
                                 </button>
                             </div>
+                                </>
+
+                            ))}
+                           
                         </div>
                         
                     </div>
