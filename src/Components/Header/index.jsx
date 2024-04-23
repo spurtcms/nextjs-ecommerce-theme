@@ -5,7 +5,7 @@ import Link from "next/link";
 import ImageComponets from "../ImageComponent";
 import { Get_CATEGORIES_LIST } from "@/api/query";
 import { fetchGraphQLDa, postGraphQl } from "@/api/graphicql";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const navigation = [
   { name: "Electronics", href: "#", current: true },
@@ -21,17 +21,22 @@ const navigation = [
 export default function Header() {
 
   const [catgoData,setCatgoData]=useState()
+  const [catNo,setCatNo]=useState()
   const router=useRouter()
+  const searchParams1 = useSearchParams()
+  let catgoId=searchParams1.get("catgoId")
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
   }
-
+      
   const categorieList= async () =>{
     let catgo_variab={"categoryGroupId":147}
     let postData= await fetchGraphQLDa(Get_CATEGORIES_LIST,catgo_variab)
     setCatgoData(postData)
+    // catgoId=postData?.categoriesList?.categories[0].id?.toString()
+    setCatNo(catgoId)
   }
-console.log(catgoData,"94rjrr")
+
   useEffect(()=>{
     categorieList()
   },[])
@@ -58,8 +63,9 @@ console.log(catgoData,"94rjrr")
 
                   <div className="hidden sm:ml-6 lg:block">
                     <div className="flex gap-6 ">
-                      {catgoData?.categoriesList?.categories?.map((item) => (
-                        <Link href={catgoData?.categoriesList?.categories[0].id==item.id?`/`:`/?catgoId=${item.id}`}className="font-light xl:text-sm text-xs  text-black text-nowrap leading-tight flex flex-col gap-1 items-center hover:text-primary  after:content-[''] after:inline-block after:w-1 after:h-1  hover:after:bg-[url('/img/active-dot.svg')]  transition-all" >
+                      {catgoData?.categoriesList?.categories?.map((item,index) => (
+                        <Link href={catgoData?.categoriesList?.categories[0].id==item.id?`/`:`/?catgoId=${item.id}&catName=${item.categoryName}`}className={`font-light xl:text-sm text-xs  text-black text-nowrap leading-tight flex flex-col gap-1 items-center hover:text-primary  after:content-[''] after:inline-block after:w-1 after:h-1  hover:after:bg-[url('/img/active-dot.svg')]  transition-all 
+                        ${(index==0&&catgoId==null)||item.id==catgoId?'text-primary after:bg-[url("/img/active-dot.svg")]':'hover:text-blue-500'}  `} >
                           {item.categoryName}
                         </Link>
                       ))}

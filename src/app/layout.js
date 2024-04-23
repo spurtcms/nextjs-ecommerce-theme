@@ -2,6 +2,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Head from "next/head";
 import Header from "@/Components/Header";
+import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,7 +23,9 @@ export default function RootLayout({ children }) {
         />
       </Head>
       <body className={inter.className}>
+        <Suspense fallback={null}>
         <Header />
+        </Suspense>
         {children}
         </body>
     </html>
