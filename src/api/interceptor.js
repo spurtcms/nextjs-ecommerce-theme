@@ -1,4 +1,5 @@
-import { Token } from "./token";
+import { Token } from "./clientGraphicql";
+
 
 
 export const apiinstance=async(url,options)=>{
@@ -28,7 +29,6 @@ export const apiinstance=async(url,options)=>{
         config.body = config.body
       }
 
-  console.log(config,"iyhjk")
         const res = await fetch(`${process.env.NEXT_PUBLIC_SPURTCMS_BASEURL}${url}`,config);
         if(res.ok){
             return await res.json();
