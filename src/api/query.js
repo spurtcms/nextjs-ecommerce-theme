@@ -5,9 +5,9 @@ export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
   )
 }
   `;
-  export const GET_POSTS_LOGIN_QUERY =`mutation($username:String!,$password:String!){
+  export const GET_POSTS_LOGIN_QUERY =`mutation($email:String!,$password:String!){
     templateMemberLogin(
-      username:$username
+      email:$email
       password:$password
     )
   }`
@@ -67,8 +67,8 @@ export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
   }
   `;
 
-  export const GET_MY_CART_QUERY=`query($limit: Int!,$offset: Int!,$id: Int!){
-    ecommerceCartList(limit: $limit,offset: $offset,customerId: $id){
+  export const GET_MY_CART_QUERY=`query($limit: Int!,$offset: Int!){
+    ecommerceCartList(limit: $limit,offset: $offset){
       cartList{
         id
         categoriesId
@@ -110,7 +110,7 @@ export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
         totalQuantity
       }
     }
-  }`
+  }`;
 
   export const Get_CATEGORIES_LIST = `query($categoryGroupId: Int!){
     categoriesList(categoryGroupId:$categoryGroupId){
@@ -121,4 +121,8 @@ export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
         parentId
       }
     }
+  }`
+
+  export const GET_REMOVE_CART_LIST=`mutation($pid: Int!){
+    removeProductFromCartlist(productId: $pid)
   }`

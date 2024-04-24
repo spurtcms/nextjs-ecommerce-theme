@@ -4,44 +4,46 @@ import Link from 'next/link';
 import React, { Fragment, useState } from 'react'
 import ImageComponets from '../ImageComponent';
 
-export default function ProductDetailPage({productDetail}) {
+export default function ProductDetailPage({productDetail,tokenCheck}) {
   const [open, setOpen] = useState(false);
   const [quantity,setQuantity]=useState(1)
   
   const handleOpenAddtoCart = () => {
-    let qytArr=[]
-    productDetail.quantity=parseInt(quantity)
-    // console.log(localStorage.getItem("add-cart-list"),'localStorage.getItem("add-cart-list")');
-    if(localStorage.getItem("add-cart-list")){
-        let cartlist=JSON.parse(localStorage.getItem("add-cart-list"))
-        
-        if(cartlist.length){
-          let idCheck=false
-          cartlist.map((data)=>{
-            if(data.id==productDetail.id){
-              idCheck=true
-              data.quantity=data.quantity+parseInt(quantity)
-            }
-          })
-          if(idCheck==true){
-            localStorage.setItem("add-cart-list",JSON.stringify(cartlist))
-          }else{
-            cartlist.push(productDetail)
-            localStorage.setItem("add-cart-list",JSON.stringify(cartlist))
-          }
-          console.log(idCheck,'cartlist');
-        }
+    if(tokenCheck){
+     
     }else{
-      qytArr.push(productDetail)
-      localStorage.setItem("add-cart-list",JSON.stringify(qytArr))
+      let qytArr=[]
+      productDetail.quantity=parseInt(quantity)
+      if(localStorage.getItem("add-cart-list")){
+          let cartlist=JSON.parse(localStorage.getItem("add-cart-list"))
+          
+          if(cartlist.length){
+            let idCheck=false
+            cartlist.map((data)=>{
+              if(data.id==productDetail.id){
+                idCheck=true
+                data.quantity=data.quantity+parseInt(quantity)
+              }
+            })
+            if(idCheck==true){
+              localStorage.setItem("add-cart-list",JSON.stringify(cartlist))
+            }else{
+              cartlist.push(productDetail)
+              localStorage.setItem("add-cart-list",JSON.stringify(cartlist))
+            }
+            console.log(idCheck,'cartlist');
+          }
+      }else{
+        qytArr.push(productDetail)
+        localStorage.setItem("add-cart-list",JSON.stringify(qytArr))
+      }
+      
+      setOpen(true);
+      setTimeout(()=>{
+        setOpen(false);
+      },3000)
     }
     
-
-    // console.log(quantity,productDetail,'quantity44444');
-    setOpen(true);
-    setTimeout(()=>{
-      setOpen(false);
-    },3000)
     
   };
   return (
