@@ -1,8 +1,10 @@
 'use client'
 import { TaxPriceValidation, quantityList } from '@/utils/regexValidation';
 import Link from 'next/link';
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import ImageComponets from '../ImageComponent';
+import { fetchGraphQl } from '@/api/graphicql';
+import { GET_ADD_TO_CART } from '@/api/query';
 
 export default function ProductDetailPage({productDetail,tokenCheck}) {
   const [open, setOpen] = useState(false);
@@ -10,7 +12,11 @@ export default function ProductDetailPage({productDetail,tokenCheck}) {
   
   const handleOpenAddtoCart = () => {
     if(tokenCheck){
-     
+     let variable= {
+        "productId": productDetail.id,
+        "quantity": parseInt(quantity)
+      }
+      fetchGraphQl(GET_ADD_TO_CART,variable)
     }else{
       let qytArr=[]
       productDetail.quantity=parseInt(quantity)
@@ -31,21 +37,33 @@ export default function ProductDetailPage({productDetail,tokenCheck}) {
               cartlist.push(productDetail)
               localStorage.setItem("add-cart-list",JSON.stringify(cartlist))
             }
-            console.log(idCheck,'cartlist');
           }
       }else{
         qytArr.push(productDetail)
         localStorage.setItem("add-cart-list",JSON.stringify(qytArr))
       }
       
-      setOpen(true);
-      setTimeout(()=>{
-        setOpen(false);
-      },3000)
+    
     }
     
-    
+    setOpen(true);
+    setTimeout(()=>{
+      setOpen(false);
+    },2000)
   };
+  useEffect(() => {
+    if (typeof window !== 'undefined' && open) {
+      const handleClick = (e) => {
+        setOpen(false);
+      };
+
+      document.addEventListener('click', handleClick);
+
+      return () => {
+        document.removeEventListener('click', handleClick);
+      };
+    }
+  }, [open]);
   return (
    <>
     <ul className="flex items-center gap-2 py-6 px-5 md:px-10">

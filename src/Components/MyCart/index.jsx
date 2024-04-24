@@ -4,7 +4,7 @@ import { GET_MY_CART_QUERY } from '@/api/query';
 import { cookies } from 'next/headers';
 
 export default async function MyCartServerActions() {
-        let tokenCheck=cookies().get("toknes")
+        let tokenCheck=cookies().get("Token")
        
           let variable={
             "limit":10,
@@ -17,7 +17,6 @@ export default async function MyCartServerActions() {
 
           })
 
-   
   return (
     <>
    <MyCartPage  mycartlist={mycartlist} tokenCheck={tokenCheck?.value}/>

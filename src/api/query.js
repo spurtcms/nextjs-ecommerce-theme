@@ -126,3 +126,8 @@ export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
   export const GET_REMOVE_CART_LIST=`mutation($pid: Int!){
     removeProductFromCartlist(productId: $pid)
   }`
+
+
+  export const GET_ADD_TO_CART=`mutation ecommerceAddToCart($productId: Int!,$quantity: Int!){
+    ecommerceAddToCart(productId:$productId,quantity:$quantity)
+  }`

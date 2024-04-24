@@ -20,7 +20,7 @@ export default function MyCartPage({mycartlist,tokenCheck}) {
           }
       }
        
-    },[tokenCheck])
+    },[tokenCheck,mycartlist])
     const handleQuantityChange=(qty,data)=>{
 cartItmeList?.map((sdata)=>{
 if(sdata.id==data.id){

@@ -23,7 +23,6 @@ export const postGraphQl = async (GET_POSTS_QUERY,varia,check,setLoader) => {
 
   try {
     const entries = await fetchGraphQl(GET_POSTS_QUERY,varia);
-    console.log(entries,'entries');
     if(check==="signup"){
       if(entries?.memberRegister==true){
         setLoader(false)
