@@ -4,9 +4,10 @@ import { Fragment, useEffect, useState } from 'react';
 import Link from 'next/link';
 import ImageComponets from '../ImageComponent';
 import { useSearchParams } from 'next/navigation';
-import { fetchGraphQLDa } from '@/api/graphicql';
+
 import { GET_POSTS_LIST_QUERY, Get_CATEGORIES_LIST } from '@/api/query';
 import { TaxPriceValidation } from '@/utils/regexValidation';
+import { fetchGraphQLDa } from '@/api/clientGraphicql';
 
 const people = [
     {

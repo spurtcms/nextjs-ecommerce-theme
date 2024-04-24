@@ -1,12 +1,20 @@
+import { Token } from "./token";
+
+
 export const apiinstance=async(url,options)=>{
     const headers = {
         'Content-Type': 'application/json',
-        "Authorization":process.env.NEXT_PUBLIC_SPURTCMS_TOKEN
+        // "Authorization":process.env.NEXT_PUBLIC_SPURTCMS_TOKEN
       }
+      const token = await Token();
     
-    //   if (token) {
-    //     headers['Authorization'] = token
-    //   }
+      if (token==""||token==undefined) {
+        headers['Authorization']=process.env.NEXT_PUBLIC_SPURTCMS_TOKEN
+        
+      }
+      else{
+        headers['Authorization'] = token
+      }
     
       const config = {
         method: options.method || 'GET',
@@ -20,7 +28,7 @@ export const apiinstance=async(url,options)=>{
         config.body = config.body
       }
 
-  
+  console.log(config,"iyhjk")
         const res = await fetch(`${process.env.NEXT_PUBLIC_SPURTCMS_BASEURL}${url}`,config);
         if(res.ok){
             return await res.json();

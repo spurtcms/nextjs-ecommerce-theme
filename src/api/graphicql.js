@@ -1,5 +1,5 @@
-
 "use server"
+import { cookies } from "next/headers";
 import { apiinstance } from "./interceptor";
 import { Redirect } from "./serverActions";
 
@@ -33,6 +33,11 @@ export const postGraphQl = async (GET_POSTS_QUERY,varia,check,setLoader) => {
         setLoader(false)
       }
 
+    }else if(check==="login"){
+      if(entries?.templateMemberLogin!=""){
+      cookies().set("Token",entries?.templateMemberLogin) 
+      }
+
     }
   } catch (error) {
     throw error;
@@ -41,6 +46,25 @@ export const postGraphQl = async (GET_POSTS_QUERY,varia,check,setLoader) => {
 
 
 export async function fetchGraphQLDa (GET_POSTS_QUERY_LIST,varPos) {
+
+  try {
+    
+    const entries = await apiinstance("",{
+      method: 'POST',
+      body: JSON.stringify({
+        query: GET_POSTS_QUERY_LIST,
+        variables: varPos
+      })
+    });
+   
+   return entries?.data
+   
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function fetchGraphQLDaLogin (GET_POSTS_QUERY_LIST,varPos) {
 
   try {
     

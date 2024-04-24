@@ -4,8 +4,9 @@ import { Disclosure, Menu, Transition } from "@headlessui/react";
 import Link from "next/link";
 import ImageComponets from "../ImageComponent";
 import { Get_CATEGORIES_LIST } from "@/api/query";
-import { fetchGraphQLDa, postGraphQl } from "@/api/graphicql";
+
 import { useRouter, useSearchParams } from "next/navigation";
+import { fetchGraphQLDa } from "@/api/clientGraphicql";
 
 const navigation = [
   { name: "Electronics", href: "#", current: true },
@@ -22,6 +23,7 @@ export default function Header() {
 
   const [catgoData,setCatgoData]=useState()
   const [catNo,setCatNo]=useState()
+  const [searchBtnOn,setSearchBtnOn]=useState(false)
   const router=useRouter()
   const searchParams1 = useSearchParams()
   let catgoId=searchParams1.get("catgoId")
@@ -41,7 +43,10 @@ export default function Header() {
     categorieList()
   },[])
 
-
+const handleClic=(e)=>{
+  console.log(e,"9uiki")
+  setSearchBtnOn(true)
+}
 
   return (
     <>
@@ -73,9 +78,26 @@ export default function Header() {
                   </div>
 
                   <div className=" flex gap-4 items-center lg:ms-0 ms-auto">
-                    <button type="button" className="">
+                    <button type="button" className="" onClick={(e)=>{handleClic(e)}}>
                       <img src="/img/search.svg" alt="search" />
                     </button>
+                    {searchBtnOn&&<>
+                    {/* <input>
+                    </input>
+                     */}
+                     <div className='absolute top-full left-0 bg-white py-3 rounded h-72 drop-shadow-md overflow-y-auto w-full mt-2 z-50'>
+                        {/* {productsearch?.map((data) => (<> */}
+                            <div className='flex gap-4 items-center cursor-pointer py-3 px-4 hover:bg-blue-50' >
+                                {/* <img src={imageUrl + "?path=" + data.imagePath + "&name=" + data.imageName + "&width=400&height=200"} className='w-8' /> */}
+                                <div className='flex flex-col gap-1'>
+                                    <h6 className='text-sm text-black-300 font-medium'></h6>
+                                    <p className='text-link text-xs  font-normal'>product name</p>
+                                </div>
+                            </div>
+                            
+                        {/* </>))} */}
+                        </div>
+                    </>}
 
                    <Link href={"/my-cart"}>
                     <button type="button" className="">
