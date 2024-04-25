@@ -3,6 +3,7 @@ import "./globals.css";
 import Head from "next/head";
 import Header from "@/Components/Header";
 import { Suspense } from "react";
+import { Providers } from "@/redux/providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,10 +24,12 @@ export default function RootLayout({ children }) {
         />
       </Head>
       <body className={inter.className}>
+        <Providers>
         <Suspense fallback={null}>
         <Header />
         </Suspense>
         {children}
+        </Providers>
         </body>
     </html>
   );
