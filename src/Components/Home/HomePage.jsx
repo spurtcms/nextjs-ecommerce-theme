@@ -4,10 +4,12 @@ import { Fragment, useEffect, useState } from 'react';
 import Link from 'next/link';
 import ImageComponets from '../ImageComponent';
 import { useSearchParams } from 'next/navigation';
+import Currency from 'react-currency-formatter';
 
 import { GET_POSTS_LIST_QUERY, Get_CATEGORIES_LIST } from '@/api/query';
 import { TaxPriceValidation } from '@/utils/regexValidation';
 import { fetchGraphQLDa } from '@/api/clientGraphicql';
+import HomePageSkeleton from '@/utils/SkeletonLoader/HomePage';
 
 const people = [
     {
@@ -42,6 +44,7 @@ export default function HomePage() {
     const [cardListData,setCardListData]=useState()
     const [catagoryList,setCatagoryList]=useState()
     const [catIdheader,setCatIdheader]=useState()
+    const [skeleton,setSkeleton]=useState(true)
 
 
     const searchParams1 = useSearchParams()
@@ -55,6 +58,9 @@ const listData = async ()=>{
   // if(catgoId==null){
   let postData = await fetchGraphQLDa(GET_POSTS_LIST_QUERY,list_varab)
   setCardListData(postData?.ecommerceProductList?.productList)
+  if(postData){
+    setSkeleton(false)
+  }
 // }else{
 //   let postData = await fetchGraphQLDa(GET_POSTS_LIST_QUERY,list_varab)
 //   setCardListData(postData?.ecommerceProductList?.productList)
@@ -62,6 +68,7 @@ const listData = async ()=>{
 // }  
 }
 
+console.log(skeleton,'skeleton')
  const categorieList= async () =>{
   let catgo_variab={"categoryGroupId":147}
   let postData= await fetchGraphQLDa(Get_CATEGORIES_LIST,catgo_variab)
@@ -95,9 +102,11 @@ if(selected.id==3||selected.id==4){
 useEffect(()=>{
   if(catgoId==null){
     categorieList()
+    setSkeleton(true)
   }
   if(catgoId!=null){
     listData()
+    setSkeleton(true)
   }
 },[catgoId])
 
@@ -108,8 +117,14 @@ useEffect(()=>{
 }
 },[selected])
 
+
+console.log(cardListData,'cardListData')
   return (
-    <><section class="lg:px-10 px-5 pb-10">
+    <>
+{skeleton==true?
+<HomePageSkeleton/>
+:
+<section class="lg:px-10 px-5 pb-10">
     <div className="flex justify-between py-6 flex-wrap gap-4">
          <>
            {/* top option */}
@@ -191,8 +206,8 @@ useEffect(()=>{
              </Listbox>
            </div>
          </>
-       </div>
-       <div class=" grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4    border-t border-s border-grey">
+    </div>
+            <div class=" grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4    border-t border-s border-grey">
             {/* card */}
             {cardListData?.map((data,index)=>(
               <div key={index} class="group p-5 hover:shadow-3xl transition-shadow border-e border-b border-grey">
@@ -201,25 +216,27 @@ useEffect(()=>{
                 <ImageComponets path={data.productImagePath} alt={data.productName} w={300} h={200}/>
               </Link>
               <div className="text-center">
-                <a
-                 
-                  className=" text-base text-black font-light leading-5 mt-5 block"
+              <Link
+                 href={`/product-detail/${data.id}`}
+                  className=" text-base text-black font-medium leading-5 mt-5 block"
                 >
                  {data.productName}
-                </a>
+                </Link>
 
                 <p className="text-sm font-light leading-4 text-1-light mt-2 line-clamp-2">
                   {data.productDescription}
                 </p>
                 <div className="flex gap-2 items-center justify-center mt-3">
-                  <strong className="flex gap-1 items-center text-base font-semibold leading-5 text-black before:content-[''] before:inline-block before:w-2 before:h-3 before:bg-[url('/img/rupee.svg')]   ">
+                  <strong className="flex gap-1 items-center text-base font-semibold leading-5 text-black">
                   {/* {data.discountPrice} */}
-                  {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")}
+                  <Currency quantity={TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")} currency='INR'/>
+                  
                   </strong>
                  
                   <del className="text-xs font-normal text-1-light leading-4 ">
                   {/* {data.specialPrice} */}
-                  {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"strike")}
+                  <Currency quantity={TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"strike")} currency='INR'/>
+                 
                   </del>
                 </div>
                 <div className="flex items-center rounded h-9 overflow-hidden border border-black max-w-56 mx-auto mt-4 invisible transition-opacity duration-200 opacity-0 group-hover:visible group-hover:opacity-100">
@@ -240,6 +257,9 @@ useEffect(()=>{
             
             </div>
 
-    </section></>
+    </section>
+}
+    
+    </>
   )
 }

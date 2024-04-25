@@ -5,13 +5,22 @@ import ImageComponets from '../ImageComponent';
 import { TaxPriceValidation, quantityList } from '@/utils/regexValidation';
 import { fetchGraphQl } from '@/api/graphicql';
 import { GET_REMOVE_CART_LIST } from '@/api/query';
+import Currency from 'react-currency-formatter';
+import { reloadCartCount } from '@/redux/slices/cartSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function MyCartPage({mycartlist,tokenCheck}) {
+    const dispatch=useDispatch()
+    const reloadCount=useSelector((state)=>state.cartReducer.reloadCount)
+
       const [cartItmeList,setCartItemList]=useState([])
       const [trigger,setTrigger]=useState(0)
+      const [totalvalue,setTotalvalue]=useState()
+      const [taxvalue,setTaxvalue]=useState()
     useEffect(()=>{
       if(tokenCheck){
         setCartItemList(mycartlist)
+        
       }else{
         if(localStorage.getItem("add-cart-list")){
         
@@ -27,7 +36,7 @@ if(sdata.id==data.id){
     sdata.quantity= parseInt(qty)
 }
 })
-setTrigger(trigger+1)
+    setTrigger(trigger+1)
     }
     const subtotalPrice=()=>{
         let priceStart=0
@@ -35,7 +44,9 @@ setTrigger(trigger+1)
            let priceStore = TaxPriceValidation(sdata.specialPrice,sdata.discountPrice,sdata.defaultPrice,0,"")*sdata.quantity
            priceStart=priceStart+priceStore
             })
-            return priceStart
+            return <Currency quantity={priceStart} currency='INR'/> 
+            // priceStart
+            
     }
     const salesTaxPrice=()=>{
         let priceStart=0
@@ -43,7 +54,18 @@ setTrigger(trigger+1)
            let priceStore = sdata.tax*sdata.quantity
            priceStart=priceStart+priceStore
             })
-            return priceStart
+            return <Currency quantity={priceStart} currency='INR'/> 
+            // priceStart
+    }
+
+    const grantTotalPrice=()=>{
+        let priceStart=0
+        cartItmeList?.map((sdata)=>{
+           let priceStore = TaxPriceValidation(sdata.specialPrice,sdata.discountPrice,sdata.defaultPrice,0,"")*sdata.quantity;
+           let priceTax= sdata.tax*sdata.quantity
+           priceStart=priceStore+priceTax+priceStart
+            })
+            return <Currency quantity={priceStart} currency='INR'/> 
     }
     const handleRemove= async(data)=>{  
         if(tokenCheck){
@@ -60,14 +82,15 @@ setTrigger(trigger+1)
             if(cartstore.length){
                 localStorage.setItem("add-cart-list",JSON.stringify(cartstore))
             setCartItemList(cartstore)
-            }else{
+            }
+            else{
                 localStorage.removeItem("add-cart-list")
                 setCartItemList(cartstore)
             }
 
             
         }
-     
+      dispatch(reloadCartCount(reloadCount+1))
     }
   return (
     <>
@@ -105,8 +128,9 @@ setTrigger(trigger+1)
                             </div>
                             <div className=" align-top">
                                 <p className="flex items-center gap-1.5 text-lg font-medium text-black-500">
-                                    <img src="/img/rupee.svg" />
-                                    {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")}
+                                    {/* <img src="/img/rupee.svg" /> */}
+                                    <Currency quantity={TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")} currency='INR'/>
+                                    {/* {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")} */}
                                 </p>
                             </div>
                             <div className="align-top">
@@ -121,8 +145,9 @@ setTrigger(trigger+1)
                             </div>
                             <div className="align-top flex lg:flex-col flex-row lg:justify-normal justify-between flex-wrap">
                                 <p className="flex items-center gap-1.5 text-lg font-medium text-black-500">
-                                    <img src="/img/rupee.svg" />
-                                    {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")*data.quantity}
+                                    {/* <img src="/img/rupee.svg" /> */}
+                                    {/* {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")*data.quantity} */}
+                                    <Currency quantity={TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")*data.quantity} currency='INR'/>
                                 </p>
                                 <button onClick={()=>handleRemove(data)} className="flex items-center gap-1 text-sm font-normal text-black-500 mt-0 lg:mt-[77px]">
                                     <img src="/img/remove.svg" />
@@ -141,7 +166,7 @@ setTrigger(trigger+1)
                         <div className="border border-grey3 rounded ">
                             <div className="p-4 border-b border-grey3 flex justify-between items-center">
                                 <h3 className="text-black-500 text-base font-normal">Order Summary</h3>
-                                <button className="text-3-light text-xs font-normal">Edit</button>
+                                {/* <button className="text-3-light text-xs font-normal">Edit</button> */}
                             </div>
                             <div className="px-4 py-5">
                                 {cartItmeList?.map((data)=>(
@@ -154,8 +179,9 @@ setTrigger(trigger+1)
                                         <p className="text-3-light text-xs leading-4 font-normal line-clamp-1">{data.productName} </p>
                                     </div>
                                     <p className="flex items-center gap-1 text-3-light text-sm leading-5">
-                                  <img src="/img/rupee-sm-light.svg" />
-                                  {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,0,"")*data.quantity}
+                                  {/* <img src="/img/rupee-sm-light.svg" /> */}
+                                  {/* {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,0,"")*data.quantity} */}
+                                  <Currency quantity={TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")*data.quantity} currency='INR'/>
                                     </p>
                                 </div>
                                 ))}
@@ -163,16 +189,16 @@ setTrigger(trigger+1)
                                
                                 <div className="w-full h-px bg-grey mt-10 mb-6"></div>
                                 <div className="flex items-center justify-between mb-6">
-                                    <h5 className="text-black-500 font-light text-base leading-5">Subtotal (1item)</h5>
+                                    <h5 className="text-black-500 font-light text-base leading-5">Subtotal</h5>
                                     <p className="flex items-center gap-1 text-3-light text-sm leading-5">
-                                        <img src="/img/rupee-sm-light.svg" />
+                                        {/* <img src="/img/rupee-sm-light.svg" /> */}
                                         {subtotalPrice()}
                                     </p>
                                 </div>
                                 <div className="flex items-center justify-between">
                                     <h5 className="text-black-500 font-light text-base leading-5">Sales taxes</h5>
                                     <p className="flex items-center gap-1 text-3-light text-sm leading-5">
-                                        <img src="/img/rupee-sm-light.svg" />
+                                        {/* <img src="/img/rupee-sm-light.svg" /> */}
                                         {salesTaxPrice()}
                                     </p>
                                 </div>
@@ -180,8 +206,10 @@ setTrigger(trigger+1)
                                 <div className="flex items-center justify-between mb-6">
                                     <h3 className="text-black-500 font-medium text-base leading-5">Grand Total</h3>
                                     <p className="flex items-center gap-1 text-black-500 text-sm leading-5">
-                                        <img src="/img/rupee.svg" />
-                                        {subtotalPrice()+salesTaxPrice()}
+                                        {/* <img src="/img/rupee.svg" /> */}
+                                        {/* <Currency quantity={totalvalue+taxvalue} currency='INR'/>  */}
+                                        {/* {subtotalPrice()+salesTaxPrice()} */}
+                                        {grantTotalPrice()}
                                     </p>
                                 </div>
                                 <Link href="/checkOut" className="flex justify-center items-center bg-dark-500 w-full text-white font-normal text-base leading-5 h-11 rounded">Check Out</Link>
