@@ -26,8 +26,56 @@
 
 
 @layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-grey-1 {
+    color: #7D7D7D;
+  }
+
+  .text-grey-2 {
+    color: rgba(156, 163, 175, 1);
+  }
+
+  .text-grey-3 {
+    color: rgba(107, 114, 128, 1);
+  }
 
 
+
+  .drop-shadow-1 {
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.1));
+  }
+
+  .text-blue-1 {
+    color: rgba(47, 172, 214, 1);
+  }
+
+  .bg-blue-1 {
+    background-color: rgba(47, 172, 214, 1);
+  }
+
+  .bg-grey-1 {
+    background-color: rgba(249, 250, 251, 1);
+  }
+
+  .bg-grey-2 {
+    background-color: rgba(229, 231, 235, 1);
+  }
+
+  .border-gray-1 {
+    border-color: rgba(229, 231, 235, 1);
+  }
+
+  .bg-blue-2 {
+    background-color: rgba(249, 253, 255, 1);
+  }
+
+
+
+
+/*  */
   .text-balance {
     text-wrap: balance;
   }
