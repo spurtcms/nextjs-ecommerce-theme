@@ -3,10 +3,12 @@ import { Fragment, useEffect, useState } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import Link from "next/link";
 import ImageComponets from "../ImageComponent";
-import { Get_CATEGORIES_LIST } from "@/api/query";
-
+import { GET_POSTS_LIST_QUERY, Get_CATEGORIES_LIST } from "@/api/query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { fetchGraphQLDa } from "@/api/clientGraphicql";
+import { useSelector } from "react-redux";
+import HeaderPageSkeleton from "@/utils/SkeletonLoader/HeaderPage";
+
 
 const navigation = [
   { name: "Electronics", href: "#", current: true },
@@ -22,11 +24,17 @@ const navigation = [
 export default function Header() {
 
   const [catgoData,setCatgoData]=useState()
-  const [catNo,setCatNo]=useState()
+  // const [catNo,setCatNo]=useState()
+  const [productListData,setProductListData]=useState()
   const [searchBtnOn,setSearchBtnOn]=useState(false)
+  const [search,setSearch]=useState("")
+  const [cartCount,setCartcount]=useState(0)
+  const [skeleton,setSkeleton]=useState(true)
   const router=useRouter()
   const searchParams1 = useSearchParams()
   let catgoId=searchParams1.get("catgoId")
+  const reloadCount=useSelector((state)=>state.cartReducer.reloadCount)
+
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
   }
@@ -35,19 +43,45 @@ export default function Header() {
     let catgo_variab={"categoryGroupId":147}
     let postData= await fetchGraphQLDa(Get_CATEGORIES_LIST,catgo_variab)
     setCatgoData(postData)
+    if(postData){
+      setSkeleton(false)
+    }
     // catgoId=postData?.categoriesList?.categories[0].id?.toString()
-    setCatNo(catgoId)
+    // setCatNo(catgoId)
+  }
+
+  const listData = async ()=>{
+    let list_varab={"limit":10,"offset":0,"filter":{"searchKeyword":search}}
+    let postData = await fetchGraphQLDa(GET_POSTS_LIST_QUERY,list_varab)
+    setProductListData(postData?.ecommerceProductList?.productList) 
   }
 
   useEffect(()=>{
     categorieList()
   },[])
 
-const handleClic=(e)=>{
-  console.log(e,"9uiki")
+  useEffect(()=>{
+    listData()
+  },[search])
+
+  useEffect(()=>{
+    if(localStorage.getItem("add-cart-list")){
+       let count=JSON.parse(localStorage.getItem("add-cart-list"))
+       setCartcount(count.length)
+    }else{
+      setCartcount(0)
+    }
+    },[reloadCount])
+
+const handleClose=()=>{
   setSearchBtnOn(true)
+  setProductListData()
 }
 
+const handleProduct=(data)=>{
+  router.push(`/product-detail/${data.id}`) 
+  setSearchBtnOn(false)
+}
   return (
     <>
      <Disclosure as="nav" className="bg-white border-b border-1-light">
@@ -65,7 +99,7 @@ const handleClic=(e)=>{
                     <ImageComponets path={"/img/logo.svg"} alt={"spurtCMS logo"} w={157} h={20}/>
                    
                   </Link>
-
+                  {skeleton==true?<HeaderPageSkeleton/>:
                   <div className="hidden sm:ml-6 lg:block">
                     <div className="flex gap-6 ">
                       {catgoData?.categoriesList?.categories?.map((item,index) => (
@@ -75,34 +109,48 @@ const handleClic=(e)=>{
                         </Link>
                       ))}
                     </div>
-                  </div>
+                  </div>}
 
                   <div className=" flex gap-4 items-center lg:ms-0 ms-auto">
-                    <button type="button" className="" onClick={(e)=>{handleClic(e)}}>
+                    <button type="button" className="" onClick={()=>{handleClose()}}>
                       <img src="/img/search.svg" alt="search" />
                     </button>
                     {searchBtnOn&&<>
-                    {/* <input>
-                    </input>
-                     */}
-                     <div className='absolute top-full left-0 bg-white py-3 rounded h-72 drop-shadow-md overflow-y-auto w-full mt-2 z-50'>
-                        {/* {productsearch?.map((data) => (<> */}
-                            <div className='flex gap-4 items-center cursor-pointer py-3 px-4 hover:bg-blue-50' >
-                                {/* <img src={imageUrl + "?path=" + data.imagePath + "&name=" + data.imageName + "&width=400&height=200"} className='w-8' /> */}
-                                <div className='flex flex-col gap-1'>
-                                    <h6 className='text-sm text-black-300 font-medium'></h6>
-                                    <p className='text-link text-xs  font-normal'>product name</p>
-                                </div>
+                 
+                     <div className='fixed top-0 left-0 py-20 bg-transparent rounded h-full  drop-shadow-md overflow-y-auto w-full z-50'>
+                      
+                            <div className='px-4 max-w-[600px] m-auto bg-white border border-slate-200 rounded-md shadow-lg relative  z-50' >
+                            <div className="relative w-full">
+                              <input type="text" className="border-0 border-slate-200 py-4 ps-12 w-full h-[50px] focus:outline-none focus:ring-0 text-sm font-normal text-black"  onChange={(e)=>setSearch(e.target.value)}/>
+                              <img src="/img/close2.svg"  className="absolute top-4 right-4 cursor-pointer" onClick={()=>setSearchBtnOn(false)}/>
+                              <img src="/img/search.svg"  className="absolute top-4 left-4"/>
                             </div>
+                            {search!=""&&
+                            <div className="max-h-[171px] overflow-auto">
+                              {productListData?.map((data,index)=>(<>
+                              <div className="flex gap-3 items-center p-2 border-b border-slate-200">
+                                <img src={data?.productImagePath} className="w-10 h-10 cursor-pointer" onClick={()=>handleProduct(data)}/>
+                                <p className="text-sm font-normal text-black cursor-pointer" onClick={()=>handleProduct(data)}>{data?.productName}</p>
+                              </div></>))}
+                            </div>}
+                            </div>
+
                             
-                        {/* </>))} */}
+                            <div className="fixed top-0 h-full w-full opacity-[0.5] bg-white left-0 z-40"></div>
+                        
                         </div>
                     </>}
 
                    <Link href={"/my-cart"}>
-                    <button type="button" className="">
+                   <button type="button" className="relative">
                       <img src="/img/cart.svg" alt="search" />
+                      <div>
+                          <div className="absolute -top-1 -right-2 flex justify-center items-center w-3 h-3 bg-dark-500 rounded-full">
+                            <span className="text-white text-[10px] leading-3">{cartCount}</span>
+                          </div>
+                        </div>
                     </button>
+
                     </Link>
 
                     {/* Profile dropdown */}
@@ -220,16 +268,14 @@ const handleClic=(e)=>{
 
               <Disclosure.Panel className="lg:hidden">
                 <div className="space-y-1 pb-2 pt-2 ">
-                  {navigation.map((item) => (
-                    <Disclosure.Button
-                      key={item.name}
-                      as="a"
-                      href={item.href}
+                  {catgoData?.categoriesList?.categories?.map((item,index) => (
+                    <Link
+                      href={catgoData?.categoriesList?.categories[0].id==item.id?`/`:`/?catgoId=${item.id}&catName=${item.categoryName}`}
                       className=" block font-normal text-black  text-sm hover:text-primary text-primar text-nowrap leading-tigh mt-0 p-1 "
                       aria-current={item.current ? "page" : undefined}
                     >
-                      {item.name}
-                    </Disclosure.Button>
+                      {item.categoryName}
+                    </Link>
                   ))}
                 </div>
               </Disclosure.Panel>
