@@ -8,6 +8,7 @@ import { GET_ADD_TO_CART } from '@/api/query';
 import ProductDetailSkeleton from '@/utils/SkeletonLoader/ProductDetail';
 import { useDispatch, useSelector } from 'react-redux';
 import { reloadCartCount } from '@/redux/slices/cartSlice';
+import BreadCrubs from '../BreadCrumbs';
 
 export default function ProductDetailPage({productDetail,tokenCheck}) {
   const dispatch=useDispatch()
@@ -78,7 +79,7 @@ if(productDetail){
   },[])
   return (
    <>
-    <ul className="flex items-center gap-2 py-6 px-5 md:px-10">
+    {/* <ul className="flex items-center gap-2 py-6 px-5 md:px-10">
         <li>
           <a href="javascript:void(0)" className="block w-4">
             <img src="/img/home.svg" alt="home" />{" "}
@@ -115,7 +116,8 @@ if(productDetail){
             CU7000 class class CU7000 class CU7000 class CU7000
           </a>
         </li>
-    </ul>
+    </ul> */}
+    <BreadCrubs productDetail={productDetail}/>
 {skeleton==true?
 <ProductDetailSkeleton/>
 :
@@ -301,7 +303,7 @@ if(productDetail){
                                         {TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.defaultPrice,productDetail.tax,"")*quantity}
                                         {/* {TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.defaultPrice,productDetail.tax,"")*quantity} */}
                                       </p>
-                                      <span className="text-3-light text-sm font-light line-through"> </span>
+                                      <span className="text-3-light text-sm font-light line-through"> {TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.defaultPrice,productDetail.tax,"strike")*quantity}</span>
                                     </div>
                                   </div>
                                 </div>
