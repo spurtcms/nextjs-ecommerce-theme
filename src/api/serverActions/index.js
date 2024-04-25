@@ -20,3 +20,8 @@ if(data){
 export async function Redirect(data){
     redirect(data)
 }
+
+export async function RemoveToken(){
+    cookies().delete("Token")
+    redirect("/")
+}
