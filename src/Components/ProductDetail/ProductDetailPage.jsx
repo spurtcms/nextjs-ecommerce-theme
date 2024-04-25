@@ -6,7 +6,6 @@ import ImageComponets from '../ImageComponent';
 import { fetchGraphQl } from '@/api/graphicql';
 import { GET_ADD_TO_CART } from '@/api/query';
 import ProductDetailSkeleton from '@/utils/SkeletonLoader/ProductDetail';
-import Currency from 'react-currency-formatter';
 import { useDispatch, useSelector } from 'react-redux';
 import { reloadCartCount } from '@/redux/slices/cartSlice';
 
@@ -235,12 +234,13 @@ if(productDetail){
             {productDetail.productName}
             </h1>
             <div className="flex gap-2 items-center  mt-4">
-              <strong className="flex gap-1 items-center text-2xl font-medium leading-7 text-black ">
-              <Currency quantity={TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.defaultPrice,productDetail.tax,"")} currency='INR'/>
+              <strong className="flex gap-1 items-center text-2xl font-medium leading-7 text-black 
+              before:content-[''] before:inline-block before:w-3 before:bg-no-repeat before:h-4 before:bg-[url('/img/rupee-md.svg')]">
+              {TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.defaultPrice,productDetail.tax,"")}
               {/* {TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.defaultPrice,productDetail.tax,"")} */}
               </strong>
               <del className="text-base font-normal text-3-light leading-5">
-              <Currency quantity={TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.defaultPrice,productDetail.tax,"strike")} currency='INR'/>
+              {TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.defaultPrice,productDetail.tax,"strike")}
               {/* {TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.defaultPrice,productDetail.tax,"strike")} */}
               </del>
             </div>
@@ -297,11 +297,11 @@ if(productDetail){
                                     <h3 className="text-black-500 font-normal text-base mb-3 line-clamp-1">{productDetail.productName}</h3>
                                     <div className="flex items-center gap-5">
                                       <p className="flex items-center gap-1.5 text-lg font-medium text-black-500">
-                                        {/* <img src="/img/rupee.svg" /> */}
-                                        <Currency quantity={TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.defaultPrice,productDetail.tax,"")*quantity} currency='INR'/>
+                                        <img src="/img/rupee.svg" />
+                                        {TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.defaultPrice,productDetail.tax,"")*quantity}
                                         {/* {TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.defaultPrice,productDetail.tax,"")*quantity} */}
                                       </p>
-                                      <span className="text-3-light text-sm font-light line-through"> <Currency quantity={TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.defaultPrice,productDetail.tax,"strike")*quantity} currency='INR'/></span>
+                                      <span className="text-3-light text-sm font-light line-through"> </span>
                                     </div>
                                   </div>
                                 </div>

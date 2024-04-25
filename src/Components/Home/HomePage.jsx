@@ -4,7 +4,6 @@ import { Fragment, useEffect, useState } from 'react';
 import Link from 'next/link';
 import ImageComponets from '../ImageComponent';
 import { useSearchParams } from 'next/navigation';
-import Currency from 'react-currency-formatter';
 
 import { GET_POSTS_LIST_QUERY, Get_CATEGORIES_LIST } from '@/api/query';
 import { TaxPriceValidation } from '@/utils/regexValidation';
@@ -227,16 +226,15 @@ console.log(cardListData,'cardListData')
                   {data.productDescription}
                 </p>
                 <div className="flex gap-2 items-center justify-center mt-3">
-                  <strong className="flex gap-1 items-center text-base font-semibold leading-5 text-black">
+                  <strong className="flex gap-1 items-center text-base font-semibold leading-5 text-black before:content-[''] before:inline-block before:w-2 before:h-3 before:bg-[url('/img/rupee.svg')]   ">
                   {/* {data.discountPrice} */}
-                  <Currency quantity={TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")} currency='INR'/>
+                  {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")} 
                   
                   </strong>
                  
                   <del className="text-xs font-normal text-1-light leading-4 ">
                   {/* {data.specialPrice} */}
-                  <Currency quantity={TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"strike")} currency='INR'/>
-                 
+                 {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"strike")}
                   </del>
                 </div>
                 <div className="flex items-center rounded h-9 overflow-hidden border border-black max-w-56 mx-auto mt-4 invisible transition-opacity duration-200 opacity-0 group-hover:visible group-hover:opacity-100">

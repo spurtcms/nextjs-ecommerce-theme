@@ -5,7 +5,6 @@ import ImageComponets from '../ImageComponent';
 import { TaxPriceValidation, quantityList } from '@/utils/regexValidation';
 import { fetchGraphQl } from '@/api/graphicql';
 import { GET_REMOVE_CART_LIST } from '@/api/query';
-import Currency from 'react-currency-formatter';
 import { reloadCartCount } from '@/redux/slices/cartSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -44,8 +43,8 @@ if(sdata.id==data.id){
            let priceStore = TaxPriceValidation(sdata.specialPrice,sdata.discountPrice,sdata.defaultPrice,0,"")*sdata.quantity
            priceStart=priceStart+priceStore
             })
-            return <Currency quantity={priceStart} currency='INR'/> 
-            // priceStart
+            return priceStart
+             
             
     }
     const salesTaxPrice=()=>{
@@ -54,19 +53,19 @@ if(sdata.id==data.id){
            let priceStore = sdata.tax*sdata.quantity
            priceStart=priceStart+priceStore
             })
-            return <Currency quantity={priceStart} currency='INR'/> 
-            // priceStart
+            return priceStart
+            
     }
 
-    const grantTotalPrice=()=>{
-        let priceStart=0
-        cartItmeList?.map((sdata)=>{
-           let priceStore = TaxPriceValidation(sdata.specialPrice,sdata.discountPrice,sdata.defaultPrice,0,"")*sdata.quantity;
-           let priceTax= sdata.tax*sdata.quantity
-           priceStart=priceStore+priceTax+priceStart
-            })
-            return <Currency quantity={priceStart} currency='INR'/> 
-    }
+    // const grantTotalPrice=()=>{
+    //     let priceStart=0
+    //     cartItmeList?.map((sdata)=>{
+    //        let priceStore = TaxPriceValidation(sdata.specialPrice,sdata.discountPrice,sdata.defaultPrice,0,"")*sdata.quantity;
+    //        let priceTax= sdata.tax*sdata.quantity
+    //        priceStart=priceStore+priceTax+priceStart
+    //         })
+    //         return <Currency quantity={priceStart} currency='INR'/> 
+    // }
     const handleRemove= async(data)=>{  
         if(tokenCheck){
             let variable={
@@ -128,8 +127,8 @@ if(sdata.id==data.id){
                             </div>
                             <div className=" align-top">
                                 <p className="flex items-center gap-1.5 text-lg font-medium text-black-500">
-                                    {/* <img src="/img/rupee.svg" /> */}
-                                    <Currency quantity={TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")} currency='INR'/>
+                                    <img src="/img/rupee.svg" />
+                                    {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")} 
                                     {/* {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")} */}
                                 </p>
                             </div>
@@ -145,9 +144,9 @@ if(sdata.id==data.id){
                             </div>
                             <div className="align-top flex lg:flex-col flex-row lg:justify-normal justify-between flex-wrap">
                                 <p className="flex items-center gap-1.5 text-lg font-medium text-black-500">
-                                    {/* <img src="/img/rupee.svg" /> */}
+                                    <img src="/img/rupee.svg" />
                                     {/* {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")*data.quantity} */}
-                                    <Currency quantity={TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")*data.quantity} currency='INR'/>
+                                    {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")*data.quantity} 
                                 </p>
                                 <button onClick={()=>handleRemove(data)} className="flex items-center gap-1 text-sm font-normal text-black-500 mt-0 lg:mt-[77px]">
                                     <img src="/img/remove.svg" />
@@ -179,9 +178,9 @@ if(sdata.id==data.id){
                                         <p className="text-3-light text-xs leading-4 font-normal line-clamp-1">{data.productName} </p>
                                     </div>
                                     <p className="flex items-center gap-1 text-3-light text-sm leading-5">
-                                  {/* <img src="/img/rupee-sm-light.svg" /> */}
+                                  <img src="/img/rupee-sm-light.svg" />
                                   {/* {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,0,"")*data.quantity} */}
-                                  <Currency quantity={TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")*data.quantity} currency='INR'/>
+                                  {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")*data.quantity} 
                                     </p>
                                 </div>
                                 ))}
@@ -191,14 +190,14 @@ if(sdata.id==data.id){
                                 <div className="flex items-center justify-between mb-6">
                                     <h5 className="text-black-500 font-light text-base leading-5">Subtotal</h5>
                                     <p className="flex items-center gap-1 text-3-light text-sm leading-5">
-                                        {/* <img src="/img/rupee-sm-light.svg" /> */}
+                                        <img src="/img/rupee-sm-light.svg" />
                                         {subtotalPrice()}
                                     </p>
                                 </div>
                                 <div className="flex items-center justify-between">
                                     <h5 className="text-black-500 font-light text-base leading-5">Sales taxes</h5>
                                     <p className="flex items-center gap-1 text-3-light text-sm leading-5">
-                                        {/* <img src="/img/rupee-sm-light.svg" /> */}
+                                        <img src="/img/rupee-sm-light.svg" />
                                         {salesTaxPrice()}
                                     </p>
                                 </div>
@@ -206,10 +205,10 @@ if(sdata.id==data.id){
                                 <div className="flex items-center justify-between mb-6">
                                     <h3 className="text-black-500 font-medium text-base leading-5">Grand Total</h3>
                                     <p className="flex items-center gap-1 text-black-500 text-sm leading-5">
-                                        {/* <img src="/img/rupee.svg" /> */}
+                                        <img src="/img/rupee.svg" />
                                         {/* <Currency quantity={totalvalue+taxvalue} currency='INR'/>  */}
-                                        {/* {subtotalPrice()+salesTaxPrice()} */}
-                                        {grantTotalPrice()}
+                                        {subtotalPrice()+salesTaxPrice()}
+                                        {/* {grantTotalPrice()} */}
                                     </p>
                                 </div>
                                 <Link href="/checkOut" className="flex justify-center items-center bg-dark-500 w-full text-white font-normal text-base leading-5 h-11 rounded">Check Out</Link>
