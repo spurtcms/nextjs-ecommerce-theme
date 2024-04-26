@@ -4,13 +4,15 @@ import { Disclosure, Menu, Transition } from "@headlessui/react";
 import Link from "next/link";
 import ImageComponets from "../ImageComponent";
 import { GET_MY_CART_QUERY, GET_POSTS_LIST_QUERY, Get_CATEGORIES_LIST } from "@/api/query";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { fetchGraphQLDa } from "@/api/clientGraphicql";
 import { useSelector,useDispatch } from "react-redux";
 import HeaderPageSkeleton from "@/utils/SkeletonLoader/HeaderPage";
 import { fetchGraphQl } from "@/api/graphicql";
 import { RemoveToken } from "@/api/serverActions";
 import { catagoryId, catagoryName } from "@/redux/slices/catgorySlice";
+import { checkCartName } from "@/redux/slices/cartSlice";
+
 
 const navigation = [
   { name: "Electronics", href: "#", current: true },
@@ -27,22 +29,23 @@ export default function HeaderServerActions({tokenCheck}) {
     const dispatch=useDispatch()
     const reloadCount=useSelector((state)=>state.cartReducer.reloadCount)
     const catgorId=useSelector((state)=>state.catgoReducer.catgoId)
+    const catogoryName=useSelector((state)=>state.catgoReducer.catagoryName)
+
 
   const [catgoData,setCatgoData]=useState()
-  // const [catNo,setCatNo]=useState()
   const [productListData,setProductListData]=useState()
   const [searchBtnOn,setSearchBtnOn]=useState(false)
   const [search,setSearch]=useState("")
   const [cartCount,setCartcount]=useState(0)
   const [skeleton,setSkeleton]=useState(true)
+  const [trigger,setTrigger]=useState(0)
   const router=useRouter()
-  const searchParams1 = useSearchParams()
-  let catgoId=searchParams1.get("catgoId")
 
+console.log(productListData,"98kkj")
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
   }
-      
+
   const categorieList= async () =>{
     let catgo_variab={"categoryGroupId":147}
     let postData= await fetchGraphQLDa(Get_CATEGORIES_LIST,catgo_variab)
@@ -50,10 +53,13 @@ export default function HeaderServerActions({tokenCheck}) {
     if(postData){
       setSkeleton(false)
     }
-    // catgoId=postData?.categoriesList?.categories[0].id?.toString()
-    // setCatNo(catgoId)
   }
 
+  const categorieList1 = async ()=>{
+    let catgo_variab={"categoryGroupId":147}
+    let postData= await fetchGraphQLDa(Get_CATEGORIES_LIST,catgo_variab)
+    handlecatData(postData)
+  }
   const listData = async ()=>{
     let list_varab={"limit":10,"offset":0,"filter":{"searchKeyword":search}}
     let postData = await fetchGraphQLDa(GET_POSTS_LIST_QUERY,list_varab)
@@ -64,6 +70,9 @@ export default function HeaderServerActions({tokenCheck}) {
     categorieList()
   },[])
 
+  useEffect(()=>{
+    categorieList1()
+  },[trigger])
   useEffect(()=>{
     listData()
   },[search])
@@ -77,7 +86,7 @@ export default function HeaderServerActions({tokenCheck}) {
          let mycartlist=await fetchGraphQl(GET_MY_CART_QUERY,variable)
          
           mycartlist=mycartlist?.ecommerceCartList?.cartList
-          console.log(mycartlist,'4444mycartlist');
+          
           setCartcount(mycartlist?.length?mycartlist?.length:0)
       }else{
         if(localStorage.getItem("add-cart-list")){
@@ -101,20 +110,30 @@ const handleClose=()=>{
 }
 
 const handleProduct=(data)=>{
+  setTrigger(trigger+1)
+  dispatch(catagoryId(data.categoriesId))
   router.push(`/product-detail/${data.id}`) 
   setSearchBtnOn(false)
 }
 const handleCatagory=(data)=>{
+
     dispatch(catagoryName(data?.categoryName))
-    if(catgoData?.categoriesList?.categories[0].id==data?.id){
-      dispatch(catagoryId(null))
-    }else{
+
       dispatch(catagoryId(data.id))
-    }
+    
     
   }
 const Logout=()=>{
     RemoveToken()
+    dispatch(checkCartName('')) 
+}
+
+const handlecatData=(data)=>{
+data?.categoriesList?.categories.map((vdata,index)=>{
+if(vdata.id==catgorId){
+  dispatch(catagoryName(vdata?.categoryName))
+}
+})
 }
   return (
     <>
@@ -137,8 +156,8 @@ const Logout=()=>{
                   <div className="hidden sm:ml-6 lg:block">
                     <div className="flex gap-6 ">
                       {catgoData?.categoriesList?.categories?.map((item,index) => (
-                         <Link href={catgoData?.categoriesList?.categories[0].id==item.id?`/`:`/?catgoId=${item.id}&catName=${item.categoryName}`} onClick={()=>handleCatagory(item)}  className={`font-light xl:text-sm text-sm  text-black text-nowrap leading-tight flex flex-col gap-1 items-center hover:text-primary  after:content-[''] after:inline-block after:w-1 after:h-1  hover:after:bg-[url('/img/active-dot.svg')]  transition-all 
-                         ${(index==0&&catgoId==null)||item.id==catgoId?'text-primary after:bg-[url("/img/active-dot.svg")]':'hover:text-blue-500'}  `} >
+                         <Link href={"/"} onClick={()=>handleCatagory(item)}  className={`font-light xl:text-sm text-sm  text-black text-nowrap leading-tight flex flex-col gap-1 items-center hover:text-primary  after:content-[''] after:inline-block after:w-1 after:h-1  hover:after:bg-[url('/img/active-dot.svg')]  transition-all 
+                         ${(index==0&&catgorId==null)||item.id==catgorId?'text-primary after:bg-[url("/img/active-dot.svg")]':'hover:text-blue-500'}  `} >
                            {item.categoryName}
                          </Link >
                       ))}
@@ -151,30 +170,29 @@ const Logout=()=>{
                     </button>
                     {searchBtnOn&&<>
                  
-                     <div className='fixed top-0 left-0 py-20 bg-transparent rounded h-full  drop-shadow-md overflow-y-auto w-full z-50'>
-                      
-                            <div className='px-4 max-w-[600px] m-auto bg-white border border-slate-200 rounded-md shadow-lg relative  z-50' >
-                            <div className="relative w-full">
-                              <input type="text" className="border-0 border-slate-200 py-4 ps-12 w-full h-[50px] focus:outline-none focus:ring-0 text-sm font-normal text-black"  onChange={(e)=>setSearch(e.target.value)}/>
-                              <img src="/img/close2.svg"  className="absolute top-4 right-4 cursor-pointer" onClick={()=>setSearchBtnOn(false)}/>
-                              <img src="/img/search.svg"  className="absolute top-4 left-4"/>
-                            </div>
-                            {search!=""&&
-                            <div className="max-h-[171px] overflow-auto">
-                              {productListData?.map((data,index)=>(<>
-                              <div className="flex gap-3 items-center p-2 border-b border-slate-200">
-                                <img src={data?.productImagePath} className="w-10 h-10 cursor-pointer" onClick={()=>handleProduct(data)}/>
-                                <p className="text-sm font-normal text-black cursor-pointer" onClick={()=>handleProduct(data)}>{data?.productName}</p>
-                              </div></>))}
-                            </div>}
-                            </div>
-
-                            
-                            <div className="fixed top-0 h-full w-full opacity-[0.5] bg-white left-0 z-40"></div>
-                        
+                 <div className='fixed top-0 left-0 py-20 bg-transparent rounded h-full  drop-shadow-md overflow-y-auto w-full z-50'>
+                  
+                        <div className='px-4 max-w-[600px] m-auto bg-white border border-slate-200 rounded-md shadow-lg relative  z-50' >
+                        <div className="relative w-full">
+                          <input type="text" className="border-0 border-slate-200 py-4 ps-8 w-full h-[50px] focus:outline-none focus:ring-0 text-sm font-normal text-black"  onChange={(e)=>setSearch(e.target.value)}/>
+                          <img src="/img/close2.svg"  className="absolute top-[17px] right-0 cursor-pointer" onClick={()=>setSearchBtnOn(false)}/>
+                          <img src="/img/search-light.svg"  className="absolute top-[17px] left-0"/>
                         </div>
-                    </>}
+                        {search!=""&&
+                        <div className="overflow-auto max-h-56">
+                          {productListData?.map((data,index)=>(<>
+                          <Link href={`/product-detail/${data?.productSlug}`} className="flex gap-3 items-center p-2 border-b border-slate-200 h-14">
+                            <div className="w-10 min-h-10 flex items-center"><img src={data?.productImageArray?.[0]}  onClick={()=>handleProduct(data)}/></div>
+                            <p className="text-sm font-normal text-black cursor-pointer" onClick={()=>handleProduct(data)}>{data?.productName}</p>
+                          </Link></>))}
+                        </div>}
+                        </div>
 
+                        
+                        <div className="fixed top-0 h-full w-full opacity-[0.5] bg-white left-0 z-40"></div>
+                    
+                    </div>
+                </>}
                    <Link href={"/my-cart"}>
                    <button type="button" className="relative">
                       <img src="/img/cart.svg" alt="search" />

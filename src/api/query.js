@@ -30,9 +30,11 @@ export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
         tax
         categoriesId
         productName
+        productSlug
         productDescription
         productImagePath
         productVideoPath
+        productImageArray
         sku
       defaultPrice
         isActive
@@ -47,15 +49,16 @@ export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
 
 
   export const GET_POSTS_SLUG_QUERY = `query ecommerceProductDetails(
-    $productId: Int!, 
+    $productSlug: String!, 
   ){
-    ecommerceProductDetails(productId:$productId){
+    ecommerceProductDetails(productSlug:$productSlug){
       id
       categoriesId
       productName
       productDescription
       productImagePath
       productVideoPath
+      productImageArray
       sku
       tax
       totalcost
@@ -75,6 +78,7 @@ export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
         productName
         productDescription
         productImagePath
+        productImageArray
         productVideoPath
         sku
         tax

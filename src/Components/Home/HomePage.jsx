@@ -9,6 +9,8 @@ import { GET_POSTS_LIST_QUERY, Get_CATEGORIES_LIST } from '@/api/query';
 import { TaxPriceValidation } from '@/utils/regexValidation';
 import { fetchGraphQLDa } from '@/api/clientGraphicql';
 import HomePageSkeleton from '@/utils/SkeletonLoader/HomePage';
+import { useSelector,useDispatch } from "react-redux";
+import { catagoryId, catagoryName } from "@/redux/slices/catgorySlice";
 
 const people = [
     {
@@ -39,6 +41,10 @@ const people = [
   }
   
 export default function HomePage() {
+
+    const dispatch=useDispatch()
+    const catgorId=useSelector((state)=>state.catgoReducer.catgoId)
+    const catogoryName=useSelector((state)=>state.catgoReducer.catagoryName)
     const [selected, setSelected] = useState(people);
     const [cardListData,setCardListData]=useState()
     const [catagoryList,setCatagoryList]=useState()
@@ -46,68 +52,59 @@ export default function HomePage() {
     const [skeleton,setSkeleton]=useState(true)
 
 
-    const searchParams1 = useSearchParams()
-    const searchParams2 = useSearchParams()
-    let catgoId=searchParams1.get("catgoId")
-    let catName1=searchParams2.get("catName")
-    
+
 
 const listData = async ()=>{
-  let list_varab={"limit":10,"offset":0,"filter":{"categoryId":catgoId}}
-  // if(catgoId==null){
+
+  let list_varab={"limit":10,"offset":0,"filter":{"categoryId":catgorId}}
   let postData = await fetchGraphQLDa(GET_POSTS_LIST_QUERY,list_varab)
   setCardListData(postData?.ecommerceProductList?.productList)
   if(postData){
     setSkeleton(false)
   }
-// }else{
-//   let postData = await fetchGraphQLDa(GET_POSTS_LIST_QUERY,list_varab)
-//   setCardListData(postData?.ecommerceProductList?.productList)
-
-// }  
 }
 
-console.log(skeleton,'skeleton')
+
  const categorieList= async () =>{
   let catgo_variab={"categoryGroupId":147}
   let postData= await fetchGraphQLDa(Get_CATEGORIES_LIST,catgo_variab)
   setCatagoryList(postData?.categoriesList?.categories[0]?.categoryName)
-  setCatIdheader(postData?.categoriesList?.categories[0].id)
-  catgoId=postData?.categoriesList?.categories[0].id?.toString()
+
+  if(catgorId==null){
+    dispatch(catagoryId(postData?.categoriesList?.categories[0].id))
+  }
   listData()
-  console.log(postData?.categoriesList?.categories[0].id,"098989")
 }
 
 const sortBy = async () =>{
   if(selected.id!=3&&selected.id!=4){
-    if(catgoId==null){
-  let list_varab={"limit":10,"offset":0,"filter":{"categoryId":catIdheader},"sort":{"price":selected.setNo}}
+//     if(catgorId==null){
+//   let list_varab={"limit":10,"offset":0,"filter":{"categoryId":catIdheader},"sort":{"price":selected.setNo}}
+//   let sortByData= await fetchGraphQLDa(GET_POSTS_LIST_QUERY,list_varab)
+//   setCardListData(sortByData?.ecommerceProductList?.productList)
+// }else{
+  let list_varab={"limit":10,"offset":0,"filter":{"categoryId":catgorId},"sort":{"price":selected.setNo}}
   let sortByData= await fetchGraphQLDa(GET_POSTS_LIST_QUERY,list_varab)
   setCardListData(sortByData?.ecommerceProductList?.productList)
-}else{
-  let list_varab={"limit":10,"offset":0,"filter":{"categoryId":catgoId},"sort":{"price":selected.setNo}}
-  let sortByData= await fetchGraphQLDa(GET_POSTS_LIST_QUERY,list_varab)
-  setCardListData(sortByData?.ecommerceProductList?.productList)
-}
+// }
 }
 if(selected.id==3||selected.id==4){
-  let list_varab={"limit":10,"offset":0,"filter":{"categoryId":catgoId},"sort":{"date":selected.setNo}}
+  let list_varab={"limit":10,"offset":0,"filter":{"categoryId":catgorId},"sort":{"date":selected.setNo}}
   let sortByData= await fetchGraphQLDa(GET_POSTS_LIST_QUERY,list_varab)
-  console.log(sortByData,"soujkk")
 }
 
 } 
 
 useEffect(()=>{
-  if(catgoId==null){
+  if(catgorId==null){
     categorieList()
     setSkeleton(true)
   }
-  if(catgoId!=null){
+  if(catgorId!=null){
     listData()
     setSkeleton(true)
   }
-},[catgoId])
+},[catgorId])
 
 
 useEffect(()=>{
@@ -130,7 +127,7 @@ console.log(cardListData,'cardListData')
            <div className="flex items-center gap-2 ">
          
              <h1 className="text-xl text-black font-normal leading-6  ">
-              {catgoId==null?catagoryList:catName1}
+              {catgorId==null?catagoryList:catogoryName}
              </h1>
              <span className=" text-xs text-1-light leading-3 ">
                (0 of {cardListData?.length} Products)
@@ -210,13 +207,13 @@ console.log(cardListData,'cardListData')
             {/* card */}
             {cardListData?.map((data,index)=>(
               <div key={index} class="group p-5 hover:shadow-3xl transition-shadow border-e border-b border-grey">
-              <Link href={`/product-detail/${data.id}`} className="grid place-items-center">
+              <Link href={`/product-detail/${data?.productSlug}`} className="grid place-items-center">
                 
-                <ImageComponets path={data.productImagePath} alt={data.productName} w={300} h={200}/>
+                <ImageComponets path={data.productImageArray?.[0]} alt={data.productName} w={300} h={200}/>
               </Link>
               <div className="text-center">
               <Link
-                 href={`/product-detail/${data.id}`}
+                 href={`/product-detail/${data?.productSlug}`}
                   className=" text-base text-black font-medium leading-5 mt-5 block"
                 >
                  {data.productName}
@@ -239,7 +236,7 @@ console.log(cardListData,'cardListData')
                 </div>
                 <div className="flex items-center rounded h-9 overflow-hidden border border-black max-w-56 mx-auto mt-4 invisible transition-opacity duration-200 opacity-0 group-hover:visible group-hover:opacity-100">
                   <Link
-                    href={`/product-detail/${data.id}`}
+                    href={`/product-detail/${data?.productSlug}`}
                     className="flex items-center bg-black gap-2 p-2 size-full justify-center"
                   >
                     <img src="\img\card-cart.svg" alt="cart" />{" "}

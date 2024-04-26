@@ -1,19 +1,17 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector,useDispatch } from 'react-redux'
+import { catagoryId, catagoryName } from "@/redux/slices/catgorySlice";
 
 export default function BreadCrubs({productDetail}) {
+  const dispatch=useDispatch()
     const catogoryName=useSelector((state)=>state.catgoReducer.catagoryName)
     const catgoId=useSelector((state)=>state.catgoReducer.catgoId)
     const router=useRouter()
 
-    console.log(catgoId,"8989ukj")
-    const handleRouteChng=(e)=>{
-        console.log(catgoId,catogoryName,"kkhkhkhk")
-        // router.push(`/?catgoId=${catgoId}&catName=${catogoryName}`)
-        router.push(`/`)
-    }
+
+  
     
   return (
     <>
@@ -32,7 +30,7 @@ export default function BreadCrubs({productDetail}) {
         </li>
         <li>
           <Link
-            href={catgoId==null?`/`:`/?catgoId=${catgoId}&catName=${catogoryName}`}
+            href={"/"}
             className="text-2-light font-normal leading-tight text-sm hover:text-black block" 
           >
             {catogoryName}
