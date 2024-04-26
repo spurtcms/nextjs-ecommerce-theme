@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import React from 'react'
 
-export default function ImageComponets({path,w,h,alt}) {
+export default function ImageComponets({path,w,h,alt,styAdd}) {
     const imageLoader = ({src}) => {
         return src
       }
@@ -15,6 +15,7 @@ export default function ImageComponets({path,w,h,alt}) {
                         width={w}
                         height={h}
                         priority
+                        className={styAdd}
                       />
    </>
   )

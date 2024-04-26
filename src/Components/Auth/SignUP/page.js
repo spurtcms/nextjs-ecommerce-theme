@@ -126,7 +126,7 @@ export default function SingUp() {
                    
                       {loader==true?spinner():" Register"}
                     </button>
-                    <Link  href="" className="text-base font-light text-black-500 text-center block w-full">Have an account?  <span className="font-medium">Sign in</span></Link>
+                    <Link  href="/auth/login" className="text-base font-light text-black-500 text-center block w-full">Have an account?  <span className="font-medium">Sign in</span></Link>
                 </div>
             </div>
    </>

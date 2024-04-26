@@ -40,7 +40,7 @@ console.log(cartPathName,'cartPathName')
    <>
     <main className="grid place-items-center min-h-90 p-4  bg-blue-2 ">
         {/* <section className=" p-8 drop-shadow-1 bg-white rounded w-full max-w-[464px]"> */}
-        <section className=" p-8 rounded w-full max-w-[464px]">
+        <section className=" p-8 rounded w-full drop-shadow-1 bg-white max-w-[464px]">
           <div className="md:p-10 p-4">
                 <div className="p-4">
                         <h3 className="text-2xl leading-7 font-normal text-primary mb-10">Login</h3>
@@ -65,22 +65,22 @@ console.log(cartPathName,'cartPathName')
                              <div className="flex flex-col gap-2 mt-6">
                                 <label
                                 for="email"
-                                className=" text-black text-base font-normal leading-5"
+                                className=" text-black-500 font-light text-base leading-5"
                                 >
                                 Email Address
                                 </label>
-                                <input type="text" onChange={(e)=>setEmail(e.target.value)} className=" p-3 border  rounded-md  border-gray-1 text-sm font-normal leading-4 text-black placeholder:text-grey-2 focus:outline-none " />
+                                <input type="text" onChange={(e)=>setEmail(e.target.value)} className=" p-3 border  rounded-md  border-gray-1 text-sm font-normal leading-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black placeholder:text-grey-2 focus:outline-none " placeholder='Enter email' />
                                     {email ==""&&validCheck==1&&<p className='text-red-600 text-xs font-normal'>Email id required</p>}
                                 
                             </div>
                             <div className="flex flex-col gap-2 mt-6">
                                 <label
                                 for="userName"
-                                className="text-black text-base font-normal leading-5"
+                                className="text-black-500 font-light text-base leading-5"
                                 >
                                 Password
                                 </label>
-                                <input onChange={(e)=>setPassword(e.target.value)} type="text" className="p-3 border  rounded-md border-gray-1  text-sm font-normal leading-4 text-black placeholder:text-grey-2 focus:outline-none"/>
+                                <input onChange={(e)=>setPassword(e.target.value)} type="text" className="p-3 border  rounded-md border-gray-1  text-sm font-normal leading-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black placeholder:text-grey-2 focus:outline-none" placeholder='Enter password'/>
                                     {password ==""&&validCheck==1&&<p className='text-red-600 text-xs font-normal'>Password is required</p>} 
                             </div>
                             

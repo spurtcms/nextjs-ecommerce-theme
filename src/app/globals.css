@@ -211,4 +211,7 @@
   .text-light-black{
     color: #152027;
   }
+  .bg-modal{
+    background-color: #0000006e;
+  }
 }

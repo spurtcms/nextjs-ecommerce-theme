@@ -1,7 +1,6 @@
 'use client'
 import { TaxPriceValidation, quantityList } from '@/utils/regexValidation';
-import Link from 'next/link';
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ImageComponets from '../ImageComponent';
 import { fetchGraphQl } from '@/api/graphicql';
 import { GET_ADD_TO_CART } from '@/api/query';
@@ -9,13 +8,17 @@ import ProductDetailSkeleton from '@/utils/SkeletonLoader/ProductDetail';
 import { useDispatch, useSelector } from 'react-redux';
 import { reloadCartCount } from '@/redux/slices/cartSlice';
 import BreadCrubs from '../BreadCrumbs';
+import RelatedServerActions from '../RelatedProduct';
+import CartModel from './model/CartModel';
+import CoverImageModel from './model';
 
-export default function ProductDetailPage({productDetail,tokenCheck}) {
+export default function ProductDetailPage({productDetail,tokenCheck,slug}) {
   const dispatch=useDispatch()
   const reloadCount=useSelector((state)=>state.cartReducer.reloadCount)
   const [open, setOpen] = useState(false);
   const [quantity,setQuantity]=useState(1)
   const [skeleton,setSkeleton]=useState(true)
+  const [viewModel,setViewModel]=useState('')
   
   const handleOpenAddtoCart = () => {
     if(tokenCheck){
@@ -124,97 +127,48 @@ if(productDetail){
     <section className="px-5 lg:px-10 pb-10">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pb-8 border-b border-grey mb-6">
           <div className="grid sm:grid-cols-2 grid-cols-1   p-2 gap-4  h-fit md:sticky relative top-6 ">
-            <div className="sm:col-span-2 grid place-items-center  rounded-5 overflow-hidden">
+            {productDetail?.productImageArray?.map((data,index)=>(
+              <>
+              {index==0&&  <div className="sm:col-span-2 grid place-items-center  rounded-5 overflow-hidden">
               <div className="flex gap-3 absolute top-2 right-2">
                 
                 <a
-                  href="javascript:void(0)"
-                  class="grid place-items-center  col-span-2"
+               onClick={()=>setViewModel(data)}
+                  class="grid place-items-center  col-span-2 cursor-pointer"
                 >
                   <img src="/img/zoom-product.svg" alt="view product" />
                 </a>
               </div>
               <div className="w-full ">
-                <img
-                  src="/img/detail-product1.svg"
-                  alt="product image"
-                  className="w-full"
-                />
+              <ImageComponets path={data} w={600} h={600} alt={productDetail.productName} />
               </div>
-            </div>
+            </div>}
+            {index !=0&&
 
-            <div className="sm:col-span-2 grid place-items-center rounded-5 relative overflow-hidden ">
-              <div className="w-full brightness-25">
-                <img
-                  src="/img/detail-product1.svg"
-                  alt="product image"
-                  className="w-full aspect-video  object-cover object-center"
-                />
-              </div>
-
-              <a href="javascript:void(0)" class=" absolute ">
-                <img src="/img/video-play.svg" alt="play" />
-              </a>
-            </div>
+           
 
             <div className=" grid place-items-center  rounded-5 overflow-hidden relative">
               <div className="flex gap-3 absolute top-2 right-2">
                 <a
-                  href="javascript:void(0)"
-                  class="grid place-items-center  col-span-2"
+                onClick={()=>setViewModel(data)}
+                  class="grid place-items-center  col-span-2 cursor-pointer"
                 >
                   <img src="/img/zoom-product.svg" alt="view product" />
                 </a>
               </div>
               <div className="w-full ">
-                <img
-                  src="/img/detail-product2.svg"
-                  alt="product image"
-                  className="w-full"
-                />
+              <ImageComponets path={data} w={200} h={200} alt={productDetail.productName} />
               </div>
-            </div>
+            </div>}
+            
 
-            <div className=" grid place-items-center  rounded-5 overflow-hidden relative">
+            </>
+            ))}
+            
+                {console.log(productDetail,'0000000')}
+            {/* <div className=" grid place-items-center  rounded-5 overflow-hidden relative">
               <div className="flex gap-3 absolute top-2 right-2">
                 <a
-                  href="javascript:void(0)"
-                  class="grid place-items-center  col-span-2"
-                >
-                  <img src="/img/zoom-product.svg" alt="view product" />
-                </a>
-              </div>
-              <div className="w-full ">
-                <img
-                  src="/img/detail-product3.svg"
-                  alt="product image"
-                  className="w-full"
-                />
-              </div>
-            </div>
-
-            <div className=" grid place-items-center  rounded-5 overflow-hidden relative">
-              <div className="flex gap-3 absolute top-2 right-2">
-                <a
-                  href="javascript:void(0)"
-                  class="grid place-items-center  col-span-2"
-                >
-                  <img src="/img/zoom-product.svg" alt="view product" />
-                </a>
-              </div>
-              <div className="w-full ">
-                <img
-                  src="/img/detail-product4.svg"
-                  alt="product image"
-                  className="w-full"
-                />
-              </div>
-            </div>
-
-            <div className=" grid place-items-center  rounded-5 overflow-hidden relative">
-              <div className="flex gap-3 absolute top-2 right-2">
-                <a
-                  href="javascript:void(0)"
                   class="grid place-items-center  col-span-2"
                 >
                   <img src="/img/zoom-product.svg" alt="view product" />
@@ -227,7 +181,7 @@ if(productDetail){
                   className="w-full"
                 />
               </div>
-            </div>
+            </div> */}
 
           </div>
 
@@ -284,42 +238,15 @@ if(productDetail){
 
           </div>
         </div>
-        
+        <RelatedServerActions slug={slug}/>
       </section>
 }
       
-      {/* cart design */}
-                   {open==true&&<div className="absolute top-7 right-14">
-                    <div className="absolute right-0 z-10 mt-9 origin-top-right bg-white shadow-lg ring-1 ring-black ring-opacity-5 rounded-lg focus:outline-none min-w-80 w-80  p-3">
-                            <h3 className="text-black-500 text-base pb-3 border-b border-1-light text-start">Added to cart</h3>
-                            
-                                <div className="flex gap-2 items-center mt-3 mb-7">
-                                  <ImageComponets path={productDetail.productImagePath} w={80} h={80} alt={productDetail.productName} />
-                                  <div>
-                                    <h3 className="text-black-500 font-normal text-base mb-3 line-clamp-1">{productDetail.productName}</h3>
-                                    <div className="flex items-center gap-5">
-                                      <p className="flex items-center gap-1.5 text-lg font-medium text-black-500">
-                                        <img src="/img/rupee.svg" />
-                                        {TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.defaultPrice,productDetail.tax,"")*quantity}
-                                        {/* {TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.defaultPrice,productDetail.tax,"")*quantity} */}
-                                      </p>
-                                      <span className="text-3-light text-sm font-light line-through"> {TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.defaultPrice,productDetail.tax,"strike")*quantity}</span>
-                                    </div>
-                                  </div>
-                                </div>
-                             
-                            <div className="pt-3 border-t border-1-light">
-                              <Link href='/my-cart' className="text-base font-normal text-white py-2 w-full flex justify-center items-center h-9 bg-dark-500 rounded ">Go to Cart</Link>
-                            </div>
-                          </div>
-                          </div>}
+    <CartModel open={open} productDetail={productDetail} quantity={quantity}/>
+                <CoverImageModel viewModel={viewModel} setViewModel={setViewModel}/>   
+                 
+                         
                     
    </>
   )
 }
-
-{/* <div>
-                          <div className="absolute -top-1 -right-2 flex justify-center items-center w-3 h-3 bg-dark-500 rounded-full">
-                            <span className="text-white text-[10px] leading-3">{cartCout}</span>
-                          </div>
-                        </div> */}
