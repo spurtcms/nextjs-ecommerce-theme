@@ -1,10 +1,10 @@
-import Link from 'next/link'
 import React from 'react'
+import Link from 'next/link'
 
-export default function checkOutShip() {
-    return (
-        <>
-            <div className="md:p-10 p-4">
+function CheckOutShipServerAction() {
+  return (
+    <>
+    <div className="md:p-10 p-4">
                 <div className="flex flex-col gap-1.5 mb-4">
                     <h5 className="text-2xl font-normal leading-8 uppercase">CheckOut</h5>
                     <p className="text-3-light text-sm font-normal">(1 items)</p>
@@ -19,14 +19,14 @@ export default function checkOutShip() {
                                 Accounts
                             </Link>
                             <div className="bg-primary w-4 h-px"></div>
-                            <Link href="/checkOutShip" className="flex items-center text-base leading-5 font-normal gap-2 text-primary">
+                            <Link href="/checkout-shipping" className="flex items-center text-base leading-5 font-normal gap-2 text-primary">
                                 <img src="/img/active-product.svg" />
                                 <img src="/img/in-active-product.svg" className="hidden" />
                                 <img src="/img/Complete-product.svg" className="hidden"/>
                                 Shipping
                             </Link>
                             <div className="bg-primary w-4 h-px"></div>
-                            <Link href="/checkOutPay" className="flex items-center text-base leading-5 font-normal gap-2 text-grey-300">
+                            <Link href="/checkout-payment" className="flex items-center text-base leading-5 font-normal gap-2 text-grey-300">
                                 <img src="/img/active-product.svg" className="hidden" />
                                 <img src="/img/Complete-product.svg"  className="hidden"/>
                                 <img src="/img/in-active-product.svg" />
@@ -129,6 +129,8 @@ export default function checkOutShip() {
                     </div>
                 </div>
             </div>
-        </>
-    )
+    </>
+  )
 }
+
+export default CheckOutShipServerAction

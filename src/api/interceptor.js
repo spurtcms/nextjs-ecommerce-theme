@@ -33,7 +33,9 @@ export const apiinstance=async(url,options)=>{
         if(res.ok){
             return await res.json();
         }else{
+        console.log(res,'iuhdidad')
          
+          return res
         }
      
 }

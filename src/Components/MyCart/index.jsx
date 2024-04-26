@@ -16,7 +16,6 @@ export default async function MyCartServerActions() {
             sdata.quantity=sdata.ecommerceCart.quantity
 
           })
-
   return (
     <>
    <MyCartPage  mycartlist={mycartlist} tokenCheck={tokenCheck?.value}/>

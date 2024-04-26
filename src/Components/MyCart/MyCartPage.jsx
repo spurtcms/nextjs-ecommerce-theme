@@ -5,9 +5,12 @@ import ImageComponets from '../ImageComponent';
 import { TaxPriceValidation, quantityList } from '@/utils/regexValidation';
 import { fetchGraphQl } from '@/api/graphicql';
 import { GET_REMOVE_CART_LIST } from '@/api/query';
-import { reloadCartCount } from '@/redux/slices/cartSlice';
+import { checkCartName, reloadCartCount } from '@/redux/slices/cartSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import MyCartSkeleton from '@/utils/SkeletonLoader/MyCart';
+import { useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation'
+
 
 export default function MyCartPage({mycartlist,tokenCheck}) {
     const dispatch=useDispatch()
@@ -18,6 +21,8 @@ export default function MyCartPage({mycartlist,tokenCheck}) {
       const [skeleton,setSkeleton]=useState(true)
     //   const [totalvalue,setTotalvalue]=useState()
     //   const [taxvalue,setTaxvalue]=useState()
+    const pathname = usePathname()
+    console.log(pathname,'pathname')
 
     useEffect(()=>{
       if(tokenCheck){
@@ -29,10 +34,16 @@ export default function MyCartPage({mycartlist,tokenCheck}) {
         
             setCartItemList(JSON.parse(localStorage.getItem("add-cart-list")))
             setSkeleton(false)
+           
+          }
+          else{
+            setSkeleton(false)
           }
       }
        
     },[tokenCheck,mycartlist])
+
+    console.log(mycartlist,'mycartlist')
     const handleQuantityChange=(qty,data)=>{
 cartItmeList?.map((sdata)=>{
 if(sdata.id==data.id){
@@ -95,6 +106,16 @@ if(sdata.id==data.id){
         }
       dispatch(reloadCartCount(reloadCount+1))
     }
+const router=useRouter()
+    const handleRoute=()=>{
+        if(tokenCheck!=undefined){
+            router.push('/checkout-shipping')
+        }
+        else{
+            router.push('/auth/login')
+            dispatch(checkCartName(pathname)) 
+        }
+    }
   return (
     <>      {skeleton?<MyCartSkeleton/>:
                     <div className="md:p-10 p-4">
@@ -125,7 +146,7 @@ if(sdata.id==data.id){
                                     <div className="p-6 pb-9 border-b border-grey3 grid grid-cols-1 sm:grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-6">
                                     <div className="align-top">
                                     <div className="flex gap-6 items-center sm:items-start md:flex-row flex-col">
-                                    <ImageComponets path={data.productImagePath} w={80} h={80} alt={data.productName} />
+                                    <ImageComponets path={data?.productImageArray?.[0]} w={80} h={80} alt={data.productName} />
                                         <h3 className="text-base font-normal text-black-500 line-clamp-3 break-words">{data.productName}</h3>
                                     </div>
                                 </div>
@@ -215,7 +236,7 @@ if(sdata.id==data.id){
                                             {/* {grantTotalPrice()} */}
                                         </p>
                                     </div>
-                                    <Link href="/checkOut" className="flex justify-center items-center bg-dark-500 w-full text-white font-normal text-base leading-5 h-11 rounded">Check Out</Link>
+                                    <button onClick={handleRoute} className="flex justify-center items-center bg-dark-500 w-full text-white font-normal text-base leading-5 h-11 rounded">Check Out</button>
                                 </div>
                             </div>
                         </div>

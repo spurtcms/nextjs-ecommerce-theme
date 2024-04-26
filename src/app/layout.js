@@ -3,6 +3,8 @@ import "./globals.css";
 import Head from "next/head";
 import Header from "@/Components/Header";
 import { Providers } from "@/redux/providers";
+import { Flip, ToastContainer, Zoom } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,7 +24,21 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
       </Head>
+      
       <body className={inter.className}>
+      <ToastContainer
+            position="top-right"
+            autoClose={2000}
+            limit={1}
+            hideProgressBar={false}
+            newestOnTop={false}
+            draggable={false}
+            pauseOnVisibilityChange
+            closeOnClick
+            pauseOnHover={true}
+            theme='colored'
+            transition={Flip}
+          />
         <Providers>
        
         <Header />

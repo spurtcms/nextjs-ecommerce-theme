@@ -25,3 +25,8 @@ export async function RemoveToken(){
     cookies().delete("Token")
     redirect("/")
 }
+
+export async function TokenGetValue(){
+   const tokenValue=cookies().get('Token')
+   return tokenValue&&tokenValue?.value;
+}

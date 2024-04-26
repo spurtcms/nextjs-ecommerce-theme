@@ -19,14 +19,14 @@ export default function checkOut() {
                                 Accounts
                             </Link>
                             <div className="bg-primary w-4 h-px"></div>
-                            <Link href="/checkOutShip" className="flex items-center text-base leading-5 font-normal gap-2 text-grey-300">
+                            <Link href="/checkout-shipping" className="flex items-center text-base leading-5 font-normal gap-2 text-grey-300">
                                 <img src="/img/active-product.svg" className="hidden" />
                                 <img src="/img/Complete-product.svg" className="hidden"/>
                                 <img src="/img/in-active-product.svg" />
                                 Shipping
                             </Link>
                             <div className="bg-grey-300 w-4 h-px"></div>
-                            <Link href="/checkOutPay" className="flex items-center text-base leading-5 font-normal gap-2 text-grey-300">
+                            <Link href="/checkout-payment" className="flex items-center text-base leading-5 font-normal gap-2 text-grey-300">
                                 <img src="/img/active-product.svg" className="hidden" />
                                 <img src="/img/Complete-product.svg" className="hidden"/>
                                 <img src="/img/in-active-product.svg" />
