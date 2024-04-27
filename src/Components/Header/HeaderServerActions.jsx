@@ -179,12 +179,12 @@ if(vdata.id==catgorId){
                           <img src="/img/search-light.svg"  className="absolute top-[17px] left-0"/>
                         </div>
                         {search!=""&&
-                        <div className="overflow-auto max-h-56">
-                          {productListData?.map((data,index)=>(<>
+                        <div className="overflow-auto max-h-56 border-t border-slate-200">
+                          {productListData?.length!=0?productListData?.map((data,index)=>(<>
                           <Link href={`/product-detail/${data?.productSlug}`} className="flex gap-3 items-center p-2 border-b border-slate-200 h-14">
-                            <div className="w-10 min-h-10 flex items-center"><img src={data?.productImageArray?.[0]}  onClick={()=>handleProduct(data)}/></div>
+                            <div className="w-10 min-h-10 flex items-center" onClick={()=>handleProduct(data)}><ImageComponets path={data?.productImageArray?.[0]} w={157} h={20} /></div>
                             <p className="text-sm font-normal text-black cursor-pointer" onClick={()=>handleProduct(data)}>{data?.productName}</p>
-                          </Link></>))}
+                          </Link></>)):<><div className="p-4 flex items-center justify-center"><p className="text-sm font-medium text-black" >{"No data found"}</p></div></>}
                         </div>}
                         </div>
 

@@ -3,7 +3,7 @@ import { Listbox, Transition } from '@headlessui/react'
 import { Fragment, useEffect, useState } from 'react';
 import Link from 'next/link';
 import ImageComponets from '../ImageComponent';
-import { useSearchParams } from 'next/navigation';
+
 
 import { GET_POSTS_LIST_QUERY, Get_CATEGORIES_LIST } from '@/api/query';
 import { TaxPriceValidation } from '@/utils/regexValidation';
@@ -46,75 +46,127 @@ export default function HomePage() {
     const catgorId=useSelector((state)=>state.catgoReducer.catgoId)
     const catogoryName=useSelector((state)=>state.catgoReducer.catagoryName)
     const [selected, setSelected] = useState(people);
-    const [cardListData,setCardListData]=useState()
+    let [cardListData,setCardListData]=useState([])
     const [catagoryList,setCatagoryList]=useState()
-    const [catIdheader,setCatIdheader]=useState()
     const [skeleton,setSkeleton]=useState(true)
+    let [offset,setOffset]=useState(0)
 
 
 
 
 const listData = async ()=>{
 
-  let list_varab={"limit":10,"offset":0,"filter":{"categoryId":catgorId}}
+  let list_varab={"limit":10,"offset":offset,"filter":{"categoryId":catgorId}}
   let postData = await fetchGraphQLDa(GET_POSTS_LIST_QUERY,list_varab)
+  // handleLoad(postData)
   setCardListData(postData?.ecommerceProductList?.productList)
   if(postData){
     setSkeleton(false)
   }
 }
 
+const offsetListData =async()=>{
+  let list_varab={"limit":10,"offset":offset,"filter":{"categoryId":catgorId}}
+  let postData = await fetchGraphQLDa(GET_POSTS_LIST_QUERY,list_varab)
+  handleLoad(postData)
+  // setCardListData(postData?.ecommerceProductList?.productList)
+  if(postData){
+    setSkeleton(false)
+  }
+}
 
  const categorieList= async () =>{
+
   let catgo_variab={"categoryGroupId":147}
   let postData= await fetchGraphQLDa(Get_CATEGORIES_LIST,catgo_variab)
   setCatagoryList(postData?.categoriesList?.categories[0]?.categoryName)
-
+  
   if(catgorId==null){
     dispatch(catagoryId(postData?.categoriesList?.categories[0].id))
   }
   listData()
 }
-
+console.log(cardListData,"09lklklk")
 const sortBy = async () =>{
   if(selected.id!=3&&selected.id!=4){
-//     if(catgorId==null){
-//   let list_varab={"limit":10,"offset":0,"filter":{"categoryId":catIdheader},"sort":{"price":selected.setNo}}
-//   let sortByData= await fetchGraphQLDa(GET_POSTS_LIST_QUERY,list_varab)
-//   setCardListData(sortByData?.ecommerceProductList?.productList)
-// }else{
-  let list_varab={"limit":10,"offset":0,"filter":{"categoryId":catgorId},"sort":{"price":selected.setNo}}
+  let list_varab={"limit":10,"offset":offset,"filter":{"categoryId":catgorId},"sort":{"price":selected.setNo}}
   let sortByData= await fetchGraphQLDa(GET_POSTS_LIST_QUERY,list_varab)
-  setCardListData(sortByData?.ecommerceProductList?.productList)
-// }
+  console.log(sortByData,cardListData,"09898ik")
+  let postData=cardListData.concat(sortByData?.ecommerceProductList?.productList)
+  setCardListData(postData)
+  // handleLoad(sortByData)
+  // setCardListData(sortByData?.ecommerceProductList?.productList)
+
 }
 if(selected.id==3||selected.id==4){
-  let list_varab={"limit":10,"offset":0,"filter":{"categoryId":catgorId},"sort":{"date":selected.setNo}}
+  let list_varab={"limit":10,"offset":offset,"filter":{"categoryId":catgorId},"sort":{"date":selected.setNo}}
   let sortByData= await fetchGraphQLDa(GET_POSTS_LIST_QUERY,list_varab)
+  let postData=cardListData.concat(sortByData?.ecommerceProductList?.productList)
+  setCardListData(postData)
+  // handleLoad(sortByData)
+  // setCardListData(sortByData?.ecommerceProductList?.productList)
 }
 
 } 
 
 useEffect(()=>{
+  setCardListData([])
+  setOffset(0)
+  offset=0
+  if(offset==0){
   if(catgorId==null){
+
     categorieList()
     setSkeleton(true)
   }
   if(catgorId!=null){
-    listData()
+
+    listData()  
     setSkeleton(true)
   }
+}
 },[catgorId])
 
+useEffect(()=>{
+  if(offset!=0&&selected.id==undefined){
+    offsetListData()
+  }
+  if(offset!=0&&selected.id!=undefined){
+    sortBy()
+  }
+},[offset])
 
 useEffect(()=>{
-  if(selected.id!=undefined){
+  cardListData=[]
+  if(selected.id!=undefined&&offset==0){
   sortBy()
 }
 },[selected])
 
 
-console.log(cardListData,'cardListData')
+const handleLoad=(data)=>{
+  let postesArr=cardListData.concat(data?.ecommerceProductList?.productList)
+  setCardListData(postesArr)
+  }
+
+
+
+    const handleScroll = (e) => {
+  
+      const scrollHeight = e.target.documentElement.scrollHeight;
+      const currentHeight = Math.ceil(
+        e.target.documentElement.scrollTop + window.innerHeight
+      );
+      if (currentHeight + 1 >= scrollHeight) {  
+        setOffset(offset+10) 
+      }
+    };
+  
+    useEffect(() => {
+      window.addEventListener("scroll", handleScroll);
+    }, [handleScroll]);
+
+console.log(cardListData,selected,'cardListData')
   return (
     <>
 {skeleton==true?
@@ -137,7 +189,7 @@ console.log(cardListData,'cardListData')
 
          <>
            {/* dropdown */}
-           <div className="flex items-center gap-2">
+           <div className="flex items-center gap-2" onClick={()=>{setOffset(0)}}>
              <Listbox value={selected} onChange={setSelected}>
                {({ open }) => (
                  <>
