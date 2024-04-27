@@ -124,7 +124,7 @@ const router=useRouter()
                         <p className="text-3-light text-sm font-normal">({cartItmeList?.length} items)</p>
                     </div>
                     <div className="flex gap-6 md:flex-row flex-col">
-                        <div className="overflow-auto border border-grey3 border-b-0 rounded w-full  md:w-[80%]">
+                        <div className="overflow-auto border border-grey3  rounded w-full  md:w-[80%]">
                         
                             <div className="py-4 px-6 hidden lg:grid grid-cols-1 border-b border-grey3 sm:grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-6">
                                 <h3 className="text-black-500 text-base font-normal text-start">
@@ -143,7 +143,7 @@ const router=useRouter()
                         
                                 {cartItmeList?.map((data,index)=>(
                                     
-                                    <div className="p-6 pb-9 border-b border-grey3 grid grid-cols-1 sm:grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-6">
+                                    <div className="p-6 pb-9 border-b border-grey3 grid grid-cols-1 sm:grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-6 last:border-0">
                                     <div className="align-top">
                                     <div className="flex gap-6 items-center sm:items-start md:flex-row flex-col">
                                     <ImageComponets path={data?.productImageArray?.[0]} w={80} h={80} alt={data.productName} />

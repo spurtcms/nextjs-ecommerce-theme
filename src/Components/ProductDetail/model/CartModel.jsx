@@ -20,7 +20,7 @@ export default function CartModel({open,productDetail,quantity}) {
                                         {TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.defaultPrice,productDetail.tax,"")*quantity}
                                       
                                       </p>
-                                      <span className="text-3-light text-sm font-light line-through"> {TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.defaultPrice,productDetail.tax,"strike")*quantity}</span>
+                                      <span className="text-3-light text-sm font-light line-through"> {TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.defaultPrice,productDetail.tax,"strike")*TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.defaultPrice,productDetail.tax,"strike")?quantity:""}</span>
                                     </div>
                                   </div>
                                 </div>

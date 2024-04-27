@@ -14,7 +14,7 @@ export default function RelatedProductPage({slug}) {
    const  handleRelatedProduct= async()=>{
          const related={"limit":10,"offset":0,"filter":{"categoryId":catgoId}}
          let sortByData= await fetchGraphQLDa(GET_POSTS_LIST_QUERY,related)
-                 const relatedList=sortByData?.ecommerceProductList?.productList?.filter((s)=>s.id!=slug)
+                 const relatedList=sortByData?.ecommerceProductList?.productList?.filter((s)=>s.productSlug!=slug)
                  setProductList(relatedList)
     }
     useEffect(()=>{
@@ -44,11 +44,11 @@ export default function RelatedProductPage({slug}) {
                                             {productList?.map((data,index)=>(
                                    index<4&&
                                     <div class=" p-5 transition-shadow border-e border-b border-grey">
-                                    <Link href={`/product-detail/${data.id}`} className="grid place-items-center">
+                                    <Link href={`/product-detail/${data?.productSlug}`} className="grid place-items-center">
                                     <ImageComponets path={data?.productImageArray?.[0]} alt={data.productName} w={300} h={200}/>
                                     </Link>
                                     <div className="text-center">
-                                        <Link href={`/product-detail/${data.id}`}
+                                        <Link href={`/product-detail/${data?.productSlug}`}
                                         className=" text-base text-black font-medium leading-5 mt-5 block "
                                         >
                                         {data.productName}

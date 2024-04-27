@@ -66,6 +66,7 @@ export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
       createdOn
       discountPrice
       specialPrice 
+      defaultPrice
   }
   }
   `;
