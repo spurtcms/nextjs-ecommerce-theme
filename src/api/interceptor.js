@@ -1,4 +1,6 @@
+import ToastMessage from "@/Components/ToastMessage/ToastMessage";
 import { Token } from "./clientGraphicql";
+import { RemoveToken } from "./serverActions";
 
 
 
@@ -33,9 +35,19 @@ export const apiinstance=async(url,options)=>{
         if(res.ok){
             return await res.json();
         }else{
-        console.log(res,'iuhdidad')
          
+          switch(res.status){
+            case 401:
+              handleUnauthorized(res)
+              break;
+          }
+
           return res
         }
      
 }
+
+const handleUnauthorized= async(res)=>{
+  RemoveToken()
+  ToastMessage({type:'error',message:"Unauthorized"})
+   }

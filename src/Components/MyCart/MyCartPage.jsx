@@ -4,15 +4,16 @@ import Link from 'next/link';
 import ImageComponets from '../ImageComponent';
 import { TaxPriceValidation, quantityList } from '@/utils/regexValidation';
 import { fetchGraphQl } from '@/api/graphicql';
-import { GET_REMOVE_CART_LIST } from '@/api/query';
+import { GET_MY_CART_QUERY, GET_REMOVE_CART_LIST } from '@/api/query';
 import { checkCartName, reloadCartCount } from '@/redux/slices/cartSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import MyCartSkeleton from '@/utils/SkeletonLoader/MyCart';
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation'
+import { fetchGraphQLDa } from '@/api/clientGraphicql';
 
 
-export default function MyCartPage({mycartlist,tokenCheck}) {
+export default function MyCartPage({tokenCheck}) {
     const dispatch=useDispatch()
     const reloadCount=useSelector((state)=>state.cartReducer.reloadCount)
 
@@ -23,11 +24,25 @@ export default function MyCartPage({mycartlist,tokenCheck}) {
     //   const [taxvalue,setTaxvalue]=useState()
     const pathname = usePathname()
     console.log(pathname,'pathname')
+const handleMycart=async()=>{
+    let variable={
+        "limit":10,
+        "offset":0,
+      }
+    let mycartlist=await fetchGraphQLDa(GET_MY_CART_QUERY,variable)
+    mycartlist=mycartlist?.ecommerceCartList?.cartList
+    mycartlist?.map((sdata)=>{
+      sdata.quantity=sdata.ecommerceCart.quantity
 
+    })
+  setCartItemList(mycartlist)
+  setSkeleton(false)
+}
     useEffect(()=>{
       if(tokenCheck){
-        setCartItemList(mycartlist)
-        setSkeleton(false)
+       
+          handleMycart()
+        
         
       }else{
         if(localStorage.getItem("add-cart-list")){
@@ -41,9 +56,8 @@ export default function MyCartPage({mycartlist,tokenCheck}) {
           }
       }
        
-    },[tokenCheck,mycartlist])
+    },[tokenCheck])
 
-    console.log(mycartlist,'mycartlist')
     const handleQuantityChange=(qty,data)=>{
 cartItmeList?.map((sdata)=>{
 if(sdata.id==data.id){
@@ -123,7 +137,7 @@ const router=useRouter()
                         <h3 className="text-2xl font-normal text-black-500 mb-1 uppercase">My Cart</h3>
                         <p className="text-3-light text-sm font-normal">({cartItmeList?.length} items)</p>
                     </div>
-                    <div className="flex gap-6 md:flex-row flex-col">
+                    {cartItmeList?.length !=0?  <div className="flex gap-6 md:flex-row flex-col">
                         <div className="overflow-auto border border-grey3  rounded w-full  md:w-[80%]">
                         
                             <div className="py-4 px-6 hidden lg:grid grid-cols-1 border-b border-grey3 sm:grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -154,7 +168,6 @@ const router=useRouter()
                                     <p className="flex items-center gap-1.5 text-lg font-medium text-black-500">
                                         <img src="/img/rupee.svg" />
                                         {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")} 
-                                        {/* {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")} */}
                                     </p>
                                 </div>
                                 <div className="align-top">
@@ -170,7 +183,6 @@ const router=useRouter()
                                 <div className="align-top flex lg:flex-col flex-row lg:justify-normal justify-between flex-wrap">
                                     <p className="flex items-center gap-1.5 text-lg font-medium text-black-500">
                                         <img src="/img/rupee.svg" />
-                                        {/* {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")*data.quantity} */}
                                         {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")*data.quantity} 
                                     </p>
                                     <button onClick={()=>handleRemove(data)} className="flex items-center gap-1 text-sm font-normal text-black-500 mt-0 lg:mt-[77px]">
@@ -190,7 +202,6 @@ const router=useRouter()
                             <div className="border border-grey3 rounded ">
                                 <div className="p-4 border-b border-grey3 flex justify-between items-center">
                                     <h3 className="text-black-500 text-base font-normal">Order Summary</h3>
-                                    {/* <button className="text-3-light text-xs font-normal">Edit</button> */}
                                 </div>
                                 <div className="px-4 py-5">
                                     {cartItmeList?.map((data)=>(
@@ -204,7 +215,7 @@ const router=useRouter()
                                         </div>
                                         <p className="flex items-center gap-1 text-3-light text-sm leading-5">
                                     <img src="/img/rupee-sm-light.svg" />
-                                    {/* {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,0,"")*data.quantity} */}
+                                   
                                     {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")*data.quantity} 
                                         </p>
                                     </div>
@@ -231,16 +242,23 @@ const router=useRouter()
                                         <h3 className="text-black-500 font-medium text-base leading-5">Grand Total</h3>
                                         <p className="flex items-center gap-1 text-black-500 text-sm leading-5">
                                             <img src="/img/rupee.svg" />
-                                            {/* <Currency quantity={totalvalue+taxvalue} currency='INR'/>  */}
                                             {subtotalPrice()+salesTaxPrice()}
-                                            {/* {grantTotalPrice()} */}
                                         </p>
                                     </div>
                                     <button onClick={handleRoute} className="flex justify-center items-center bg-dark-500 w-full text-white font-normal text-base leading-5 h-11 rounded">Check Out</button>
                                 </div>
                             </div>
                         </div>
+                    </div>:<>
+                    <div className="h-[50vh] flex justify-center text-center">
+                        <div className="mt-16">
+                            <img src="/img/No-orded.svg" />
+                            <p className="text-sm font-normal mb-4 mt-3 text-black">Empty Cart</p>
+                        
+                        </div>
                     </div>
+                    </>}
+                  
                 </div>
             }
             

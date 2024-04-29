@@ -3,6 +3,7 @@ import ToastMessage from "@/Components/ToastMessage/ToastMessage";
 import { BearerToken } from "./clientGraphicql";
 import { apiinstance } from "./interceptor";
 import { Redirect } from "./serverActions";
+import { reloadCartCount } from "@/redux/slices/cartSlice";
 
 export const fetchGraphQl = async (GET_POSTS_QUERY,varia) => {
  
@@ -35,7 +36,7 @@ export const fetchGraphQl = async (GET_POSTS_QUERY,varia) => {
   // }
 };
 
-export const postGraphQl = async (GET_POSTS_QUERY,varia,check,setLoader,cartName) => {
+export const postGraphQl = async (GET_POSTS_QUERY,varia,check,setLoader,cartName,reloadCount,dispatch) => {
 
   try {
     const entries = await fetchGraphQl(GET_POSTS_QUERY,varia);
@@ -55,6 +56,7 @@ export const postGraphQl = async (GET_POSTS_QUERY,varia,check,setLoader,cartName
       if(entries?.templateMemberLogin!=undefined&&entries?.templateMemberLogin!=""){
       BearerToken(entries?.templateMemberLogin) 
       setLoader(false)
+      
       if(cartName!=""){
         Redirect("/checkout-shipping")
       }
@@ -63,6 +65,8 @@ export const postGraphQl = async (GET_POSTS_QUERY,varia,check,setLoader,cartName
       }
       
       ToastMessage({type:'success',message:"Login Successfull"})
+    dispatch(reloadCartCount(reloadCount+1))
+
       }
       else{
         if(entries?.status){

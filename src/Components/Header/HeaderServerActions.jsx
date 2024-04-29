@@ -12,17 +12,18 @@ import { fetchGraphQl } from "@/api/graphicql";
 import { RemoveToken } from "@/api/serverActions";
 import { catagoryId, catagoryName } from "@/redux/slices/catgorySlice";
 import { checkCartName } from "@/redux/slices/cartSlice";
+import ToastMessage from "../ToastMessage/ToastMessage";
 
 
-const navigation = [
-  { name: "Electronics", href: "#", current: true },
-  { name: "TVs & Appliances", href: "#", current: false },
-  { name: "Mens", href: "#", current: false },
-  { name: "Women", href: "#", current: false },
-  { name: "Baby & kids", href: "#", current: false },
-  { name: "Home & Furniture", href: "#", current: false },
-  { name: "Offer Zone", href: "#", current: false },
-];
+// const navigation = [
+//   { name: "Electronics", href: "#", current: true },
+//   { name: "TVs & Appliances", href: "#", current: false },
+//   { name: "Mens", href: "#", current: false },
+//   { name: "Women", href: "#", current: false },
+//   { name: "Baby & kids", href: "#", current: false },
+//   { name: "Home & Furniture", href: "#", current: false },
+//   { name: "Offer Zone", href: "#", current: false },
+// ];
 
 
 export default function HeaderServerActions({tokenCheck}) {
@@ -39,9 +40,9 @@ export default function HeaderServerActions({tokenCheck}) {
   const [cartCount,setCartcount]=useState(0)
   const [skeleton,setSkeleton]=useState(true)
   const [trigger,setTrigger]=useState(0)
+  const [cartLoad,setCartrelaod]=useState(0)
   const router=useRouter()
 
-console.log(productListData,"98kkj")
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
   }
@@ -102,7 +103,7 @@ console.log(productListData,"98kkj")
     handleCartCountCheck()
   
    
-    },[reloadCount])
+    },[reloadCount,cartLoad,tokenCheck])
 
 const handleClose=()=>{
   setSearchBtnOn(true)
@@ -111,8 +112,8 @@ const handleClose=()=>{
 
 const handleProduct=(data)=>{
   setTrigger(trigger+1)
-  dispatch(catagoryId(data.categoriesId))
-  router.push(`/product-detail/${data.id}`) 
+  dispatch(catagoryId(data?.categoriesId))
+  router.push(`/product-detail/${data?.productSlug}`) 
   setSearchBtnOn(false)
 }
 const handleCatagory=(data)=>{
@@ -124,8 +125,13 @@ const handleCatagory=(data)=>{
     
   }
 const Logout=()=>{
+  dispatch(checkCartName('')) 
+  setCartrelaod(cartLoad+1)
+  localStorage.removeItem("add-cart-list")
+  ToastMessage({type:'success',message:"Login Successfull"})
     RemoveToken()
-    dispatch(checkCartName('')) 
+  
+    
 }
 
 const handlecatData=(data)=>{
@@ -182,7 +188,7 @@ if(vdata.id==catgorId){
                         <div className="overflow-auto max-h-56 border-t border-slate-200">
                           {productListData?.length!=0?productListData?.map((data,index)=>(<>
                           <Link href={`/product-detail/${data?.productSlug}`} className="flex gap-3 items-center p-2 border-b border-slate-200 h-14">
-                            <div className="w-10 min-h-10 flex items-center" onClick={()=>handleProduct(data)}><ImageComponets path={data?.productImageArray?.[0]} w={157} h={20} /></div>
+                            <div className="w-10 min-h-10 flex items-center" onClick={()=>handleProduct(data)}><ImageComponets path={data?.productImageArray?.[0]} w={40} h={40} /></div>
                             <p className="text-sm font-normal text-black cursor-pointer" onClick={()=>handleProduct(data)}>{data?.productName}</p>
                           </Link></>)):<><div className="p-4 flex items-center justify-center"><p className="text-sm font-medium text-black" >{"No data found"}</p></div></>}
                         </div>}
@@ -327,13 +333,14 @@ if(vdata.id==catgorId){
               <Disclosure.Panel className="lg:hidden">
                 <div className="space-y-1 pb-2 pt-2 ">
                   {catgoData?.categoriesList?.categories?.map((item,index) => (
-                    <Link
-                      href={catgoData?.categoriesList?.categories[0].id==item.id?`/`:`/?catgoId=${item.id}&catName=${item.categoryName}`}
-                      className=" block font-normal text-black  text-sm hover:text-primary text-primar text-nowrap leading-tigh mt-0 p-1 "
-                      aria-current={item.current ? "page" : undefined}
-                    >
-                      {item.categoryName}
-                    </Link>
+                 <Link
+                 href={"/"}
+                 onClick={()=>handleCatagory(item)}
+                 className={`block font-normal text-black  text-sm hover:text-primary  text-nowrap leading-tigh mt-0 p-1 
+                 ${(index==0&&catgorId==null)||item.id==catgorId?'text-primary after:bg-[url("/img/active-dot.svg")]':'hover:text-blue-500'}  `}
+               >
+                 {item.categoryName}
+               </Link>
                   ))}
                 </div>
               </Disclosure.Panel>

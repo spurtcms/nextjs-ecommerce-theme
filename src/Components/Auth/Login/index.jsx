@@ -5,16 +5,16 @@ import { TokenGetValue } from '@/api/serverActions'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
-export default function LoginPage({tokenCheck}) {
+export default function LoginPage() {
     const[email,setEmail]=useState("")
   const [password,setPassword]=useState("")
   const [validCheck,setValidCheck]=useState(0)
   const [loader,setLoader]=useState()
-  const [cartName,setcartName]=useState()
-
+ const dispatch=useDispatch()
   const cartPathName=useSelector((state)=>state.cartReducer.checkoutCart)
+  const reloadCount=useSelector((state)=>state.cartReducer.reloadCount)
 console.log(cartPathName,'cartPathName')
 // const router =useRouter();
 // const logintoken=async()=>{
@@ -29,7 +29,7 @@ console.log(cartPathName,'cartPathName')
       if(email !==""&&password !==""){
         setValidCheck(0)
         const inputdata={"email":email,"password":password}
-        postGraphQl(GET_POSTS_LOGIN_QUERY,inputdata,"login",setLoader,cartPathName)
+        postGraphQl(GET_POSTS_LOGIN_QUERY,inputdata,"login",setLoader,cartPathName,reloadCount,dispatch)
         
       }
      
