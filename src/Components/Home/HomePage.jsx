@@ -50,15 +50,17 @@ export default function HomePage() {
     const [catagoryList,setCatagoryList]=useState()
     const [skeleton,setSkeleton]=useState(true)
     let [offset,setOffset]=useState(0)
+    const [count,setCount]=useState(null)
+    const [disableScroll,setDisableScroll]=useState(false)
 
 
 
 
 const listData = async ()=>{
 
-  let list_varab={"limit":10,"offset":offset,"filter":{"categoryId":catgorId}}
+  let list_varab={"limit":25,"offset":offset,"filter":{"categoryId":catgorId}}
   let postData = await fetchGraphQLDa(GET_POSTS_LIST_QUERY,list_varab)
-  // handleLoad(postData)
+  setCount(postData?.ecommerceProductList)
   setCardListData(postData?.ecommerceProductList?.productList)
   if(postData){
     setSkeleton(false)
@@ -66,12 +68,14 @@ const listData = async ()=>{
 }
 
 const offsetListData =async()=>{
-  let list_varab={"limit":10,"offset":offset,"filter":{"categoryId":catgorId}}
+  if(disableScroll==false){
+  let list_varab={"limit":25,"offset":offset,"filter":{"categoryId":catgorId}}
   let postData = await fetchGraphQLDa(GET_POSTS_LIST_QUERY,list_varab)
   handleLoad(postData)
   // setCardListData(postData?.ecommerceProductList?.productList)
   if(postData){
     setSkeleton(false)
+  }
   }
 }
 
@@ -86,25 +90,18 @@ const offsetListData =async()=>{
   }
   listData()
 }
-console.log(cardListData,"09lklklk")
 const sortBy = async () =>{
   if(selected.id!=3&&selected.id!=4){
-  let list_varab={"limit":10,"offset":offset,"filter":{"categoryId":catgorId},"sort":{"price":selected.setNo}}
+  let list_varab={"limit":25,"offset":offset,"filter":{"categoryId":catgorId},"sort":{"price":selected.setNo}}
   let sortByData= await fetchGraphQLDa(GET_POSTS_LIST_QUERY,list_varab)
-  console.log(sortByData,cardListData,"09898ik")
   let postData=cardListData.concat(sortByData?.ecommerceProductList?.productList)
   setCardListData(postData)
-  // handleLoad(sortByData)
-  // setCardListData(sortByData?.ecommerceProductList?.productList)
-
 }
 if(selected.id==3||selected.id==4){
-  let list_varab={"limit":10,"offset":offset,"filter":{"categoryId":catgorId},"sort":{"date":selected.setNo}}
+  let list_varab={"limit":25,"offset":offset,"filter":{"categoryId":catgorId},"sort":{"date":selected.setNo}}
   let sortByData= await fetchGraphQLDa(GET_POSTS_LIST_QUERY,list_varab)
   let postData=cardListData.concat(sortByData?.ecommerceProductList?.productList)
   setCardListData(postData)
-  // handleLoad(sortByData)
-  // setCardListData(sortByData?.ecommerceProductList?.productList)
 }
 
 } 
@@ -115,12 +112,14 @@ useEffect(()=>{
   offset=0
   if(offset==0){
   if(catgorId==null){
-
+    setDisableScroll(false)
+    setSelected([])
     categorieList()
     setSkeleton(true)
   }
   if(catgorId!=null){
-
+    setDisableScroll(false)
+    setSelected([])
     listData()  
     setSkeleton(true)
   }
@@ -143,8 +142,11 @@ useEffect(()=>{
 }
 },[selected])
 
-
 const handleLoad=(data)=>{
+  if(data?.ecommerceProductList?.productList?.length==0){
+    setDisableScroll(true)
+  }
+  
   let postesArr=cardListData.concat(data?.ecommerceProductList?.productList)
   setCardListData(postesArr)
   }
@@ -158,7 +160,9 @@ const handleLoad=(data)=>{
         e.target.documentElement.scrollTop + window.innerHeight
       );
       if (currentHeight + 1 >= scrollHeight) {  
-        setOffset(offset+10) 
+
+        setOffset(offset+25) 
+
       }
     };
   
@@ -166,7 +170,7 @@ const handleLoad=(data)=>{
       window.addEventListener("scroll", handleScroll);
     }, [handleScroll]);
 
-console.log(cardListData,selected,'cardListData')
+
   return (
     <>
 {skeleton==true?
@@ -182,7 +186,7 @@ console.log(cardListData,selected,'cardListData')
               {catgorId==null?catagoryList:catogoryName}
              </h1>
              <span className=" text-xs text-1-light leading-3 ">
-               (0 of {cardListData?.length} Products)
+               (0 of {count?.count} Products)
              </span>
            </div>
          </>
@@ -255,7 +259,7 @@ console.log(cardListData,selected,'cardListData')
            </div>
          </>
     </div>
-            <div class=" grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4    border-t border-s border-grey">
+            <div class=" grid grid-auto-cols     border-t border-s border-grey">
             {/* card */}
             {cardListData?.map((data,index)=>(
               <div key={index} class="group p-5 hover:shadow-3xl transition-shadow border-e border-b border-grey">
