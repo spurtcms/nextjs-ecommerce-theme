@@ -279,7 +279,7 @@ const handleKeyDown = (event) => {
                           </Menu.Item>
                           <Menu.Item>
                             {({ active }) => (
-                              <a
+                              <Link
                                 href="/account/my-orders"
                                 className={classNames(
                                   active ? "bg-gray-100" : "",
@@ -288,7 +288,7 @@ const handleKeyDown = (event) => {
                               >
                                 <img src="/img/order.svg" alt="order" /> My
                                 Orders
-                              </a>
+                              </Link>
                             )}
                           </Menu.Item>
                           {/* <Menu.Item>
