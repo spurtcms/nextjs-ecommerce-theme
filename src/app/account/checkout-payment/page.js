@@ -1,6 +1,4 @@
-import CheckOutPay from '@/Components/CheckOutPay'
-
-import React from 'react'
+import CheckOutPay from '@/Components/Account/Checkout/CheckOutPay'
 
 export default function checkOutPay() {
     return (

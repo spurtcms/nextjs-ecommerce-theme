@@ -1,6 +1,6 @@
 'use client'
 
    
- export const handleSessionStore=()=>{
-
+ export const handleCartStore=()=>{
+    localStorage.removeItem("add-cart-list")
 }

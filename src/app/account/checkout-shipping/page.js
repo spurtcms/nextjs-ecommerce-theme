@@ -1,5 +1,5 @@
-import CheckOutShip from '@/Components/CheckOutShip'
-import React from 'react'
+import CheckOutShip from "@/Components/Account/Checkout/CheckOutShip";
+
 
 export default function checkOutShip() {
     return (

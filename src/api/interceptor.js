@@ -1,13 +1,13 @@
 import ToastMessage from "@/Components/ToastMessage/ToastMessage";
 import { Token } from "./clientGraphicql";
 import { RemoveToken } from "./serverActions";
+import { handleCartStore } from "./clientActions";
 
 
 
 export const apiinstance=async(url,options)=>{
     const headers = {
         'Content-Type': 'application/json',
-        // "Authorization":process.env.NEXT_PUBLIC_SPURTCMS_TOKEN
       }
       const token = await Token();
     
@@ -37,17 +37,70 @@ export const apiinstance=async(url,options)=>{
         }else{
          
           switch(res.status){
-            case 401:
-              handleUnauthorized(res)
-              break;
+           
+        case 400:
+          handleBadRequest(res);
+        break;
+
+        case 401:
+          handleUnauthorized(res)
+          break;
+
+        case 403:
+          handleForbidden(res);
+          break;
+
+        case 404:
+          handleNotFound(res);
+          break;
+
+        case 422:
+          handleUnProcessableEntry(res);
+          break;
+
+        case 500:
+          handleServerError(res);
+          break;
+        case 409:
+          handleErrorMessages(res);
+          break;
+        case 0:
+          handleServerError502(res);
+          break;
+        default:
+          break;
           }
 
           return res
         }
      
 }
+const handleBadRequest=async(res)=>{
+  ToastMessage({type:'error',message:"Bad request"})
+}
 
 const handleUnauthorized= async(res)=>{
+  handleCartStore()
   RemoveToken()
   ToastMessage({type:'error',message:"Unauthorized"})
    }
+ 
+ const handleForbidden=async()=>{
+  ToastMessage({type:'error',message:"Forbidden"})
+ }  
+
+ const handleNotFound=async()=>{
+  ToastMessage({type:'error',message:"Api not found"})
+ } 
+
+ const handleUnProcessableEntry=async()=>{
+  ToastMessage({type:'error',message:"params is missing"})
+ }
+
+ const handleServerError=async()=>{
+  ToastMessage({type:'error',message:"Internel sever error"})
+ }
+
+ const handleServerError502=async()=>{
+
+ }

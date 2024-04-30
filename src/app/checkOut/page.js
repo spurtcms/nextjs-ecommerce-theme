@@ -19,7 +19,7 @@ export default function checkOut() {
                                 Accounts
                             </Link>
                             <div className="bg-primary w-4 h-px"></div>
-                            <Link href="/checkout-shipping" className="flex items-center text-base leading-5 font-normal gap-2 text-grey-300">
+                            <Link href="/account/checkout-shipping" className="flex items-center text-base leading-5 font-normal gap-2 text-grey-300">
                                 <img src="/img/active-product.svg" className="hidden" />
                                 <img src="/img/Complete-product.svg" className="hidden"/>
                                 <img src="/img/in-active-product.svg" />

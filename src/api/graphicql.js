@@ -58,7 +58,7 @@ export const postGraphQl = async (GET_POSTS_QUERY,varia,check,setLoader,cartName
       setLoader(false)
       
       if(cartName!=""){
-        Redirect("/checkout-shipping")
+        Redirect("/account/checkout-shipping")
       }
       else{
         Redirect('/')

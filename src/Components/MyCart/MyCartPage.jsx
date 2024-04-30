@@ -123,7 +123,7 @@ if(sdata.id==data.id){
 const router=useRouter()
     const handleRoute=()=>{
         if(tokenCheck!=undefined){
-            router.push('/checkout-shipping')
+            router.push('/account/checkout-shipping')
         }
         else{
             router.push('/auth/login')

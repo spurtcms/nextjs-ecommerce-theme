@@ -1,20 +1,20 @@
 import Link from 'next/link'
 import React from 'react'
 
-export default function myUpcomingOrder() {
-    return (
-        <>
-            <div className="p-4 sm:p-10">
+export default function MyOrderServerActions() {
+  return (
+    <>
+       <div className="p-4 sm:p-10">
                 <div className="mb-6">
                     <h3 className="text-2xl font-normal mb-[5px] text-black-500 uppercase">MY Orders</h3>
                     <p className="text-3-light text-sm font-normal">Track your order history</p>
                 </div>
                 <div className="flex justify-between sm:items-center items-start sm:flex-row flex-col gap-4 sm:mb-0 mb-4">
                     <div className="flex items-center gap-4 mt-5">
-                        <Link href="/myUpcomingOrder" className="pb-1.5 border-b-2 block border-black-500 text-sm font-normal text-black-500">
+                        <Link href="/account/my-orders" className="pb-1.5 border-b-2 block border-black-500 text-sm font-normal text-black-500">
                             Upcoming Orders
                         </Link>
-                        <Link href="/myHistory" className=" pb-1.5 block border-black-500 text-sm font-normal text-black-500">
+                        <Link href="/account/my-history" className=" pb-1.5 block border-black-500 text-sm font-normal text-black-500">
                             History
                         </Link>
                     </div>
@@ -304,6 +304,6 @@ export default function myUpcomingOrder() {
                     </div>
                 </div>
             </div>
-        </>
-    )
+    </>
+  )
 }
