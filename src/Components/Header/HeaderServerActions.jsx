@@ -1,5 +1,5 @@
 "use client";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import Link from "next/link";
 import ImageComponets from "../ImageComponent";
@@ -41,7 +41,9 @@ export default function HeaderServerActions({tokenCheck}) {
   const [skeleton,setSkeleton]=useState(true)
   const [trigger,setTrigger]=useState(0)
   const [cartLoad,setCartrelaod]=useState(0)
+  const [focusedIndex, setFocusedIndex] = useState(-1);
   const router=useRouter()
+  const resultsRef = useRef(null);
 
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
@@ -115,9 +117,10 @@ const handleProduct=(data)=>{
   dispatch(catagoryId(data?.categoriesId))
   router.push(`/product-detail/${data?.productSlug}`) 
   setSearchBtnOn(false)
+  setFocusedIndex(-1)
 }
 const handleCatagory=(data)=>{
-
+  dispatch(checkCartName(""))
     dispatch(catagoryName(data?.categoryName))
 
       dispatch(catagoryId(data.id))
@@ -141,6 +144,30 @@ if(vdata.id==catgorId){
 }
 })
 }
+
+const handleKeyDown = (event) => {
+  if (event.key === 'ArrowDown') {
+    setFocusedIndex(focusedIndex + 1);
+    console.log(resultsRef.current.scrollHeight,resultsRef.current.scrollHeight-5,resultsRef,"89kkj")
+    // if(resultsRef.offsetTop>200){
+      // resultsRef.current.scrollTop = resultsRef.offsetTop+5;
+    // }
+    if (focusedIndex === productListData.length - 1) {
+      resultsRef.current.scrollTop = resultsRef.current.scrollHeight-5;
+    }
+  }else if(event.key === "Enter"){
+    if (focusedIndex >= 0 && focusedIndex < productListData.length) {
+      handleProduct(productListData[focusedIndex]);
+    }
+  }else if(event.key ==="ArrowUp"){
+    setFocusedIndex(focusedIndex -1)
+    // if (focusedIndex === -1) {
+      resultsRef.current.scrollTop = 0;
+    // }
+  }
+};
+
+
   return (
     <>
      <Disclosure as="nav" className="bg-white border-b border-1-light">
@@ -154,6 +181,7 @@ if(vdata.id==catgorId){
                   <Link href={'/'}
                     
                     className="flex flex-shrink-0 items-center w-1/3  sm:w-auto"
+                    onClick={()=>{ dispatch(checkCartName(""))}}
                   >
                     <ImageComponets path={"/img/logo.svg"} alt={"spurtCMS logo"} w={157} h={20}/>
                    
@@ -180,14 +208,14 @@ if(vdata.id==catgorId){
                   
                         <div className='px-4 max-w-[600px] m-auto bg-white border border-slate-200 rounded-md shadow-lg relative  z-50' >
                         <div className="relative w-full">
-                          <input type="text" className="border-0 border-slate-200 py-4 ps-8 w-full h-[50px] focus:outline-none focus:ring-0 text-sm font-normal text-black"  onChange={(e)=>setSearch(e.target.value)}/>
+                          <input type="text" className="border-0 border-slate-200 py-4 ps-8 w-full h-[50px] focus:outline-none focus:ring-0 text-sm font-normal text-black" onKeyDown={(e)=>handleKeyDown(e)} onChange={(e)=>setSearch(e.target.value)}/>
                           <img src="/img/close2.svg"  className="absolute top-[17px] right-0 cursor-pointer" onClick={()=>setSearchBtnOn(false)}/>
                           <img src="/img/search-light.svg"  className="absolute top-[17px] left-0"/>
                         </div>
                         {search!=""&&
-                        <div className="overflow-auto max-h-56 border-t border-slate-200">
+                        <div className="overflow-auto max-h-56 border-t border-slate-200" ref={resultsRef}>
                           {productListData?.length!=0?productListData?.map((data,index)=>(<>
-                          <Link href={`/product-detail/${data?.productSlug}`} className="flex gap-3 items-center p-2 border-b border-slate-200 h-14">
+                          <Link key={index} href={`/product-detail/${data?.productSlug}`} className={`flex gap-3 items-center p-2 border-b border-slate-200 h-14 ${focusedIndex === index? 'bg-gray-200' : ''}`}  onClick={()=>handleProduct(data)}>
                             <div className="w-10 min-h-10 flex items-center" onClick={()=>handleProduct(data)}><ImageComponets path={data?.productImageArray?.[0]} w={40} h={40} /></div>
                             <p className="text-sm font-normal text-black cursor-pointer" onClick={()=>handleProduct(data)}>{data?.productName}</p>
                           </Link></>)):<><div className="p-4 flex items-center justify-center"><p className="text-sm font-medium text-black" >{"No data found"}</p></div></>}
@@ -252,7 +280,7 @@ if(vdata.id==catgorId){
                           <Menu.Item>
                             {({ active }) => (
                               <a
-                                href="/myOrder"
+                                href="/account/my-orders"
                                 className={classNames(
                                   active ? "bg-gray-100" : "",
                                   "flex gap-4 px-3 py-2 text-sm font-light text-black leading-tight"
