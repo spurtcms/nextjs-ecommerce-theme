@@ -17,7 +17,7 @@ export default function BreadCrubs({productDetail}) {
     <>
     <ul className="flex items-center gap-2 py-6 px-5 md:px-10">
         <li>
-          <Link href={`/`} className="block w-4">
+          <Link href={`/`} prefetch className="block w-4">
             <img src="/img/home.svg" alt="home" />{" "}
           </Link>
         </li>

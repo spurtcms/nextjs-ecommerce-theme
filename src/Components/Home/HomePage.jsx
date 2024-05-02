@@ -263,13 +263,14 @@ const handleLoad=(data)=>{
             {/* card */}
             {cardListData?.map((data,index)=>(
               <div key={index} class="group p-5 hover:shadow-3xl transition-shadow border-e border-b border-grey">
-              <Link href={`/product-detail/${data?.productSlug}`} className="grid place-items-center">
+              <Link href={`/product-detail/${data?.productSlug}`} prefetch className="grid place-items-center">
                 
                 <ImageComponets path={data.productImageArray?.[0]} alt={data.productName} w={300} h={200}/>
               </Link>
               <div className="text-center">
               <Link
                  href={`/product-detail/${data?.productSlug}`}
+                 prefetch
                   className=" text-base text-black font-medium leading-5 mt-5 block"
                 >
                  {data.productName}
@@ -293,6 +294,7 @@ const handleLoad=(data)=>{
                 <div className="flex items-center rounded h-9 overflow-hidden border border-black max-w-56 mx-auto mt-4 invisible transition-opacity duration-200 opacity-0 group-hover:visible group-hover:opacity-100">
                   <Link
                     href={`/product-detail/${data?.productSlug}`}
+                    prefetch
                     className="flex items-center bg-black gap-2 p-2 size-full justify-center"
                   >
                     <img src="\img\card-cart.svg" alt="cart" />{" "}
