@@ -115,7 +115,7 @@ const handleClose=()=>{
 const handleProduct=(data)=>{
   setTrigger(trigger+1)
   dispatch(catagoryId(data?.categoriesId))
-  router.push(`/product-detail/${data?.productSlug}`) 
+  router.push(`/product-detail/${data?.productSlug}`)
   setSearchBtnOn(false)
   setFocusedIndex(-1)
 }
@@ -179,9 +179,10 @@ const handleKeyDown = (event) => {
               <div className="relative flex h-16 items-center justify-between">
                 <div className="flex flex-1 gap-4 items-center justify-center sm:justify-between ">
                   <Link href={'/'}
-                    
+                    prefetch
                     className="flex flex-shrink-0 items-center w-1/3  sm:w-auto"
-                    onClick={()=>{ dispatch(checkCartName(""))}}
+                    onClick={()=>{ dispatch(checkCartName(""),dispatch(catagoryName(catgoData?.categoriesList?.categories[0]?.categoryName)),
+                    dispatch(catagoryId(catgoData?.categoriesList?.categories[0]?.id)))}}
                   >
                     <ImageComponets path={"/img/logo.svg"} alt={"spurtCMS logo"} w={157} h={20}/>
                    
@@ -190,7 +191,7 @@ const handleKeyDown = (event) => {
                   <div className="hidden sm:ml-6 lg:block">
                     <div className="flex gap-6 ">
                       {catgoData?.categoriesList?.categories?.map((item,index) => (
-                         <Link href={"/"} onClick={()=>handleCatagory(item)}  className={`font-light xl:text-sm text-sm  text-black text-nowrap leading-tight flex flex-col gap-1 items-center hover:text-primary  after:content-[''] after:inline-block after:w-1 after:h-1  hover:after:bg-[url('/img/active-dot.svg')]  transition-all 
+                         <Link href={"/"} onClick={()=>handleCatagory(item)} prefetch className={`font-light xl:text-sm text-sm  text-black text-nowrap leading-tight flex flex-col gap-1 items-center hover:text-primary  after:content-[''] after:inline-block after:w-1 after:h-1  hover:after:bg-[url('/img/active-dot.svg')]  transition-all 
                          ${(index==0&&catgorId==null)||item.id==catgorId?'text-primary after:bg-[url("/img/active-dot.svg")]':'hover:text-blue-500'}  `} >
                            {item.categoryName}
                          </Link >
@@ -215,9 +216,9 @@ const handleKeyDown = (event) => {
                         {search!=""&&
                         <div className="overflow-auto max-h-56 border-t border-slate-200" ref={resultsRef}>
                           {productListData?.length!=0?productListData?.map((data,index)=>(<>
-                          <Link key={index} href={`/product-detail/${data?.productSlug}`} className={`flex gap-3 items-center p-2 border-b border-slate-200 h-14 ${focusedIndex === index? 'bg-gray-200' : ''}`}  onClick={()=>handleProduct(data)}>
-                            <div className="w-10 min-h-10 flex items-center" onClick={()=>handleProduct(data)}><ImageComponets path={data?.productImageArray?.[0]} w={40} h={40} /></div>
-                            <p className="text-sm font-normal text-black cursor-pointer" onClick={()=>handleProduct(data)}>{data?.productName}</p>
+                          <Link key={index} href={`/product-detail/${data?.productSlug}`} prefetch={true} className={`flex gap-3 items-center p-2 border-b border-slate-200 h-14 ${focusedIndex === index? 'bg-gray-200' : ''}`}  onClick={()=>handleProduct(data)} >
+                            <div className="w-10 min-h-10 flex items-center" prefetch onClick={()=>handleProduct(data)}><ImageComponets path={data?.productImageArray?.[0]} w={40} h={40} /></div>
+                            <p className="text-sm font-normal text-black cursor-pointer" prefetch onClick={()=>handleProduct(data)}>{data?.productName}</p>
                           </Link></>)):<><div className="p-4 flex items-center justify-center"><p className="text-sm font-medium text-black" >{"No data found"}</p></div></>}
                         </div>}
                         </div>

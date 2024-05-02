@@ -136,3 +136,33 @@ export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
   export const GET_ADD_TO_CART=`mutation ecommerceAddToCart($productId: Int!,$quantity: Int!){
     ecommerceAddToCart(productId:$productId,quantity:$quantity)
   }`
+
+  export const GET_MY_ORDERED_LIST=`query($lim: Int!,$off: Int!,$filter: orderFilter,$sort: orderSort){
+    ecommerceProductOrdersList(limit: $lim,offset:$off,filter: $filter,sort: $sort){
+      productList{
+        id
+        productName
+        categoriesId
+        productSlug
+        productDescription
+        productImagePath
+        productVideoPath
+        sku
+        orderDetails{
+          id
+          orderId
+          productId
+          quantity
+          price
+          status
+          tax
+          paymentMode
+        } 
+      }
+      count
+    }
+  }`
+
+  export const GET_CHECKOUT=`mutation ecommerceOrderPlacement($summ:OrderSummary,$mode: String!,$addr: String!,$prod: [orderProduct!]!){
+    ecommerceOrderPlacement(paymentMode: $mode,shippingAddress: $addr,orderProducts: $prod, orderSummary: $summ)
+  }`

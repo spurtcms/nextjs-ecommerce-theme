@@ -1,7 +1,79 @@
+"use client"
+import ImageComponets from '@/Components/ImageComponent'
+import { fetchGraphQLDa } from '@/api/clientGraphicql'
+import { GET_MY_ORDERED_LIST } from '@/api/query'
 import Link from 'next/link'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import "react-datepicker/dist/react-datepicker.css";
+import ReactDatePicker from 'react-datepicker'
+
+const Status=[   
+    {id:0, name: "Choose Status"}, 
+    {id:1, name: "Order Placed"},
+    {id:2, name: "Shipped"},
+    {id:3, name: "Out Of Delivery"},
+    {id:4, name: "Delivered"},
+    {id:5, name: "Canceled"}
+]
+
 
 export default function MyOrderServerActions() {
+
+    const [productList,setProductList]=useState([])
+    const [orderId,setOrderId]=useState("")
+    const [startDate,setStartDate]=useState(null)
+    const [endDate,setEndDate]=useState(null)
+    const [deliveryStatus,setDeliveryStatus]=useState("")
+    const [applyfilter,setApplyFilter]=useState(false)
+
+    
+    const orderList= async ()=>{
+        let list_var={"lim":10,"off":0}
+        let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
+        setProductList(postData?.ecommerceProductOrdersList?.productList)
+    }
+
+    useEffect(()=>{
+        orderList()
+    },[])
+
+    const handleFilter=async()=>{
+        setApplyFilter(true)
+        let list_var={
+            "lim":10,
+            "off":0,
+            "filter":{
+
+            }
+        }
+        let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
+        setProductList(postData?.ecommerceProductOrdersList?.productList)
+    }
+
+    const handleClear=async ()=>{
+        setOrderId("")
+        setStartDate(null)
+        setEndDate(null)
+        setDeliveryStatus("")
+        setProductList([])
+        let list_var={"lim":10,"off":0}
+        let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
+        setProductList(postData?.ecommerceProductOrdersList?.productList)
+    }
+
+    const handleSingleFilter=async(data)=>{
+        if(data=="orderId"){
+            setOrderId("")
+        }else if(data=="status"){
+            setDeliveryStatus("")
+        }else if(data=="date"){
+            setStartDate(null)
+            setEndDate(null)
+        }
+
+    }
+    console.log(productList,"988")
+
   return (
     <>
        <div className="p-4 sm:p-10">
@@ -27,40 +99,64 @@ export default function MyOrderServerActions() {
                     <div className="px-2 py-4 flex gap-5 md:flex-row flex-col border-b border-grey ">
                         <div className="flex items-center gap-4 sm:w-[90%] w-full sm:flex-row flex-col">
                             <div className="w-full">
-                                <input type="text" className="h-8 w-full border-grey3 focus:ring-0 focus:shadow-none focus:border-grey3 text-xs font-light rounded" placeholder="Enter Order ID" />
+                                <input type="text" className="h-8 w-full border-grey3 focus:ring-0 focus:shadow-none focus:border-grey3 text-xs font-light rounded" placeholder="Enter Order ID" onChange={(e)=>setOrderId(e.target.value)}/>
                             </div>
                             <div className="relative w-full">
-                                <select className="h-8 w-full border-grey3 focus:ring-0 focus:shadow-none focus:border-grey3 text-xs font-light rounded" >
-                                    <option>Status</option>
-                                    <option>1</option>
-                                    <option>1</option>
-                                    <option>1</option>
+                                <select className="h-8 w-full border-grey3 focus:ring-0 focus:shadow-none focus:border-grey3 text-xs font-light rounded" onChange={(e)=>setDeliveryStatus(e.target.value)}>
+                                    {Status.map((data,ind)=>(<>
+                                    <option value={data.name}>{data.name}</option></>))}
                                 </select>
                             </div>
                             <div className="w-full">
-                                <input type="text" className="h-8 w-full border-grey3 focus:ring-0 focus:shadow-none focus:border-grey3 text-xs font-light rounded" placeholder="Start Date" />
+                                {/* <input type="text" className="h-8 w-full border-grey3 focus:ring-0 focus:shadow-none focus:border-grey3 text-xs font-light rounded" placeholder="Start Date" /> */}
+                                <ReactDatePicker
+                                placeholderText="dd/mm/yyyy"
+                                className="h-8 w-full border-grey3 focus:ring-0 focus:shadow-none focus:border-grey3 text-xs font-light rounded"
+                                dateFormat="dd/MM/yyyy"
+                                selected={startDate}
+                                onChange={(date) => {setStartDate(date);}}
+                                peekNextMonth
+                                showMonthDropdown
+                                showYearDropdown
+                                dropdownMode="select"
+                                minDate={new Date(1990, 1, 1)}
+                                maxDate={new Date()}
+                                />
                             </div>
                             <div className="w-full">
-                                <input type="text" className="h-8 w-full border-grey3 focus:ring-0 focus:shadow-none focus:border-grey3 text-xs font-light rounded" placeholder="End Date" />
+                                {/* <input type="text" className="h-8 w-full border-grey3 focus:ring-0 focus:shadow-none focus:border-grey3 text-xs font-light rounded" placeholder="End Date" /> */}
+                                <ReactDatePicker
+                                placeholderText="dd/mm/yyyy"
+                                className="h-8 w-full border-grey3 focus:ring-0 focus:shadow-none focus:border-grey3 text-xs font-light rounded"
+                                dateFormat="dd/MM/yyyy"
+                                selected={endDate}
+                                onChange={(date) => {setEndDate(date);}}
+                                peekNextMonth
+                                showMonthDropdown
+                                showYearDropdown
+                                dropdownMode="select"
+                                minDate={new Date(1990, 1, 1)}
+                                maxDate={new Date()}
+                                />
                             </div>
                         </div>
                         <div className="flex gap-2 items-center justify-end md:w-auto w-full whitespace-nowrap">
-                            <button className="flex h-8 w-[86px] gap-2 items-center border border-black px-2 py-1.5 text-base font-light leading-5 text-black rounded">
+                            <button className="flex h-8 w-[86px] gap-2 items-center border border-black px-2 py-1.5 text-base font-light leading-5 text-black rounded" onClick={()=>handleFilter()}>
                                 <img src="/img/filter.svg" />
                                 Filters
                             </button>
-                            <Link href="" className="text-grey-300 text-xs font-light">Clear Filter</Link>
+                            <button  className="text-grey-300 text-xs font-light" onClick={()=>handleClear()}>Clear Filter</button>
                         </div>
 
                     </div>
                     <div className="p-2 flex gap-4 border-b border-grey flex-wrap">
                         <div className="px-2 py-1 border border-grey rounded text-xs font-light text-black-500 relative">
                             SP11478522165456
-                            <img src="/img/cancel-bg.svg" className="absolute -right-1.5 -top-1.5 cursor-pointer" />
+                            <img src="/img/cancel-bg.svg" className="absolute -right-1.5 -top-1.5 cursor-pointer" onClick={()=>handleSingleFilter("orderId")}/>
                         </div>
                         <div className="px-2 py-1 border border-grey rounded text-xs font-light text-black-500 relative">
                             In-progress
-                            <img src="/img/cancel-bg.svg" className="absolute -right-1.5 -top-1.5 cursor-pointer" />
+                            <img src="/img/cancel-bg.svg" className="absolute -right-1.5 -top-1.5 cursor-pointer" onClick={()=>handleSingleFilter("status")}/>
                         </div>
                         <div className="relative flex gap-1 items-center">
                             <div className="px-2 py-1 border border-grey rounded text-xs font-light text-black-500 ">
@@ -69,7 +165,7 @@ export default function MyOrderServerActions() {
                             <div className="text-xs text-black-500 font-light">-</div>
                             <div className="px-2 py-1 border border-grey rounded text-xs font-light text-black-500 relative">
                                 In-progress
-                                <img src="/img/cancel-bg.svg" className="absolute -right-1.5 -top-1.5 cursor-pointer" />
+                                <img src="/img/cancel-bg.svg" className="absolute -right-1.5 -top-1.5 cursor-pointer" onClick={()=>handleSingleFilter("date")}/>
                             </div>
                         </div>
                     </div>
@@ -101,7 +197,42 @@ export default function MyOrderServerActions() {
                                 </tr>
                             </thead>
                             <tbody>
+                                {productList?.map((result,index)=>(<>
                                 <tr>
+                                    <td className="px-4 py-2 border-b border-grey text-start">
+                                        <div className="flex gap-6 items-center md:flex-row flex-col">
+                                            {/* <img src="/img/checkList-product1.svg" className="w-[60px] h-[38px]s" /> */}
+                                            <ImageComponets path={result?.productImagePath}  w={60} h={38}/>
+                                            <h3 className="text-sm font-normal text-black-500">{result?.productName}</h3>
+                                        </div>
+                                    </td>
+                                    <td className="px-4 py-2 border-b border-grey text-start">
+                                        <h3 className="text-sm font-normal text-black-500">{result?.orderDetails?.orderId}</h3>
+                                    </td>
+                                    <td className="px-4 py-2 border-b border-grey text-start">
+                                        <p className="flex items-center gap-1 text-3-light text-sm leading-5">
+                                            <img src="/img/rupee-sm-light.svg" />
+                                            {result?.orderDetails?.price}
+                                        </p>
+                                    </td>
+                                    <td className="px-4 py-2 border-b border-grey text-start">
+                                        <p className="text-3-light text-sm leading-5">27 Feb 2024</p>
+                                    </td>
+                                    <td className="px-4 py-2 border-b border-grey text-start">
+                                        <p className="text-3-light text-sm leading-5">03 Mar 2024</p>
+                                    </td>
+                                    <td className="px-4 py-2 border-b border-grey text-start">
+                                        <div className="flex">
+                                            <div className="px-2 py-[3px] bg-sucess text-sucess text-xs font-normal rounded">
+                                                {result?.orderDetails?.status}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className="px-4 py-2 border-b border-grey text-start">
+                                        <Link href="/viewDetails" className="text-3-light font-light text-sm hover:underline">View Details</Link>
+                                    </td>
+                                </tr></>))}
+                                {/* <tr>
                                     <td className="px-4 py-2 border-b border-grey text-start">
                                         <div className="flex gap-6 items-center md:flex-row flex-col">
                                             <img src="/img/checkList-product1.svg" className="w-[60px] h-[38px]s" />
@@ -265,40 +396,7 @@ export default function MyOrderServerActions() {
                                     <td className="px-4 py-2 border-b border-grey text-start">
                                         <Link href="/viewDetails" className="text-3-light font-light text-sm hover:underline">View Details</Link>
                                     </td>
-                                </tr>
-                                <tr>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <div className="flex gap-6 items-center md:flex-row flex-col">
-                                            <img src="/img/checkList-product1.svg" className="w-[60px] h-[38px]s" />
-                                            <h3 className="text-sm font-normal text-black-500">SAMSUNG 75" Crystal UHD 4K</h3>
-                                        </div>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <h3 className="text-sm font-normal text-black-500">SP11478522165456</h3>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <p className="flex items-center gap-1 text-3-light text-sm leading-5">
-                                            <img src="/img/rupee-sm-light.svg" />
-                                            15,299
-                                        </p>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <p className="text-3-light text-sm leading-5">27 Feb 2024</p>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <p className="text-3-light text-sm leading-5">03 Mar 2024</p>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <div className="flex">
-                                            <div className="px-2 py-[3px] bg-sucess text-sucess text-xs font-normal rounded">
-                                                Out of Delivery
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <Link href="/viewDetails" className="text-3-light font-light text-sm hover:underline">View Details</Link>
-                                    </td>
-                                </tr>
+                                </tr> */}
                             </tbody>
                         </table>
                     </div>
