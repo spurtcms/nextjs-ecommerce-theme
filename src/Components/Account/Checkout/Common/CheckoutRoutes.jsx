@@ -12,7 +12,7 @@ export default function CheckoutRoutes() {
           Accounts
        </p>
     <div className="bg-primary w-4 h-px"></div>
-    <Link href="/account/checkout-shipping" className="flex items-center text-base leading-5 font-normal gap-2 text-primary">
+    <Link href="/account/checkout-shipping" prefetch className="flex items-center text-base leading-5 font-normal gap-2 text-primary">
 
         <img src="/img/active-product.svg" className="hidden" />
         <img src="/img/in-active-product.svg" className="hidden" />

@@ -96,7 +96,7 @@ function CheckOutPayServerAction() {
                                     <label className="text-black-500 font-light text-base leading-5 cursor-pointer uppercase" for="Cash">Cash on Delivery</label>
                                 </div>
                                 <div className="max-w-md m-auto flex justify-center items-center flex-col gap-3 mt-8">
-                                    <Link href="" className="h-11 flex justify-center items-center w-full bg-dark-500 text-base text-white font-normal rounded mb-3">
+                                    <Link href="" prefetch className="h-11 flex justify-center items-center w-full bg-dark-500 text-base text-white font-normal rounded mb-3">
                                         Proceed to Pay
                                     </Link>
                                     <Link href="" className="text-base font-light leading-5">

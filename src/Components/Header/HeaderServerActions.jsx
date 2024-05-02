@@ -228,7 +228,7 @@ const handleKeyDown = (event) => {
                     
                     </div>
                 </>}
-                   <Link href={"/my-cart"}>
+                   <Link href={"/my-cart"} prefetch>
                    <button type="button" className="relative">
                       <img src="/img/cart.svg" alt="search" />
                       <div>
@@ -282,6 +282,7 @@ const handleKeyDown = (event) => {
                             {({ active }) => (
                               <Link
                                 href="/account/my-orders"
+                                prefetch
                                 className={classNames(
                                   active ? "bg-gray-100" : "",
                                   "flex gap-4 px-3 py-2 text-sm font-light text-black leading-tight"
@@ -333,6 +334,7 @@ const handleKeyDown = (event) => {
                                   )}> <img src="/img/logout.svg" alt="logout" />
                                 Logout</a>:<><Link
                                href={"/auth/login"}
+                               prefetch
                                 className={classNames(
                                   active ? "bg-gray-100" : "",
                                   "flex gap-4 px-3 py-2 text-sm font-light text-black leading-tight"
@@ -364,6 +366,7 @@ const handleKeyDown = (event) => {
                   {catgoData?.categoriesList?.categories?.map((item,index) => (
                  <Link
                  href={"/"}
+                 prefetch
                  onClick={()=>handleCatagory(item)}
                  className={`block font-normal text-black  text-sm hover:text-primary  text-nowrap leading-tigh mt-0 p-1 
                  ${(index==0&&catgorId==null)||item.id==catgorId?'text-primary after:bg-[url("/img/active-dot.svg")]':'hover:text-blue-500'}  `}
