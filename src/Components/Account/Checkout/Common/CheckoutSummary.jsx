@@ -1,6 +1,47 @@
-import React from 'react'
+import { fetchGraphQLDa } from '@/api/clientGraphicql'
+import { GET_MY_CART_QUERY } from '@/api/query'
+import { TaxPriceValidation } from '@/utils/regexValidation'
+import React, { useEffect, useState } from 'react'
 
-export default function CheckoutSummary() {
+export default function CheckoutSummary({setCartCount}) {
+    const [productSummary,setProductSummary]=useState([])
+   
+    const handleMycart=async()=>{
+        let variable={
+            "limit":10,
+            "offset":0,
+          }
+        let mycartlist=await fetchGraphQLDa(GET_MY_CART_QUERY,variable)
+        mycartlist=mycartlist?.ecommerceCartList?.cartList
+        mycartlist?.map((sdata)=>{
+          sdata.quantity=sdata.ecommerceCart.quantity
+    
+        })
+        setCartCount(mycartlist)
+        setProductSummary(mycartlist)
+    }
+    useEffect(()=>{
+        handleMycart()
+    },[])
+    const subtotalPrice=()=>{
+        let priceStart=0
+        productSummary?.map((sdata)=>{
+           let priceStore = TaxPriceValidation(sdata.specialPrice,sdata.discountPrice,sdata.defaultPrice,0,"")*sdata.quantity
+           priceStart=priceStart+priceStore
+            })
+            return priceStart
+             
+            
+    }
+    const salesTaxPrice=()=>{
+        let priceStart=0
+        productSummary?.map((sdata)=>{
+           let priceStore = sdata.tax*sdata.quantity
+           priceStart=priceStart+priceStore
+            })
+            return priceStart
+            
+    }
   return (
    <>
      <div className="w-full md:w-[20%]">
@@ -9,36 +50,41 @@ export default function CheckoutSummary() {
                                 <h3 className="text-black-500 text-base font-normal">Order Summary</h3>
                             </div>
                             <div className="p-4">
-                                <div className="flex items-start gap-2">
-                                    <img src="/img/detail-product1.svg" className="w-[100px] h-[64px]" />
-                                    <div>
-                                        <p className="text-xs text-black-500 font-light mb-3">Samsung 65" class CU7000 Crystal UHD 4K Smart TV - Titan Gray (UN65CU7000)</p>
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <p className="text-xs font-light text-3-light">Qty</p>
-                                            <span className="text-xs font-light text-3-light">1</span>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <p className="flex items-center gap-1.5 text-base font-normal leading-5 text-black-500">
-                                                <img src="/img/rupee.svg" />
-                                                15,299
-                                            </p>
-                                            <span className="text-3-light text-sm font-light line-through">16,999</span>
-                                        </div>
-                                    </div>
-                                </div>
+                               
+                                    {productSummary?.map((data)=>(
+                                         <div className="flex items-start gap-2 mb-4">
+                                         <img src="/img/detail-product1.svg" className="w-[100px] h-[64px]" />
+                                         <div>
+                                         <p className="text-xs text-black-500 font-light mb-3">{data.productName}</p>
+                                         <div className="flex items-center gap-2 mb-2">
+                                             <p className="text-xs font-light text-3-light">Qty</p>
+                                             <span className="text-xs font-light text-3-light">{data.quantity}</span>
+                                         </div>
+                                         <div className="flex items-center gap-2">
+                                             <p className="flex items-center gap-1.5 text-base font-normal leading-5 text-black-500">
+                                                 <img src="/img/rupee.svg" />
+                                                 {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")*data.quantity} 
+                                             </p>
+                                             <span className="text-3-light text-sm font-light line-through">  {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"strike")?TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"strike")*data.quantity:""}</span>
+                                         </div>
+                                     </div>
+                                     </div>
+                                    ))}
+                                   
+                                
                                 <div className="w-full h-px bg-grey mt-10 mb-6"></div>
                                 <div className="flex items-center justify-between mb-6">
-                                    <h5 className="text-black-500 font-light text-base leading-5">Subtotal (1item)</h5>
+                                    <h5 className="text-black-500 font-light text-base leading-5">Subtotal</h5>
                                     <p className="flex items-center gap-1 text-3-light text-sm leading-5">
                                         <img src="/img/rupee-sm-light.svg" />
-                                        15,299
+                                        {subtotalPrice()}
                                     </p>
                                 </div>
                                 <div className="flex items-center justify-between">
                                     <h5 className="text-black-500 font-light text-base leading-5">Sales taxes</h5>
                                     <p className="flex items-center gap-1 text-3-light text-sm leading-5">
                                         <img src="/img/rupee-sm-light.svg" />
-                                        199.00
+                                       {salesTaxPrice()}
                                     </p>
                                 </div>
                                 <div className="w-full h-px bg-grey my-4"></div>
@@ -46,7 +92,7 @@ export default function CheckoutSummary() {
                                     <h3 className="text-black-500 font-medium text-base leading-5">Grand Total</h3>
                                     <p className="flex items-center gap-1 text-black-500 text-sm leading-5">
                                         <img src="/img/rupee.svg" />
-                                        15,498
+                                        {subtotalPrice()+salesTaxPrice()}
                                     </p>
                                 </div>
                             </div>

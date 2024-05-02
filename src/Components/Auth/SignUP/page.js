@@ -32,8 +32,7 @@ export default function SingUp() {
               "mobile": phNumber,
               "email": email,
               "password": password,
-              "username": "mbala08",
-              "lastName": "mm"
+             
             }
           }
           if(validCheck()){

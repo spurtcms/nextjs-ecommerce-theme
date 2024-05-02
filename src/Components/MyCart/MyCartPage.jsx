@@ -86,15 +86,6 @@ if(sdata.id==data.id){
             
     }
 
-    // const grantTotalPrice=()=>{
-    //     let priceStart=0
-    //     cartItmeList?.map((sdata)=>{
-    //        let priceStore = TaxPriceValidation(sdata.specialPrice,sdata.discountPrice,sdata.defaultPrice,0,"")*sdata.quantity;
-    //        let priceTax= sdata.tax*sdata.quantity
-    //        priceStart=priceStore+priceTax+priceStart
-    //         })
-    //         return <Currency quantity={priceStart} currency='INR'/> 
-    // }
     const handleRemove= async(data)=>{  
         if(tokenCheck){
             let variable={

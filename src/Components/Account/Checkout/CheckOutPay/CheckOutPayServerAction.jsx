@@ -1,16 +1,17 @@
 'use client'
-import React, { Suspense } from 'react'
+import React, { Suspense, useState } from 'react'
 import Link from 'next/link'
 import CheckoutSummary from '../Common/CheckoutSummary'
 import CheckoutRoutes from '../Common/CheckoutRoutes'
 
 function CheckOutPayServerAction() {
+    const [cartCount,setCartCount]=useState([])
   return (
     <>
     <div className="md:p-10 p-4">
                 <div className="flex flex-col gap-1.5 mb-4">
                     <h5 className="text-2xl font-normal leading-8 uppercase">CheckOut</h5>
-                    <p className="text-3-light text-sm font-normal">(1 items)</p>
+                    <p className="text-3-light text-sm font-normal">({cartCount.length} items)</p>
                 </div>
                 <div className="flex gap-6 md:flex-row flex-col">
                     <div className="md:w-[80%] w-full border border-grey3 rounded">
@@ -108,7 +109,7 @@ function CheckOutPayServerAction() {
                         </div>
 
                     </div>
-                  <CheckoutSummary />
+                  <CheckoutSummary setCartCount={setCartCount}/>
                 </div>
             </div>
     </>

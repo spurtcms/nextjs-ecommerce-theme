@@ -26,7 +26,7 @@ export default function CartModel({open,productDetail,quantity}) {
                                 </div>
                              
                             <div className="pt-3 border-t border-1-light">
-                              <Link href='/my-cart' className="text-base font-normal text-white py-2 w-full flex justify-center items-center h-9 bg-dark-500 rounded ">Go to Cart</Link>
+                              <Link href='/my-cart' prefetch className="text-base font-normal text-white py-2 w-full flex justify-center items-center h-9 bg-dark-500 rounded ">Go to Cart</Link>
                             </div>
                           </div>
                           </div>}
