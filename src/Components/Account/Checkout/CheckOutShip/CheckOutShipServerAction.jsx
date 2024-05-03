@@ -4,9 +4,12 @@ import CheckoutSummary from '../Common/CheckoutSummary'
 import CheckoutRoutes from '../Common/CheckoutRoutes'
 import { EmailValidator } from '@/utils/regexValidation'
 import { useDispatch } from 'react-redux'
+import { getAddress } from '@/redux/slices/cartSlice'
+import { useRouter } from 'next/navigation'
 
 function CheckOutShipServerAction() {
     const dispatch=useDispatch()
+    const router=useRouter()
     const [cartCount,setCartCount]=useState([])
     const [name,setName]=useState("")
     const [email,setEmail]=useState("")
@@ -39,7 +42,8 @@ function CheckOutShipServerAction() {
                 "city":city,
                 "country":country
               }
-              dispatch()
+              dispatch(getAddress(obj))
+              router.push("/account/checkout-payment")
 
         }
         

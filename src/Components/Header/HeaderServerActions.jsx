@@ -13,6 +13,7 @@ import { RemoveToken } from "@/api/serverActions";
 import { catagoryId, catagoryName } from "@/redux/slices/catgorySlice";
 import { checkCartName } from "@/redux/slices/cartSlice";
 import ToastMessage from "../ToastMessage/ToastMessage";
+// import Loader from "./Loader";
 
 
 // const navigation = [
@@ -170,6 +171,7 @@ const handleKeyDown = (event) => {
 
   return (
     <>
+    {/* <Loader /> */}
      <Disclosure as="nav" className="bg-white border-b border-1-light">
         {({ open }) => (
           <>

@@ -3,7 +3,7 @@ import ToastMessage from "@/Components/ToastMessage/ToastMessage";
 import { BearerToken } from "./clientGraphicql";
 import { apiinstance } from "./interceptor";
 import { Redirect } from "./serverActions";
-import { reloadCartCount } from "@/redux/slices/cartSlice";
+import { getAddress, reloadCartCount } from "@/redux/slices/cartSlice";
 
 export const fetchGraphQl = async (GET_POSTS_QUERY,varia) => {
  
@@ -50,7 +50,8 @@ export const postGraphQl = async (GET_POSTS_QUERY,varia,check,setLoader,cartName
         setLoader(false)
       }
 
-    }else if(check==="login"){
+    }
+    if(check==="login"){
       console.log(cartName,'cartName32423424')
       
       if(entries?.templateMemberLogin!=undefined&&entries?.templateMemberLogin!=""){
@@ -78,6 +79,18 @@ export const postGraphQl = async (GET_POSTS_QUERY,varia,check,setLoader,cartName
       
       
 
+    }
+    if(check==="checkout"){
+      console.log(entries?.ecommerceOrderPlacement,'entries?.ecommerceOrderPlacement');
+      if(entries?.ecommerceOrderPlacement){
+        localStorage.removeItem("add-cart-list")
+        Redirect("/account/my-orders")
+        setLoader(false)
+        dispatch(getAddress({}))
+        dispatch(reloadCartCount(reloadCount+1))
+      }else{
+        setLoader(false)
+      }
     }
   } catch (error) {
     throw error;
