@@ -148,6 +148,7 @@ export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
         productImagePath
         productVideoPath
         sku
+        createdOn
         orderDetails{
           id
           orderId
@@ -165,4 +166,28 @@ export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
 
   export const GET_CHECKOUT=`mutation ecommerceOrderPlacement($summ:OrderSummary,$mode: String!,$addr: String!,$prod: [orderProduct!]!){
     ecommerceOrderPlacement(paymentMode: $mode,shippingAddress: $addr,orderProducts: $prod, orderSummary: $summ)
+  }`
+
+  export const GET_PRODUCT_DETAIL=`query($slug: String){
+    ecommerceProductOrderDetails(productSlug: $slug){
+      id
+        productName
+        categoriesId
+        productSlug
+        productDescription
+        productImagePath
+        productVideoPath
+        createdOn
+        sku
+        orderDetails{
+          id
+          orderId
+          productId
+          quantity
+          price
+          status
+          tax
+          paymentMode
+        } 
+    }
   }`

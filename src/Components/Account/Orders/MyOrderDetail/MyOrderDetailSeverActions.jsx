@@ -1,28 +1,49 @@
+'use client'
+import ImageComponets from '@/Components/ImageComponent'
+import { fetchGraphQLDa } from '@/api/clientGraphicql'
+import { GET_PRODUCT_DETAIL } from '@/api/query'
+import moment from 'moment/moment'
 import Link from 'next/link'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
-export default function MyOrderDetailSeverActions() {
+export default function MyOrderDetailSeverActions({params}) {
+
+    const [productDetail,setProductDetail]=useState()
+
+console.log(params,"9090909")
+    const detailApi=async()=>{
+        let detail_var={"slug":params?.slug}
+        let postData= await fetchGraphQLDa(GET_PRODUCT_DETAIL,detail_var)
+        console.log(postData,"98jhujj")
+        setProductDetail(postData)
+    }
+
+    useEffect(()=>{
+        detailApi()
+    },[])
+
   return (
     <div className="sm:px-10 px-4 py-4 ">
-    <Link href="/myUpcomingOrder" className="flex gap-1.5 items-center text-grey-300 text-xs font-light mb-6">
+    <Link href="/account/my-orders" className="flex gap-1.5 items-center text-grey-300 text-xs font-light mb-6">
         <img src="/img/back.svg" />
         Back
     </Link>
     <div className="flex gap-2 mb-2 flex-wrap">
-        <h3 className="text-black-500 text-base font-normal">Order ID - SP11478522165456</h3>
+        <h3 className="text-black-500 text-base font-normal">Order ID -{productDetail?.ecommerceProductOrderDetails?.orderDetails?.orderId}</h3>
         <div className="px-2 py-[3px] bg-sucess text-sucess text-xs font-normal rounded">
-            Out of Delivery
+            {/* Out of Delivery */}
+            {productDetail?.ecommerceProductOrderDetails?.orderDetails?.status}
         </div>
     </div>
     <div className="flex gap-3 items-center mb-6">
         <div className="flex">
             <p className="text-xs font-normal text-grey-300 flex gap-1">
                 Order Date :
-                <span className="text-grey-500">27th Feb 2024</span>
+                <span className="text-grey-500">{ moment(productDetail?.ecommerceProductOrderDetails?.createdOn).format("DD MMMM YYYY")}</span>
             </p>
         </div>
         <div className="w-px h-4 bg-grey3"></div>
-        <p className="text-xs font-normal text-primary">Estimated Delivery : 3rd Mar 2024</p>
+        <p className="text-xs font-normal text-primary">Estimated Delivery :</p>
     </div>
     <div className="border border-grey3 rounded p-6">
         <div className=" flex whitespace-nowrap overflow-auto pb-6">
@@ -61,19 +82,20 @@ export default function MyOrderDetailSeverActions() {
             <h3 className="text-base font-normal leading-5 text-black-500 mb-4">Order Information</h3>
             <div className="flex items-start justify-between flex-wrap gap-4">
                 <div className="flex items-start flex-col sm:flex-row">
-                    <img src="/img/checkList-product2.svg" className="w-[135.98px] h-[160px]" />
+                    {/* <img src="/img/checkList-product2.svg" className="w-[135.98px] h-[160px]" /> */}
+                    <ImageComponets path={"https://demo.spurtcms.com/"+productDetail?.ecommerceProductOrderDetails?.productImagePath} w={135.98} h={160}/>
                     <div className="flex flex-col gap-2">
-                        <h4 className="text-base text-black-500 font-normal">Apple iPhone 15 Pro Max</h4>
+                        <h4 className="text-base text-black-500 font-normal">{productDetail?.ecommerceProductOrderDetails?.productName}</h4>
                         <p className="text-1-light text-sm font-light">Black Titanium, 256GB</p>
                     </div>
                 </div>
                 <div className="flex gap-1.5 items-center">
                     <p className="text-black text-base font-light">Qty</p>
-                    <span className="text-black text-base font-light">1</span>
+                    <span className="text-black text-base font-light">{productDetail?.ecommerceProductOrderDetails?.orderDetails?.quantity}</span>
                 </div>
                 <p className="flex items-center gap-1 text-black-500 font-medium text-lg leading-6">
                     <img src="/img/rupee.svg" />
-                    15,299
+                   {productDetail?.ecommerceProductOrderDetails?.orderDetails?.price}
                 </p>
                 <div className="sm:w-[310px] w-full">
                     <div className="flex items-center justify-between mb-6">

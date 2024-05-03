@@ -6,6 +6,7 @@ import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import "react-datepicker/dist/react-datepicker.css";
 import ReactDatePicker from 'react-datepicker'
+import moment from 'moment/moment'
 
 const Status=[   
     {id:0, name: "Choose Status"}, 
@@ -21,10 +22,11 @@ export default function MyOrderServerActions() {
 
     const [productList,setProductList]=useState([])
     const [orderId,setOrderId]=useState("")
-    const [startDate,setStartDate]=useState(null)
-    const [endDate,setEndDate]=useState(null)
+    const [startDate,setStartDate]=useState("")
+    const [endDate,setEndDate]=useState("")
     const [deliveryStatus,setDeliveryStatus]=useState("")
     const [applyfilter,setApplyFilter]=useState(false)
+    const [searchFilter,setSearchFilter]=useState("")
 
     
     const orderList= async ()=>{
@@ -33,17 +35,30 @@ export default function MyOrderServerActions() {
         setProductList(postData?.ecommerceProductOrdersList?.productList)
     }
 
+    const searchData= async ()=>{
+        let list_var={"lim":10,"off":0,"filter":{"searchKeyword":searchFilter}}
+        let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
+        console.log(postData,"77yyughhg")
+        setProductList(postData?.ecommerceProductOrdersList?.productList)
+    }
+
     useEffect(()=>{
         orderList()
     },[])
 
+    useEffect(()=>{
+        searchData()
+    },[searchFilter])
     const handleFilter=async()=>{
         setApplyFilter(true)
         let list_var={
             "lim":10,
             "off":0,
             "filter":{
-
+                "status":deliveryStatus?.name?deliveryStatus?.name:"",
+                "startingDate":moment(startDate).format("YYYY-MM-DD")?moment(startDate).format("YYYY-MM-DD"):"",
+                "endingDate":moment(endDate).format("YYYY-MM-DD")?moment(endDate).format("YYYY-MM-DD"):"",
+                "orderId":orderId?orderId:"",
             }
         }
         let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
@@ -52,27 +67,73 @@ export default function MyOrderServerActions() {
 
     const handleClear=async ()=>{
         setOrderId("")
-        setStartDate(null)
-        setEndDate(null)
+        setStartDate("")
+        setEndDate("")
         setDeliveryStatus("")
         setProductList([])
+        setApplyFilter(false)
         let list_var={"lim":10,"off":0}
         let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
         setProductList(postData?.ecommerceProductOrdersList?.productList)
     }
 
     const handleSingleFilter=async(data)=>{
+        let list_var
         if(data=="orderId"){
             setOrderId("")
+             list_var={
+                "lim":10,
+                "off":0,
+                "filter":{
+                    "status":deliveryStatus?.name?deliveryStatus?.name:"",
+                    "startingDate":startDate!=""?moment(startDate).format("YYYY-MM-DD"):"",
+                    "endingDate":endDate!=""?moment(endDate).format("YYYY-MM-DD"):"",
+                }
+            }
+          
         }else if(data=="status"){
-            setDeliveryStatus("")
-        }else if(data=="date"){
-            setStartDate(null)
-            setEndDate(null)
-        }
 
+            setDeliveryStatus("")
+            list_var={
+                "lim":10,
+                "off":0,
+                "filter":{
+                    "startingDate":startDate!=""?moment(startDate).format("YYYY-MM-DD"):"",
+                    "endingDate":endDate!=""?moment(endDate).format("YYYY-MM-DD"):"",
+                    "orderId":orderId?orderId:"",
+                }
+            }
+        }else if(data=="date"){
+            setStartDate("")
+            setEndDate("")
+            list_var={
+                "lim":10,
+                "off":0,
+                "filter":{
+                    "status":deliveryStatus?.name?deliveryStatus?.name:"",
+                    "orderId":orderId?orderId:"",
+                }
+            }
+        }
+        
+        let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
+        setProductList(postData?.ecommerceProductOrdersList?.productList)
     }
-    console.log(productList,"988")
+
+    const handleChange=(e)=>{
+        console.log(e.target.value,"o7897iuk")
+        Status.map((data,index)=>{
+            if(data.name===e.target.value){
+                let obj={
+                    "id":data.id,
+                    "name":e.target.value
+                }
+
+                setDeliveryStatus(obj)
+            }
+        })
+    }
+    console.log(startDate,endDate,"988")
 
   return (
     <>
@@ -91,7 +152,7 @@ export default function MyOrderServerActions() {
                         </Link>
                     </div>
                     <div className="relative sm:w-auto w-full">
-                        <input type="text" className="border-grey3 h-8 sm:w-[300px] w-full py-2 ps-12 pe-2 focus:ring-0 focus:shadow-none focus:border-grey3 text-xs font-light rounded " placeholder="search" />
+                        <input type="text" value={searchFilter} className="border-grey3 h-8 sm:w-[300px] w-full py-2 ps-12 pe-2 focus:ring-0 focus:shadow-none focus:border-grey3 text-xs font-light rounded " placeholder="search" onChange={(e)=>setSearchFilter(e.target.value)}/>
                         <img src="/img/search-light.svg" className="absolute top-2 left-4" />
                     </div>
                 </div>
@@ -99,10 +160,10 @@ export default function MyOrderServerActions() {
                     <div className="px-2 py-4 flex gap-5 md:flex-row flex-col border-b border-grey ">
                         <div className="flex items-center gap-4 sm:w-[90%] w-full sm:flex-row flex-col">
                             <div className="w-full">
-                                <input type="text" className="h-8 w-full border-grey3 focus:ring-0 focus:shadow-none focus:border-grey3 text-xs font-light rounded" placeholder="Enter Order ID" onChange={(e)=>setOrderId(e.target.value)}/>
+                                <input type="text" value={orderId} className="h-8 w-full border-grey3 focus:ring-0 focus:shadow-none focus:border-grey3 text-xs font-light rounded" placeholder="Enter Order ID" onChange={(e)=>setOrderId(e.target.value)}/>
                             </div>
                             <div className="relative w-full">
-                                <select className="h-8 w-full border-grey3 focus:ring-0 focus:shadow-none focus:border-grey3 text-xs font-light rounded" onChange={(e)=>setDeliveryStatus(e.target.value)}>
+                                <select value={deliveryStatus?.name?deliveryStatus?.name:""} className="h-8 w-full border-grey3 focus:ring-0 focus:shadow-none focus:border-grey3 text-xs font-light rounded" onChange={(e)=>handleChange(e)}>
                                     {Status.map((data,ind)=>(<>
                                     <option value={data.name}>{data.name}</option></>))}
                                 </select>
@@ -150,24 +211,30 @@ export default function MyOrderServerActions() {
 
                     </div>
                     <div className="p-2 flex gap-4 border-b border-grey flex-wrap">
+                        {applyfilter==true&&<>
+                        {orderId!=""&&<>
                         <div className="px-2 py-1 border border-grey rounded text-xs font-light text-black-500 relative">
-                            SP11478522165456
+                            {/* SP11478522165456 */}
+                            {orderId}
                             <img src="/img/cancel-bg.svg" className="absolute -right-1.5 -top-1.5 cursor-pointer" onClick={()=>handleSingleFilter("orderId")}/>
-                        </div>
+                        </div></>}
+                        {deliveryStatus!=""&&<>
                         <div className="px-2 py-1 border border-grey rounded text-xs font-light text-black-500 relative">
-                            In-progress
+                            {deliveryStatus?.name}
                             <img src="/img/cancel-bg.svg" className="absolute -right-1.5 -top-1.5 cursor-pointer" onClick={()=>handleSingleFilter("status")}/>
-                        </div>
+                        </div></>}
+                        {startDate!=""&&endDate!=""&&<>
                         <div className="relative flex gap-1 items-center">
                             <div className="px-2 py-1 border border-grey rounded text-xs font-light text-black-500 ">
-                                In-progress
+                                {moment(startDate).format("YYYY-MM-DD")}
                             </div>
                             <div className="text-xs text-black-500 font-light">-</div>
                             <div className="px-2 py-1 border border-grey rounded text-xs font-light text-black-500 relative">
-                                In-progress
+                                I{moment(endDate).format("YYYY-MM-DD")}
                                 <img src="/img/cancel-bg.svg" className="absolute -right-1.5 -top-1.5 cursor-pointer" onClick={()=>handleSingleFilter("date")}/>
                             </div>
-                        </div>
+                        </div></>}
+                        </>}
                     </div>
                     <div className="overflow-auto">
                         <table className="w-full table border-collapse">
@@ -202,7 +269,7 @@ export default function MyOrderServerActions() {
                                     <td className="px-4 py-2 border-b border-grey text-start">
                                         <div className="flex gap-6 items-center md:flex-row flex-col">
                                             {/* <img src="/img/checkList-product1.svg" className="w-[60px] h-[38px]s" /> */}
-                                            <ImageComponets path={result?.productImagePath}  w={60} h={38}/>
+                                            <ImageComponets path={"https://demo.spurtcms.com/"+result?.productImagePath}  w={60} h={38}/>
                                             <h3 className="text-sm font-normal text-black-500">{result?.productName}</h3>
                                         </div>
                                     </td>
@@ -216,10 +283,10 @@ export default function MyOrderServerActions() {
                                         </p>
                                     </td>
                                     <td className="px-4 py-2 border-b border-grey text-start">
-                                        <p className="text-3-light text-sm leading-5">27 Feb 2024</p>
+                                        <p className="text-3-light text-sm leading-5">{moment(result?.createdOn).format("DD MMMM YYYY")}</p>
                                     </td>
                                     <td className="px-4 py-2 border-b border-grey text-start">
-                                        <p className="text-3-light text-sm leading-5">03 Mar 2024</p>
+                                        <p className="text-3-light text-sm leading-5"></p>
                                     </td>
                                     <td className="px-4 py-2 border-b border-grey text-start">
                                         <div className="flex">
@@ -229,7 +296,7 @@ export default function MyOrderServerActions() {
                                         </div>
                                     </td>
                                     <td className="px-4 py-2 border-b border-grey text-start">
-                                        <Link href="/viewDetails" className="text-3-light font-light text-sm hover:underline">View Details</Link>
+                                        <Link href={`/account/my-order-detail/${result?.productSlug}`} className="text-3-light font-light text-sm hover:underline">View Details</Link>
                                     </td>
                                 </tr></>))}
                                 {/* <tr>
