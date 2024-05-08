@@ -1,9 +1,11 @@
 import MyOrderDetail from '@/Components/Account/Orders/MyOrderDetail'
-import Link from 'next/link'
-import React from 'react'
+
+export const metadata = {
+    title: "My Order Details"
+  };
 
 export default function viewDetails({params}) {
-console.log(params,"908998")
+
 
     return(<>
     

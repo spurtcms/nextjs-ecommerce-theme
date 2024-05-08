@@ -22,11 +22,11 @@ console.log(cartPathName,'cartPathName')
 // }
   const handleLogin=async()=>{
     // setcartName(cartPathName)
-    setLoader(true)
     setValidCheck(1)
     // let tokeval=await logintoken()
     // console.log(tokeval,'tokeval') 
       if(email !==""&&password !==""){
+        setLoader(true)
         setValidCheck(0)
         const inputdata={"email":email,"password":password}
         postGraphQl(GET_POSTS_LOGIN_QUERY,inputdata,"login",setLoader,cartPathName,reloadCount,dispatch)
@@ -38,11 +38,11 @@ console.log(cartPathName,'cartPathName')
 
   return (
    <>
-    <main className="grid place-items-center min-h-90 p-4  bg-blue-2 ">
+    <main className="grid place-items-center min-h-90 p-4  bg-blue-2 h-responsive">
         {/* <section className=" p-8 drop-shadow-1 bg-white rounded w-full max-w-[464px]"> */}
-        <section className=" p-8 rounded w-full drop-shadow-1 bg-white max-w-[464px]">
-          <div className="md:p-10 p-4">
-                <div className="p-4">
+        <section className="p-4 sm:p-8 rounded w-full drop-shadow-1 bg-white max-w-[464px]">
+          <div className="md:p-10 sm:p-4">
+                <div className="sm:p-4">
                         <h3 className="text-2xl leading-7 font-normal text-primary mb-10">Login</h3>
                         <h5 className="text-black-500 font-lights text-xl leading-6 mb-6">Account Details</h5>
                                 {/* <h5 className="text-black-500 font-lights text-xl leading-6 mb-6">Account Details</h5>

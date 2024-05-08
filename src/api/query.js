@@ -33,10 +33,9 @@ export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
         productSlug
         productDescription
         productImagePath
-        productVideoPath
         productImageArray
         sku
-      defaultPrice
+       defaultPrice
         isActive
         discountPrice
         specialPrice 
@@ -57,7 +56,6 @@ export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
       productName
       productDescription
       productImagePath
-      productVideoPath
       productImageArray
       sku
       tax
@@ -80,7 +78,6 @@ export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
         productDescription
         productImagePath
         productImageArray
-        productVideoPath
         sku
         tax
         totalcost
@@ -146,7 +143,6 @@ export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
         productSlug
         productDescription
         productImagePath
-        productVideoPath
         sku
         createdOn
         orderDetails{
@@ -158,6 +154,7 @@ export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
           status
           tax
           paymentMode
+          orderUniqueId
         } 
       }
       count
@@ -176,7 +173,6 @@ export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
         productSlug
         productDescription
         productImagePath
-        productVideoPath
         createdOn
         sku
         orderDetails{
@@ -188,6 +184,7 @@ export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
           status
           tax
           paymentMode
+          orderUniqueId
         } 
     }
   }`

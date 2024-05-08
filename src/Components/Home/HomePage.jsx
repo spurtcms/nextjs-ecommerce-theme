@@ -170,6 +170,7 @@ const handleLoad=(data)=>{
       window.addEventListener("scroll", handleScroll);
     }, [handleScroll]);
 
+    
 
   return (
     <>

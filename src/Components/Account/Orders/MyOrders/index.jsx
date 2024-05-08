@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import MyOrderServerActions from './MyOrderServerActions'
 
-export default function MyOrders() {
+export default function MyOrders({router}) {
+    
     return (
         <>
-         <MyOrderServerActions />
+        <Suspense fallback={null}>
+         <MyOrderServerActions routers={router}/>
+         </Suspense>
         </>
     )
 }

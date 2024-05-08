@@ -7,10 +7,12 @@ import React, { useEffect, useState } from 'react'
 import "react-datepicker/dist/react-datepicker.css";
 import ReactDatePicker from 'react-datepicker'
 import moment from 'moment/moment'
+import Pagination from '@/utils/Pagination'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 const Status=[   
     {id:0, name: "Choose Status"}, 
-    {id:1, name: "Order Placed"},
+    {id:1, name: "placed"},
     {id:2, name: "Shipped"},
     {id:3, name: "Out Of Delivery"},
     {id:4, name: "Delivered"},
@@ -18,8 +20,9 @@ const Status=[
 ]
 
 
-export default function MyOrderServerActions() {
-
+export default function MyOrderServerActions({routers}) {
+    const searchParams=useSearchParams()
+    const off=searchParams.get("offset")
     const [productList,setProductList]=useState([])
     const [orderId,setOrderId]=useState("")
     const [startDate,setStartDate]=useState("")
@@ -27,42 +30,61 @@ export default function MyOrderServerActions() {
     const [deliveryStatus,setDeliveryStatus]=useState("")
     const [applyfilter,setApplyFilter]=useState(false)
     const [searchFilter,setSearchFilter]=useState("")
+    const [currentPage, setCurrentPage] = useState(1);
+    const [offset,setOffset]=useState(parseInt(off))
+    const [limit] = useState(10);
+    const [changeTab,setChangeTab]=useState(false)
+    const [totalRecords,setTotalRecords]=useState(0)
+    const router=useRouter()
 
     
+    
+    console.log(off,"09090kl")
     const orderList= async ()=>{
-        let list_var={"lim":10,"off":0}
+        let list_var={"lim":10,"off":offset}
         let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
         setProductList(postData?.ecommerceProductOrdersList?.productList)
+        setTotalRecords(postData?.ecommerceProductOrdersList?.count)
+        console.log(postData?.ecommerceProductOrdersList?.count,"99998iii")
     }
 
     const searchData= async ()=>{
-        let list_var={"lim":10,"off":0,"filter":{"searchKeyword":searchFilter}}
+        setProductList([])
+        setTotalRecords(0)
+        let list_var={"lim":10,"off":offset,"filter":{"searchKeyword":searchFilter}}
         let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
         console.log(postData,"77yyughhg")
         setProductList(postData?.ecommerceProductOrdersList?.productList)
+        setTotalRecords(postData?.ecommerceProductOrdersList?.count)
     }
 
     useEffect(()=>{
+        if(searchFilter==""){
         orderList()
-    },[])
+    }
+    },[offset])
 
     useEffect(()=>{
         searchData()
-    },[searchFilter])
+    },[searchFilter,offset])
+
+    const nPages1 = Math.ceil(totalRecords!=undefined&&totalRecords / 10)
     const handleFilter=async()=>{
         setApplyFilter(true)
         let list_var={
             "lim":10,
-            "off":0,
+            "off":offset,
             "filter":{
                 "status":deliveryStatus?.name?deliveryStatus?.name:"",
-                "startingDate":moment(startDate).format("YYYY-MM-DD")?moment(startDate).format("YYYY-MM-DD"):"",
-                "endingDate":moment(endDate).format("YYYY-MM-DD")?moment(endDate).format("YYYY-MM-DD"):"",
+                "startingDate":startDate!=""?moment(startDate).format("YYYY-MM-DD"):"",
+                "endingDate":endDate!=""?moment(endDate).format("YYYY-MM-DD"):"",
                 "orderId":orderId?orderId:"",
             }
         }
         let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
         setProductList(postData?.ecommerceProductOrdersList?.productList)
+        setTotalRecords(postData?.ecommerceProductOrdersList?.count)
+        console.log(postData,"787")
     }
 
     const handleClear=async ()=>{
@@ -72,18 +94,20 @@ export default function MyOrderServerActions() {
         setDeliveryStatus("")
         setProductList([])
         setApplyFilter(false)
-        let list_var={"lim":10,"off":0}
+        let list_var={"lim":10,"off":offset}
         let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
         setProductList(postData?.ecommerceProductOrdersList?.productList)
+        setTotalRecords(postData?.ecommerceProductOrdersList?.count)
     }
 
     const handleSingleFilter=async(data)=>{
         let list_var
         if(data=="orderId"){
             setOrderId("")
+            // setApplyFilter(false)
              list_var={
                 "lim":10,
-                "off":0,
+                "off":offset,
                 "filter":{
                     "status":deliveryStatus?.name?deliveryStatus?.name:"",
                     "startingDate":startDate!=""?moment(startDate).format("YYYY-MM-DD"):"",
@@ -94,9 +118,10 @@ export default function MyOrderServerActions() {
         }else if(data=="status"){
 
             setDeliveryStatus("")
+            // setApplyFilter(false)
             list_var={
                 "lim":10,
-                "off":0,
+                "off":offset,
                 "filter":{
                     "startingDate":startDate!=""?moment(startDate).format("YYYY-MM-DD"):"",
                     "endingDate":endDate!=""?moment(endDate).format("YYYY-MM-DD"):"",
@@ -108,7 +133,7 @@ export default function MyOrderServerActions() {
             setEndDate("")
             list_var={
                 "lim":10,
-                "off":0,
+                "off":offset,
                 "filter":{
                     "status":deliveryStatus?.name?deliveryStatus?.name:"",
                     "orderId":orderId?orderId:"",
@@ -118,6 +143,7 @@ export default function MyOrderServerActions() {
         
         let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
         setProductList(postData?.ecommerceProductOrdersList?.productList)
+        setTotalRecords(postData?.ecommerceProductOrdersList?.count)
     }
 
     const handleChange=(e)=>{
@@ -133,8 +159,24 @@ export default function MyOrderServerActions() {
             }
         })
     }
-    console.log(startDate,endDate,"988")
 
+    const handleOrderId=(e)=>{
+        setOrderId(e.target.value)
+    }
+
+    const onPageChange=(data)=>{
+        // console.log(data,"78799")
+        let offset = Math.ceil((data - 1) * limit);
+        setOffset(offset)
+        setCurrentPage(data)
+        router.push(`/account/my-orders?offset=${offset}`)
+
+    }
+useEffect(()=>{
+    setCurrentPage(offset/10+1)
+},[])
+    
+    console.log(changeTab,"08jl")
   return (
     <>
        <div className="p-4 sm:p-10">
@@ -144,10 +186,10 @@ export default function MyOrderServerActions() {
                 </div>
                 <div className="flex justify-between sm:items-center items-start sm:flex-row flex-col gap-4 sm:mb-0 mb-4">
                     <div className="flex items-center gap-4 mt-5">
-                        <Link href="/account/my-orders" className="pb-1.5 border-b-2 block border-black-500 text-sm font-normal text-black-500">
+                        <Link href={`/account/my-orders?offset=0`} key={1} className={`pb-1.5 ${changeTab==false&& "border-b-2"} block border-black-500 text-sm font-normal text-black-500`} onClick={()=>setChangeTab(false)}>
                             Upcoming Orders
                         </Link>
-                        <Link href="/account/my-history" className=" pb-1.5 block border-black-500 text-sm font-normal text-black-500">
+                        <Link href={`/account/my-history?offset=0`} key={2} className={` pb-1.5 ${changeTab==true&&"border-b-2"} block border-black-500 text-sm font-normal text-black-500`} onClick={()=>setChangeTab(true)}>
                             History
                         </Link>
                     </div>
@@ -160,7 +202,7 @@ export default function MyOrderServerActions() {
                     <div className="px-2 py-4 flex gap-5 md:flex-row flex-col border-b border-grey ">
                         <div className="flex items-center gap-4 sm:w-[90%] w-full sm:flex-row flex-col">
                             <div className="w-full">
-                                <input type="text" value={orderId} className="h-8 w-full border-grey3 focus:ring-0 focus:shadow-none focus:border-grey3 text-xs font-light rounded" placeholder="Enter Order ID" onChange={(e)=>setOrderId(e.target.value)}/>
+                                <input type="text" value={orderId} className="h-8 w-full border-grey3 focus:ring-0 focus:shadow-none focus:border-grey3 text-xs font-light rounded" placeholder="Enter Order ID" onChange={(e)=>{handleOrderId(e)}}/>
                             </div>
                             <div className="relative w-full">
                                 <select value={deliveryStatus?.name?deliveryStatus?.name:""} className="h-8 w-full border-grey3 focus:ring-0 focus:shadow-none focus:border-grey3 text-xs font-light rounded" onChange={(e)=>handleChange(e)}>
@@ -202,11 +244,10 @@ export default function MyOrderServerActions() {
                             </div>
                         </div>
                         <div className="flex gap-2 items-center justify-end md:w-auto w-full whitespace-nowrap">
-                            <button className="flex h-8 w-[86px] gap-2 items-center border border-black px-2 py-1.5 text-base font-light leading-5 text-black rounded" onClick={()=>handleFilter()}>
-                                <img src="/img/filter.svg" />
-                                Filters
+                            <button className="flex h-8 w-full sm:w-[128px] justify-center gap-2 items-center bg-black px-3 py-1.5 text-base font-normal leading-5 text-white rounded" onClick={()=>handleFilter()}>
+                            Apply Filters
                             </button>
-                            <button  className="text-grey-300 text-xs font-light" onClick={()=>handleClear()}>Clear Filter</button>
+                            <button className="text-black w-full justify-center sm:w-[117px] h-8 flex items-center px-3 py-1.5 border border-black text-base font-normal rounded" onClick={() => handleClear()}>Clear Filter</button>
                         </div>
 
                     </div>
@@ -230,13 +271,13 @@ export default function MyOrderServerActions() {
                             </div>
                             <div className="text-xs text-black-500 font-light">-</div>
                             <div className="px-2 py-1 border border-grey rounded text-xs font-light text-black-500 relative">
-                                I{moment(endDate).format("YYYY-MM-DD")}
+                                {moment(endDate).format("YYYY-MM-DD")}
                                 <img src="/img/cancel-bg.svg" className="absolute -right-1.5 -top-1.5 cursor-pointer" onClick={()=>handleSingleFilter("date")}/>
                             </div>
                         </div></>}
                         </>}
                     </div>
-                    <div className="overflow-auto">
+                    <div className="overflow-auto min-h-[530px]">
                         <table className="w-full table border-collapse">
                             <thead>
                                 <tr>
@@ -264,7 +305,7 @@ export default function MyOrderServerActions() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {productList?.map((result,index)=>(<>
+                                {productList.length!=0?productList?.map((result,index)=>(<>
                                 <tr>
                                     <td className="px-4 py-2 border-b border-grey text-start">
                                         <div className="flex gap-6 items-center md:flex-row flex-col">
@@ -274,7 +315,7 @@ export default function MyOrderServerActions() {
                                         </div>
                                     </td>
                                     <td className="px-4 py-2 border-b border-grey text-start">
-                                        <h3 className="text-sm font-normal text-black-500">{result?.orderDetails?.orderId}</h3>
+                                        <h3 className="text-sm font-normal text-black-500">{result?.orderDetails?.orderUniqueId}</h3>
                                     </td>
                                     <td className="px-4 py-2 border-b border-grey text-start">
                                         <p className="flex items-center gap-1 text-3-light text-sm leading-5">
@@ -298,176 +339,47 @@ export default function MyOrderServerActions() {
                                     <td className="px-4 py-2 border-b border-grey text-start">
                                         <Link href={`/account/my-order-detail/${result?.productSlug}`} className="text-3-light font-light text-sm hover:underline">View Details</Link>
                                     </td>
-                                </tr></>))}
-                                {/* <tr>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <div className="flex gap-6 items-center md:flex-row flex-col">
-                                            <img src="/img/checkList-product1.svg" className="w-[60px] h-[38px]s" />
-                                            <h3 className="text-sm font-normal text-black-500">SAMSUNG 75" Crystal UHD 4K</h3>
-                                        </div>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <h3 className="text-sm font-normal text-black-500">SP11478522165456</h3>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <p className="flex items-center gap-1 text-3-light text-sm leading-5">
-                                            <img src="/img/rupee-sm-light.svg" />
-                                            15,299
-                                        </p>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <p className="text-3-light text-sm leading-5">27 Feb 2024</p>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <p className="text-3-light text-sm leading-5">03 Mar 2024</p>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <div className="flex">
-                                            <div className="px-2 py-[3px] bg-sucess text-sucess text-xs font-normal rounded">
-                                                Out of Delivery
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <Link href="/viewDetails" className="text-3-light font-light text-sm hover:underline">View Details</Link>
-                                    </td>
-                                </tr>
+                                </tr></>)):<>
+
                                 <tr>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <div className="flex gap-6 items-center md:flex-row flex-col">
-                                            <img src="/img/checkList-product1.svg" className="w-[60px] h-[38px]s" />
-                                            <h3 className="text-sm font-normal text-black-500">SAMSUNG 75" Crystal UHD 4K</h3>
-                                        </div>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <h3 className="text-sm font-normal text-black-500">SP11478522165456</h3>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <p className="flex items-center gap-1 text-3-light text-sm leading-5">
-                                            <img src="/img/rupee-sm-light.svg" />
-                                            15,299
-                                        </p>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <p className="text-3-light text-sm leading-5">27 Feb 2024</p>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <p className="text-3-light text-sm leading-5">03 Mar 2024</p>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <div className="flex">
-                                            <div className="px-2 py-[3px] bg-sucess text-sucess text-xs font-normal rounded">
-                                                Out of Delivery
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <Link href="/viewDetails" className="text-3-light font-light text-sm hover:underline">View Details</Link>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <div className="flex gap-6 items-center md:flex-row flex-col">
-                                            <img src="/img/checkList-product1.svg" className="w-[60px] h-[38px]s" />
-                                            <h3 className="text-sm font-normal text-black-500">SAMSUNG 75" Crystal UHD 4K</h3>
-                                        </div>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <h3 className="text-sm font-normal text-black-500">SP11478522165456</h3>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <p className="flex items-center gap-1 text-3-light text-sm leading-5">
-                                            <img src="/img/rupee-sm-light.svg" />
-                                            15,299
-                                        </p>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <p className="text-3-light text-sm leading-5">27 Feb 2024</p>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <p className="text-3-light text-sm leading-5">03 Mar 2024</p>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <div className="flex">
-                                            <div className="px-2 py-[3px] bg-sucess text-sucess text-xs font-normal rounded">
-                                                Out of Delivery
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <Link href="/viewDetails" className="text-3-light font-light text-sm hover:underline">View Details</Link>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <div className="flex gap-6 items-center md:flex-row flex-col">
-                                            <img src="/img/checkList-product1.svg" className="w-[60px] h-[38px]s" />
-                                            <h3 className="text-sm font-normal text-black-500">SAMSUNG 75" Crystal UHD 4K</h3>
-                                        </div>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <h3 className="text-sm font-normal text-black-500">SP11478522165456</h3>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <p className="flex items-center gap-1 text-3-light text-sm leading-5">
-                                            <img src="/img/rupee-sm-light.svg" />
-                                            15,299
-                                        </p>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <p className="text-3-light text-sm leading-5">27 Feb 2024</p>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <p className="text-3-light text-sm leading-5">03 Mar 2024</p>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <div className="flex">
-                                            <div className="px-2 py-[3px] bg-sucess text-sucess text-xs font-normal rounded">
-                                                Out of Delivery
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <Link href="/viewDetails" className="text-3-light font-light text-sm hover:underline">View Details</Link>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <div className="flex gap-6 items-center md:flex-row flex-col">
-                                            <img src="/img/checkList-product1.svg" className="w-[60px] h-[38px]s" />
-                                            <h3 className="text-sm font-normal text-black-500">SAMSUNG 75" Crystal UHD 4K</h3>
-                                        </div>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <h3 className="text-sm font-normal text-black-500">SP11478522165456</h3>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <p className="flex items-center gap-1 text-3-light text-sm leading-5">
-                                            <img src="/img/rupee-sm-light.svg" />
-                                            15,299
-                                        </p>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <p className="text-3-light text-sm leading-5">27 Feb 2024</p>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <p className="text-3-light text-sm leading-5">03 Mar 2024</p>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <div className="flex">
-                                            <div className="px-2 py-[3px] bg-sucess text-sucess text-xs font-normal rounded">
-                                                Out of Delivery
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <Link href="/viewDetails" className="text-3-light font-light text-sm hover:underline">View Details</Link>
-                                    </td>
-                                </tr> */}
+                                    <td colSpan={8}>
+                                <div className="h-[50vh] flex justify-center text-center">
+                        <div className="mt-16">
+                            <img src="/img/No-orded.svg" />
+                            <p className="text-sm font-normal mb-4 mt-3 text-black">You have no orders</p>
+                            <Link href="/" className="bg-dark-500 rounded flex justify-center items-center text-white text-base font-normal px-6 py-2 h-9">Start Shopping</Link>
+                        </div>
+                    </div>
+                    </td>
+                    </tr>
+                    </>}
+                           
                             </tbody>
                         </table>
+
+                                      
                     </div>
+                    
                 </div>
+                {productList!=""&&<>
+                {searchFilter==""&&totalRecords>10&&<>
+                <div className="flex justify-end mt-5">
+                <Pagination 
+                nPages1={nPages1}
+                currentPage={currentPage}
+                onPageChange={onPageChange}
+                />
+                </div></>}
+                {searchFilter!=""&&totalRecords>10&&<>
+                <div className="flex justify-end mt-5">
+                <Pagination 
+                nPages1={nPages1}
+                currentPage={currentPage}
+                onPageChange={onPageChange}
+                />
+                </div></>}
+                </>}
+                 
             </div>
     </>
   )

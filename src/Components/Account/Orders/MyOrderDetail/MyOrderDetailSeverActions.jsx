@@ -24,12 +24,12 @@ console.log(params,"9090909")
 
   return (
     <div className="sm:px-10 px-4 py-4 ">
-    <Link href="/account/my-orders" className="flex gap-1.5 items-center text-grey-300 text-xs font-light mb-6">
+    <Link href="/account/my-orders?offset=0" className="flex gap-1.5 items-center text-grey-300 text-xs font-light mb-6">
         <img src="/img/back.svg" />
         Back
     </Link>
     <div className="flex gap-2 mb-2 flex-wrap">
-        <h3 className="text-black-500 text-base font-normal">Order ID -{productDetail?.ecommerceProductOrderDetails?.orderDetails?.orderId}</h3>
+        <h3 className="text-black-500 text-base font-normal">Order ID -{productDetail?.ecommerceProductOrderDetails?.orderDetails?.orderUniqueId}</h3>
         <div className="px-2 py-[3px] bg-sucess text-sucess text-xs font-normal rounded">
             {/* Out of Delivery */}
             {productDetail?.ecommerceProductOrderDetails?.orderDetails?.status}

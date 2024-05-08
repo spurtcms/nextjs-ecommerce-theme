@@ -149,12 +149,9 @@ if(vdata.id==catgorId){
 const handleKeyDown = (event) => {
   if (event.key === 'ArrowDown') {
     setFocusedIndex(focusedIndex + 1);
-    console.log(resultsRef.current.scrollHeight,resultsRef.current.scrollHeight-5,resultsRef,"89kkj")
-    // if(resultsRef.offsetTop>200){
-      // resultsRef.current.scrollTop = resultsRef.offsetTop+5;
-    // }
-    if (focusedIndex === productListData.length - 1) {
-      resultsRef.current.scrollTop = resultsRef.current.scrollHeight-5;
+    const element = document.getElementById(focusedIndex +1);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center'});
     }
   }else if(event.key === "Enter"){
     if (focusedIndex >= 0 && focusedIndex < productListData.length) {
@@ -162,13 +159,14 @@ const handleKeyDown = (event) => {
     }
   }else if(event.key ==="ArrowUp"){
     setFocusedIndex(focusedIndex -1)
-    // if (focusedIndex === -1) {
-      resultsRef.current.scrollTop = 0;
-    // }
+    const element = document.getElementById(focusedIndex +1);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center'});
+    }
   }
 };
 
-
+console.log(productListData,"8978")
   return (
     <>
     {/* <Loader /> */}
@@ -266,7 +264,7 @@ const handleKeyDown = (event) => {
                           <Menu.Item>
                             {({ active }) => (
                               <a
-                                href="javascript:void(0)"
+                                href="/account/my-profile"
                                 className={classNames(
                                   active ? "bg-gray-100" : "",
                                   "flex gap-4 px-3 py-2 text-sm font-light text-black leading-tight"
@@ -283,7 +281,10 @@ const handleKeyDown = (event) => {
                           <Menu.Item>
                             {({ active }) => (
                               <Link
-                                href="/account/my-orders"
+                                href={`/account/my-orders?offset=0`}
+                                // href={{
+                                //   pathname: "/account/my-orders", query: { offset: 0 },
+                                // }}
                                 prefetch
                                 className={classNames(
                                   active ? "bg-gray-100" : "",
