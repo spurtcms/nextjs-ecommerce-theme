@@ -11,13 +11,20 @@ import Pagination from '@/utils/Pagination'
 import { useRouter, useSearchParams } from 'next/navigation'
 
 const Status=[   
-    {id:0, name: "Choose Status"}, 
-    {id:1, name: "placed"},
-    {id:2, name: "Shipped"},
-    {id:3, name: "Out Of Delivery"},
-    {id:4, name: "Delivered"},
-    {id:5, name: "Canceled"}
+    {id:0, name: "Choose Status",apiName:""}, 
+    {id:1, name: "Order Placed",apiName:"placed"},
+    {id:2, name: "Shipped",apiName:"shipped"},
+    {id:3, name: "Out Of Delivery",apiName:"outofdelivery"},
+    {id:4, name: "Delivered",apiName:"delivered"},
+    {id:5, name: "Canceled",apiName:"cancelled"}
 ]
+
+const Filters = [
+    {orderId: false},
+    {delstatus: false},
+    {date: false}
+  ]
+
 
 
 export default function MyOrderServerActions({routers}) {
@@ -35,11 +42,10 @@ export default function MyOrderServerActions({routers}) {
     const [limit] = useState(10);
     const [changeTab,setChangeTab]=useState(false)
     const [totalRecords,setTotalRecords]=useState(0)
+    const [validCheck,setValidCheck]=useState(0)
     const router=useRouter()
 
     
-    
-    console.log(off,"09090kl")
     const orderList= async ()=>{
         let list_var={"lim":10,"off":offset}
         let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
@@ -53,7 +59,6 @@ export default function MyOrderServerActions({routers}) {
         setTotalRecords(0)
         let list_var={"lim":10,"off":offset,"filter":{"searchKeyword":searchFilter}}
         let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
-        console.log(postData,"77yyughhg")
         setProductList(postData?.ecommerceProductOrdersList?.productList)
         setTotalRecords(postData?.ecommerceProductOrdersList?.count)
     }
@@ -70,12 +75,26 @@ export default function MyOrderServerActions({routers}) {
 
     const nPages1 = Math.ceil(totalRecords!=undefined&&totalRecords / 10)
     const handleFilter=async()=>{
+        
+        if(startDate!=""&&endDate==""){
+            setValidCheck(1)
+        }else{
+            setValidCheck(0)
         setApplyFilter(true)
+        if(orderId!=""){
+            Filters[0].orderId=true
+        }
+        if(deliveryStatus?.name!=undefined){
+            Filters[1].delstatus=true
+        }
+        if(startDate!=""&&endDate){
+            Filters[2].date=true
+        }
         let list_var={
             "lim":10,
             "off":offset,
             "filter":{
-                "status":deliveryStatus?.name?deliveryStatus?.name:"",
+                "status":deliveryStatus?.apiName?deliveryStatus?.apiName:"",
                 "startingDate":startDate!=""?moment(startDate).format("YYYY-MM-DD"):"",
                 "endingDate":endDate!=""?moment(endDate).format("YYYY-MM-DD"):"",
                 "orderId":orderId?orderId:"",
@@ -84,7 +103,7 @@ export default function MyOrderServerActions({routers}) {
         let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
         setProductList(postData?.ecommerceProductOrdersList?.productList)
         setTotalRecords(postData?.ecommerceProductOrdersList?.count)
-        console.log(postData,"787")
+    }
     }
 
     const handleClear=async ()=>{
@@ -94,6 +113,9 @@ export default function MyOrderServerActions({routers}) {
         setDeliveryStatus("")
         setProductList([])
         setApplyFilter(false)
+        Filters[0].orderId=false
+        Filters[1].delstatus=false
+        Filters[2].date=false
         let list_var={"lim":10,"off":offset}
         let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
         setProductList(postData?.ecommerceProductOrdersList?.productList)
@@ -104,12 +126,12 @@ export default function MyOrderServerActions({routers}) {
         let list_var
         if(data=="orderId"){
             setOrderId("")
-            // setApplyFilter(false)
+            Filters[0].orderId=false
              list_var={
                 "lim":10,
                 "off":offset,
                 "filter":{
-                    "status":deliveryStatus?.name?deliveryStatus?.name:"",
+                    "status":deliveryStatus?.apiName?deliveryStatus?.apiName:"",
                     "startingDate":startDate!=""?moment(startDate).format("YYYY-MM-DD"):"",
                     "endingDate":endDate!=""?moment(endDate).format("YYYY-MM-DD"):"",
                 }
@@ -118,7 +140,7 @@ export default function MyOrderServerActions({routers}) {
         }else if(data=="status"){
 
             setDeliveryStatus("")
-            // setApplyFilter(false)
+            Filters[1].delstatus=false
             list_var={
                 "lim":10,
                 "off":offset,
@@ -131,11 +153,12 @@ export default function MyOrderServerActions({routers}) {
         }else if(data=="date"){
             setStartDate("")
             setEndDate("")
+            Filters[2].date=false
             list_var={
                 "lim":10,
                 "off":offset,
                 "filter":{
-                    "status":deliveryStatus?.name?deliveryStatus?.name:"",
+                    "status":deliveryStatus?.apiName?deliveryStatus?.apiName:"",
                     "orderId":orderId?orderId:"",
                 }
             }
@@ -152,7 +175,8 @@ export default function MyOrderServerActions({routers}) {
             if(data.name===e.target.value){
                 let obj={
                     "id":data.id,
-                    "name":e.target.value
+                    "name":e.target.value,
+                    "apiName":data.apiName
                 }
 
                 setDeliveryStatus(obj)
@@ -163,7 +187,6 @@ export default function MyOrderServerActions({routers}) {
     const handleOrderId=(e)=>{
         setOrderId(e.target.value)
     }
-
     const onPageChange=(data)=>{
         // console.log(data,"78799")
         let offset = Math.ceil((data - 1) * limit);
@@ -176,7 +199,7 @@ useEffect(()=>{
     setCurrentPage(offset/10+1)
 },[])
     
-    console.log(changeTab,"08jl")
+    console.log(deliveryStatus,"08jl")
   return (
     <>
        <div className="p-4 sm:p-10">
@@ -241,6 +264,7 @@ useEffect(()=>{
                                 minDate={new Date(1990, 1, 1)}
                                 maxDate={new Date()}
                                 />
+                                {startDate!=""&&endDate==""&&validCheck==1&&<p className='text-red-600 text-xs font-normal'>End Date is required</p>}
                             </div>
                         </div>
                         <div className="flex gap-2 items-center justify-end md:w-auto w-full whitespace-nowrap">
@@ -253,18 +277,18 @@ useEffect(()=>{
                     </div>
                     <div className="p-2 flex gap-4 border-b border-grey flex-wrap">
                         {applyfilter==true&&<>
-                        {orderId!=""&&<>
+                        {Filters[0].orderId==true&&<>
                         <div className="px-2 py-1 border border-grey rounded text-xs font-light text-black-500 relative">
                             {/* SP11478522165456 */}
                             {orderId}
                             <img src="/img/cancel-bg.svg" className="absolute -right-1.5 -top-1.5 cursor-pointer" onClick={()=>handleSingleFilter("orderId")}/>
                         </div></>}
-                        {deliveryStatus!=""&&<>
+                        {Filters[1].delstatus==true&&<>
                         <div className="px-2 py-1 border border-grey rounded text-xs font-light text-black-500 relative">
                             {deliveryStatus?.name}
                             <img src="/img/cancel-bg.svg" className="absolute -right-1.5 -top-1.5 cursor-pointer" onClick={()=>handleSingleFilter("status")}/>
                         </div></>}
-                        {startDate!=""&&endDate!=""&&<>
+                        {Filters[2].date==true&&<>
                         <div className="relative flex gap-1 items-center">
                             <div className="px-2 py-1 border border-grey rounded text-xs font-light text-black-500 ">
                                 {moment(startDate).format("YYYY-MM-DD")}
@@ -305,7 +329,7 @@ useEffect(()=>{
                                 </tr>
                             </thead>
                             <tbody>
-                                {productList.length!=0?productList?.map((result,index)=>(<>
+                                {productList?.length!=0?productList?.map((result,index)=>(<>
                                 <tr>
                                     <td className="px-4 py-2 border-b border-grey text-start">
                                         <div className="flex gap-6 items-center md:flex-row flex-col">
