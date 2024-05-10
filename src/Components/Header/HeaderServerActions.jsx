@@ -148,23 +148,36 @@ if(vdata.id==catgorId){
 
 const handleKeyDown = (event) => {
   if (event.key === 'ArrowDown') {
+    if(focusedIndex>=-1&&focusedIndex<productListData.length-1){
     setFocusedIndex(focusedIndex + 1);
     const element = document.getElementById(focusedIndex +1);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'center'});
     }
+  }else{
+    setFocusedIndex(-1)
+  }
   }else if(event.key === "Enter"){
     if (focusedIndex >= 0 && focusedIndex < productListData.length) {
       handleProduct(productListData[focusedIndex]);
     }
   }else if(event.key ==="ArrowUp"){
-    setFocusedIndex(focusedIndex -1)
-    const element = document.getElementById(focusedIndex +1);
+    if (focusedIndex >= -1 && focusedIndex < productListData.length) {
+    const element = document.getElementById(focusedIndex - 1);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'center'});
     }
-  }
+    setFocusedIndex(focusedIndex -1)
+    if (focusedIndex === -1) {
+      resultsRef.current.scrollTop = 0;
+    }
+  }else{
+    if(focusedIndex <=-1){
+    setFocusedIndex(productListData?.length - 1)}
+  }}
 };
+
+
 
 console.log(productListData,"8978")
   return (
@@ -216,7 +229,7 @@ console.log(productListData,"8978")
                         {search!=""&&
                         <div className="overflow-auto max-h-56 border-t border-slate-200" ref={resultsRef}>
                           {productListData?.length!=0?productListData?.map((data,index)=>(<>
-                          <Link key={index} href={`/product-detail/${data?.productSlug}`} prefetch={true} className={`flex gap-3 items-center p-2 border-b border-slate-200 h-14 ${focusedIndex === index? 'bg-gray-200' : ''}`}  onClick={()=>handleProduct(data)} >
+                          <Link key={index} id={index} href={`/product-detail/${data?.productSlug}`} prefetch={true} className={`flex gap-3 items-center p-2 border-b border-slate-200 h-14 ${focusedIndex === index? 'bg-gray-200' : ''}`}  onClick={()=>handleProduct(data)} >
                             <div className="w-10 min-h-10 flex items-center" prefetch onClick={()=>handleProduct(data)}><ImageComponets path={data?.productImageArray?.[0]} w={40} h={40} /></div>
                             <p className="text-sm font-normal text-black cursor-pointer" prefetch onClick={()=>handleProduct(data)}>{data?.productName}</p>
                           </Link></>)):<><div className="p-4 flex items-center justify-center"><p className="text-sm font-medium text-black" >{"No data found"}</p></div></>}

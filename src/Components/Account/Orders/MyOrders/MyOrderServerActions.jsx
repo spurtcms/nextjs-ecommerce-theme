@@ -8,15 +8,21 @@ import "react-datepicker/dist/react-datepicker.css";
 import ReactDatePicker from 'react-datepicker'
 import moment from 'moment/moment'
 import Pagination from '@/utils/Pagination'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 const Status=[   
     {id:0, name: "Choose Status",apiName:""}, 
     {id:1, name: "Order Placed",apiName:"placed"},
     {id:2, name: "Shipped",apiName:"shipped"},
     {id:3, name: "Out Of Delivery",apiName:"outofdelivery"},
-    {id:4, name: "Delivered",apiName:"delivered"},
-    {id:5, name: "Canceled",apiName:"cancelled"}
+    // {id:4, name: "Delivered",apiName:"delivered"},
+    // {id:5, name: "Canceled",apiName:"cancelled"}
+]
+
+const StatusHistory=[
+    {id:0, name: "Choose Status",apiName:""}, 
+    {id:1, name: "Delivered",apiName:"delivered"},
+    {id:2, name: "Canceled",apiName:"cancelled"}
 ]
 
 const Filters = [
@@ -30,6 +36,7 @@ const Filters = [
 export default function MyOrderServerActions({routers}) {
     const searchParams=useSearchParams()
     const off=searchParams.get("offset")
+    const pathNameHistory=usePathname()
     const [productList,setProductList]=useState([])
     const [orderId,setOrderId]=useState("")
     const [startDate,setStartDate]=useState("")
@@ -40,27 +47,47 @@ export default function MyOrderServerActions({routers}) {
     const [currentPage, setCurrentPage] = useState(1);
     const [offset,setOffset]=useState(parseInt(off))
     const [limit] = useState(10);
-    const [changeTab,setChangeTab]=useState(false)
     const [totalRecords,setTotalRecords]=useState(0)
     const [validCheck,setValidCheck]=useState(0)
     const router=useRouter()
 
-    
+    console.log(pathNameHistory,"iuyuj")
     const orderList= async ()=>{
-        let list_var={"lim":10,"off":offset}
+        if(pathNameHistory==="/account/my-orders"){
+            console.log("iifhfhf")
+        setProductList([])
+        setTotalRecords(0)
+        let list_var={"lim":10,"off":offset,"filter":{"upcomingOrders": 1}}
         let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
         setProductList(postData?.ecommerceProductOrdersList?.productList)
         setTotalRecords(postData?.ecommerceProductOrdersList?.count)
-        console.log(postData?.ecommerceProductOrdersList?.count,"99998iii")
+        console.log(postData,"99998iii")
+    }else{
+        setProductList([])
+        setTotalRecords(0)
+        let list_var={"lim":10,"off":offset,"filter":{"orderHistory": 1}}
+        let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
+        setProductList(postData?.ecommerceProductOrdersList?.productList)
+        setTotalRecords(postData?.ecommerceProductOrdersList?.count)  
+    }
     }
 
     const searchData= async ()=>{
+        if(pathNameHistory==="/account/my-orders"){
         setProductList([])
         setTotalRecords(0)
-        let list_var={"lim":10,"off":offset,"filter":{"searchKeyword":searchFilter}}
+        let list_var={"lim":10,"off":offset,"filter":{"upcomingOrders": 1,"searchKeyword":searchFilter}}
         let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
         setProductList(postData?.ecommerceProductOrdersList?.productList)
         setTotalRecords(postData?.ecommerceProductOrdersList?.count)
+    }else{
+        setProductList([])
+        setTotalRecords(0)
+        let list_var={"lim":10,"off":offset,"filter":{"orderHistory": 1,"searchKeyword":searchFilter}}
+        let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
+        setProductList(postData?.ecommerceProductOrdersList?.productList)
+        setTotalRecords(postData?.ecommerceProductOrdersList?.count)
+    }
     }
 
     useEffect(()=>{
@@ -75,7 +102,7 @@ export default function MyOrderServerActions({routers}) {
 
     const nPages1 = Math.ceil(totalRecords!=undefined&&totalRecords / 10)
     const handleFilter=async()=>{
-        
+        if(pathNameHistory==="/account/my-orders"){
         if(startDate!=""&&endDate==""){
             setValidCheck(1)
         }else{
@@ -98,15 +125,48 @@ export default function MyOrderServerActions({routers}) {
                 "startingDate":startDate!=""?moment(startDate).format("YYYY-MM-DD"):"",
                 "endingDate":endDate!=""?moment(endDate).format("YYYY-MM-DD"):"",
                 "orderId":orderId?orderId:"",
+                "upcomingOrders": 1
             }
         }
         let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
         setProductList(postData?.ecommerceProductOrdersList?.productList)
         setTotalRecords(postData?.ecommerceProductOrdersList?.count)
     }
+  }else{
+    if(startDate!=""&&endDate==""){
+        setValidCheck(1)
+    }else{
+        setValidCheck(0)
+    setApplyFilter(true)
+    if(orderId!=""){
+        Filters[0].orderId=true
+    }
+    if(deliveryStatus?.name!=undefined){
+        Filters[1].delstatus=true
+    }
+    if(startDate!=""&&endDate){
+        Filters[2].date=true
+    }
+    let list_var={
+        "lim":10,
+        "off":offset,
+        "filter":{
+            "status":deliveryStatus?.apiName?deliveryStatus?.apiName:"",
+            "startingDate":startDate!=""?moment(startDate).format("YYYY-MM-DD"):"",
+            "endingDate":endDate!=""?moment(endDate).format("YYYY-MM-DD"):"",
+            "orderId":orderId?orderId:"",
+            "orderHistory": 1
+        }
+    }
+    let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
+    setProductList(postData?.ecommerceProductOrdersList?.productList)
+    setTotalRecords(postData?.ecommerceProductOrdersList?.count)
+}
+  }
     }
 
     const handleClear=async ()=>{
+        if(pathNameHistory==="/account/my-orders"){
         setOrderId("")
         setStartDate("")
         setEndDate("")
@@ -116,10 +176,25 @@ export default function MyOrderServerActions({routers}) {
         Filters[0].orderId=false
         Filters[1].delstatus=false
         Filters[2].date=false
-        let list_var={"lim":10,"off":offset}
+        let list_var={"lim":10,"off":offset,"filter":{"upcomingOrders": 1}}
         let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
         setProductList(postData?.ecommerceProductOrdersList?.productList)
         setTotalRecords(postData?.ecommerceProductOrdersList?.count)
+    }else{
+        setOrderId("")
+        setStartDate("")
+        setEndDate("")
+        setDeliveryStatus("")
+        setProductList([])
+        setApplyFilter(false)
+        Filters[0].orderId=false
+        Filters[1].delstatus=false
+        Filters[2].date=false
+        let list_var={"lim":10,"off":offset,"filter":{"orderHistory": 1}}
+        let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
+        setProductList(postData?.ecommerceProductOrdersList?.productList)
+        setTotalRecords(postData?.ecommerceProductOrdersList?.count)
+    }
     }
 
     const handleSingleFilter=async(data)=>{
@@ -127,6 +202,7 @@ export default function MyOrderServerActions({routers}) {
         if(data=="orderId"){
             setOrderId("")
             Filters[0].orderId=false
+            if(pathNameHistory==="/account/my-orders"){
              list_var={
                 "lim":10,
                 "off":offset,
@@ -134,13 +210,27 @@ export default function MyOrderServerActions({routers}) {
                     "status":deliveryStatus?.apiName?deliveryStatus?.apiName:"",
                     "startingDate":startDate!=""?moment(startDate).format("YYYY-MM-DD"):"",
                     "endingDate":endDate!=""?moment(endDate).format("YYYY-MM-DD"):"",
+                    "upcomingOrders": 1
                 }
             }
+        }else{
+            list_var={
+                "lim":10,
+                "off":offset,
+                "filter":{
+                    "status":deliveryStatus?.apiName?deliveryStatus?.apiName:"",
+                    "startingDate":startDate!=""?moment(startDate).format("YYYY-MM-DD"):"",
+                    "endingDate":endDate!=""?moment(endDate).format("YYYY-MM-DD"):"",
+                    "orderHistory": 1
+                }
+            }
+        }
           
         }else if(data=="status"){
 
             setDeliveryStatus("")
             Filters[1].delstatus=false
+            if(pathNameHistory==="/account/my-orders"){
             list_var={
                 "lim":10,
                 "off":offset,
@@ -148,20 +238,46 @@ export default function MyOrderServerActions({routers}) {
                     "startingDate":startDate!=""?moment(startDate).format("YYYY-MM-DD"):"",
                     "endingDate":endDate!=""?moment(endDate).format("YYYY-MM-DD"):"",
                     "orderId":orderId?orderId:"",
+                    "upcomingOrders": 1
                 }
             }
+        }else{
+            list_var={
+                "lim":10,
+                "off":offset,
+                "filter":{
+                    "startingDate":startDate!=""?moment(startDate).format("YYYY-MM-DD"):"",
+                    "endingDate":endDate!=""?moment(endDate).format("YYYY-MM-DD"):"",
+                    "orderId":orderId?orderId:"",
+                    "orderHistory": 1
+                }
+            }
+        }
         }else if(data=="date"){
             setStartDate("")
             setEndDate("")
             Filters[2].date=false
+            if(pathNameHistory==="/account/my-orders"){
             list_var={
                 "lim":10,
                 "off":offset,
                 "filter":{
                     "status":deliveryStatus?.apiName?deliveryStatus?.apiName:"",
                     "orderId":orderId?orderId:"",
+                    "upcomingOrders": 1
                 }
             }
+        }else{
+            list_var={
+                "lim":10,
+                "off":offset,
+                "filter":{
+                    "status":deliveryStatus?.apiName?deliveryStatus?.apiName:"",
+                    "orderId":orderId?orderId:"",
+                    "orderHistory": 1
+                }
+            }
+        }
         }
         
         let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
@@ -171,6 +287,8 @@ export default function MyOrderServerActions({routers}) {
 
     const handleChange=(e)=>{
         console.log(e.target.value,"o7897iuk")
+        if(pathNameHistory==="/account/my-orders"){
+            if(e.target.value!="Choose Status"){
         Status.map((data,index)=>{
             if(data.name===e.target.value){
                 let obj={
@@ -183,16 +301,39 @@ export default function MyOrderServerActions({routers}) {
             }
         })
     }
+    }else{
+        if(e.target.value!="Choose Status"){
+        StatusHistory.map((data,index)=>{
+            if(data.name===e.target.value){
+                let obj={
+                    "id":data.id,
+                    "name":e.target.value,
+                    "apiName":data.apiName
+                }
+
+                setDeliveryStatus(obj)
+            }
+        })
+    }
+    }
+    }
 
     const handleOrderId=(e)=>{
         setOrderId(e.target.value)
     }
     const onPageChange=(data)=>{
         // console.log(data,"78799")
+        if(pathNameHistory==="/account/my-orders"){
         let offset = Math.ceil((data - 1) * limit);
         setOffset(offset)
         setCurrentPage(data)
         router.push(`/account/my-orders?offset=${offset}`)
+    }else{
+        let offset = Math.ceil((data - 1) * limit);
+        setOffset(offset)
+        setCurrentPage(data)
+        router.push(`/account/my-history?offset=${offset}`)
+    }
 
     }
 useEffect(()=>{
@@ -209,10 +350,10 @@ useEffect(()=>{
                 </div>
                 <div className="flex justify-between sm:items-center items-start sm:flex-row flex-col gap-4 sm:mb-0 mb-4">
                     <div className="flex items-center gap-4 mt-5">
-                        <Link href={`/account/my-orders?offset=0`} key={1} className={`pb-1.5 ${changeTab==false&& "border-b-2"} block border-black-500 text-sm font-normal text-black-500`} onClick={()=>setChangeTab(false)}>
+                        <Link href={`/account/my-orders?offset=0`} key={1} className={`pb-1.5 ${pathNameHistory==="/account/my-orders"&& "border-b-2"} block border-black-500 text-sm font-normal text-black-500`} >
                             Upcoming Orders
                         </Link>
-                        <Link href={`/account/my-history?offset=0`} key={2} className={` pb-1.5 ${changeTab==true&&"border-b-2"} block border-black-500 text-sm font-normal text-black-500`} onClick={()=>setChangeTab(true)}>
+                        <Link href={`/account/my-history?offset=0`} key={2} className={` pb-1.5 ${pathNameHistory==="/account/my-history"&&"border-b-2"} block border-black-500 text-sm font-normal text-black-500`} >
                             History
                         </Link>
                     </div>
@@ -229,14 +370,18 @@ useEffect(()=>{
                             </div>
                             <div className="relative w-full">
                                 <select value={deliveryStatus?.name?deliveryStatus?.name:""} className="h-8 w-full border-grey3 focus:ring-0 focus:shadow-none focus:border-grey3 text-xs font-light rounded" onChange={(e)=>handleChange(e)}>
+                                    {pathNameHistory=="/account/my-history"?<>
+                                    {StatusHistory.map((data,ind)=>(<>
+                                        <option value={data.name}>{data.name}</option></>))}</>
+                                    :<>
                                     {Status.map((data,ind)=>(<>
-                                    <option value={data.name}>{data.name}</option></>))}
+                                    <option value={data.name}>{data.name}</option></>))}</>}
                                 </select>
                             </div>
                             <div className="w-full">
                                 {/* <input type="text" className="h-8 w-full border-grey3 focus:ring-0 focus:shadow-none focus:border-grey3 text-xs font-light rounded" placeholder="Start Date" /> */}
                                 <ReactDatePicker
-                                placeholderText="dd/mm/yyyy"
+                                placeholderText="Start Date"
                                 className="h-8 w-full border-grey3 focus:ring-0 focus:shadow-none focus:border-grey3 text-xs font-light rounded"
                                 dateFormat="dd/MM/yyyy"
                                 selected={startDate}
@@ -249,10 +394,10 @@ useEffect(()=>{
                                 maxDate={new Date()}
                                 />
                             </div>
-                            <div className="w-full">
+                            <div className={`w-full ${startDate===""?"pointer-events-none":""}`}>
                                 {/* <input type="text" className="h-8 w-full border-grey3 focus:ring-0 focus:shadow-none focus:border-grey3 text-xs font-light rounded" placeholder="End Date" /> */}
                                 <ReactDatePicker
-                                placeholderText="dd/mm/yyyy"
+                                placeholderText="End Date"
                                 className="h-8 w-full border-grey3 focus:ring-0 focus:shadow-none focus:border-grey3 text-xs font-light rounded"
                                 dateFormat="dd/MM/yyyy"
                                 selected={endDate}
@@ -328,8 +473,9 @@ useEffect(()=>{
                                     </th>
                                 </tr>
                             </thead>
+                            {pathNameHistory!="/account/my-history"?<>
                             <tbody>
-                                {productList?.length!=0?productList?.map((result,index)=>(<>
+                                {productList?.length>0?productList?.map((result,index)=>(<>
                                 <tr>
                                     <td className="px-4 py-2 border-b border-grey text-start">
                                         <div className="flex gap-6 items-center md:flex-row flex-col">
@@ -378,7 +524,59 @@ useEffect(()=>{
                     </tr>
                     </>}
                            
-                            </tbody>
+                            </tbody></>:<>
+
+                            <tbody>
+                                {productList?.length>0?productList?.map((result,index)=>(<>
+                                <tr>
+                                    <td className="px-4 py-2 border-b border-grey text-start">
+                                        <div className="flex gap-6 items-center md:flex-row flex-col">
+                                            {/* <img src="/img/checkList-product1.svg" className="w-[60px] h-[38px]s" /> */}
+                                            <ImageComponets path={"https://demo.spurtcms.com/"+result?.productImagePath}  w={60} h={38}/>
+                                            <h3 className="text-sm font-normal text-black-500">{result?.productName}</h3>
+                                        </div>
+                                    </td>
+                                    <td className="px-4 py-2 border-b border-grey text-start">
+                                        <h3 className="text-sm font-normal text-black-500">{result?.orderDetails?.orderUniqueId}</h3>
+                                    </td>
+                                    <td className="px-4 py-2 border-b border-grey text-start">
+                                        <p className="flex items-center gap-1 text-3-light text-sm leading-5">
+                                            <img src="/img/rupee-sm-light.svg" />
+                                            {result?.orderDetails?.price}
+                                        </p>
+                                    </td>
+                                    <td className="px-4 py-2 border-b border-grey text-start">
+                                        <p className="text-3-light text-sm leading-5">{moment(result?.createdOn).format("DD MMMM YYYY")}</p>
+                                    </td>
+                                    <td className="px-4 py-2 border-b border-grey text-start">
+                                        <p className="text-3-light text-sm leading-5"></p>
+                                    </td>
+                                    <td className="px-4 py-2 border-b border-grey text-start">
+                                        <div className="flex">
+                                            <div className="px-2 py-[3px] bg-sucess text-sucess text-xs font-normal rounded">
+                                                {result?.orderDetails?.status}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className="px-4 py-2 border-b border-grey text-start">
+                                        <Link href={`/account/my-order-detail/${result?.productSlug}`} className="text-3-light font-light text-sm hover:underline">View Details</Link>
+                                    </td>
+                                </tr></>)):<>
+
+                                <tr>
+                                    <td colSpan={8}>
+                                <div className="h-[50vh] flex justify-center text-center">
+                        <div className="mt-16">
+                            <img src="/img/No-orded.svg" />
+                            <p className="text-sm font-normal mb-4 mt-3 text-black">You have no orders</p>
+                            <Link href="/" className="bg-dark-500 rounded flex justify-center items-center text-white text-base font-normal px-6 py-2 h-9">Start Shopping</Link>
+                        </div>
+                    </div>
+                    </td>
+                    </tr>
+                    </>}
+                           
+                            </tbody></>}
                         </table>
 
                                       
