@@ -188,3 +188,27 @@ export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
         } 
     }
   }`
+
+  export const GET_ADDRESS_DETAIL=`query{
+    ecommerceCustomerDetails{
+      id
+      firstName
+      lastName
+      mobileNo
+      email
+      username
+      isActive
+      profileImage
+      profileImagePath
+      modifiedOn
+      modifiedBy
+      houseNo
+      Area
+      city
+      state
+      country
+      zipCode
+      streetAddress
+    }
+  }
+  `

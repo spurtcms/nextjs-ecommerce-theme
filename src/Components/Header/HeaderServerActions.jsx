@@ -263,7 +263,7 @@ console.log(productListData,"8978")
                         <Menu.Items className="absolute right-0 z-10 mt-2 w-36 origin-top-right bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none  py-1 rounded-md  ">
                           <Menu.Item>
                             {({ active }) => (
-                              <a
+                              <Link
                                 href="/account/my-profile"
                                 className={classNames(
                                   active ? "bg-gray-100" : "",
@@ -275,7 +275,7 @@ console.log(productListData,"8978")
                                   alt="profile"
                                 />{" "}
                                 My Profile
-                              </a>
+                              </Link>
                             )}
                           </Menu.Item>
                           <Menu.Item>

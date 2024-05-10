@@ -6,6 +6,8 @@ import { EmailValidator } from '@/utils/regexValidation'
 import { useDispatch } from 'react-redux'
 import { getAddress } from '@/redux/slices/cartSlice'
 import { useRouter } from 'next/navigation'
+import { GET_ADDRESS_DETAIL } from '@/api/query'
+import { fetchGraphQl } from '@/api/graphicql'
 
 function CheckOutShipServerAction() {
     const dispatch=useDispatch()
@@ -21,7 +23,26 @@ function CheckOutShipServerAction() {
     const [country,setCountry]=useState("")
     const [emailError,setEmailError]=useState("")
     const [valid,setValid]=useState(0)
+    
 
+    const hadlegetAddress=async()=>{
+      let myAddress=await fetchGraphQl(GET_ADDRESS_DETAIL)
+      console.log(myAddress.ecommerceCustomerDetails,'myAddress');
+      if(myAddress?.ecommerceCustomerDetails){
+        setName(myAddress.ecommerceCustomerDetails.firstName)
+        setEmail(myAddress.ecommerceCustomerDetails.email)
+        setArea(myAddress.ecommerceCustomerDetails.Area)
+        setNumber(myAddress.ecommerceCustomerDetails.mobileNo)
+        setStates(myAddress.ecommerceCustomerDetails.state)
+        setHouseNo(myAddress.ecommerceCustomerDetails.houseNo)
+        setCity(myAddress.ecommerceCustomerDetails.city)
+        setCountry(myAddress.ecommerceCustomerDetails.country)
+
+      }
+    }
+    useEffect(()=>{
+       hadlegetAddress()
+    },[])
     useEffect(()=>{
         if(valid==1){
           validCheck()
@@ -89,43 +110,44 @@ function CheckOutShipServerAction() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                                     <div className="flex flex-col gap-2">
                                         <label className="text-black-500 font-normal text-base leading-5">Name</label>
-                                        <input type="text" className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" placeholder="Enter name" onChange={(e)=>setName(e.target.value)}/>
+                                        <input type="text" className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" value={name} placeholder="Enter name" onChange={(e)=>setName(e.target.value)}/>
                                         {name ==""&&valid==1&&<p className='text-red-600 text-xs font-normal'>Name is required</p>} 
                                     </div>
                                     <div className="flex flex-col gap-2">
                                         <label className="text-black-500 font-normal text-base leading-5">Mobile is required</label>
-                                        <input type="text" className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" placeholder="Enter number" onChange={(e)=>setNumber(e.target.value)}/>
+                                        <input  type="text" className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500"  value={number} placeholder="Enter number" onChange={(e)=>setNumber(e.target.value)}/>
                                         {number ==""&&valid==1&&<p className='text-red-600 text-xs font-normal'>Mobile number is required</p>} 
                                     </div>
                                     <div className="flex flex-col gap-2">
                                         <label className="text-black-500 font-normal text-base leading-5">Email Id</label>
-                                        <input type="text" className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" placeholder="Enter Email Id" onChange={(e)=>setEmail(e.target.value)}/>
+                                        <input type="text" className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" value={email}  placeholder="Enter Email Id" onChange={(e)=>setEmail(e.target.value)}/>
                                         {emailError !==""&&valid==1&&<p className='text-red-600 text-xs font-normal'>{emailError}</p>}
                                     </div>
+                                   
                                     <div className="flex flex-col gap-2">
-                                        <label className="text-black-500 font-normal text-base leading-5">House no</label>
-                                        <input type="text" className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" placeholder="Enter house no" onChange={(e)=>setHouseNo(e.target.value)}/>
-                                        {houseNo ==""&&valid==1&&<p className='text-red-600 text-xs font-normal'>House no is required</p>} 
-                                    </div>
-                                    <div className="flex flex-col gap-2">
-                                        <label className="text-black-500 font-normal text-base leading-5">Area</label>
-                                        <input type="text" className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" placeholder="Enter area" onChange={(e)=>setArea(e.target.value)}/>
-                                        {area ==""&&valid==1&&<p className='text-red-600 text-xs font-normal'>Area is required</p>} 
+                                        <label className="text-black-500 font-normal text-base leading-5">Address</label>
+                                        <input  type="text" className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" value={area} placeholder="Enter Address" onChange={(e)=>setArea(e.target.value)}/>
+                                        {area ==""&&valid==1&&<p className='text-red-600 text-xs font-normal'>Address is required</p>} 
                                     </div>
                                     <div className="flex flex-col gap-2">
                                         <label className="text-black-500 font-normal text-base leading-5">City</label>
-                                        <input type="text" className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" placeholder="Enter city" onChange={(e)=>setCity(e.target.value)}/>
+                                        <input  type="text" className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" value={city} placeholder="Enter city" onChange={(e)=>setCity(e.target.value)}/>
                                         {city ==""&&valid==1&&<p className='text-red-600 text-xs font-normal'>City is required</p>} 
                                     </div>
                                     <div className="flex flex-col gap-2">
                                         <label className="text-black-500 font-normal text-base leading-5">State</label>
-                                        <input type="text" className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" placeholder="Enter State" onChange={(e)=>setStates(e.target.value)}/>
+                                        <input type="text" className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" value={states} placeholder="Enter State" onChange={(e)=>setStates(e.target.value)}/>
                                         {states ==""&&valid==1&&<p className='text-red-600 text-xs font-normal'>State is required</p>} 
                                     </div>
                                     <div className="flex flex-col gap-2">
                                         <label className="text-black-500 font-normal text-base leading-5">Country</label>
-                                        <input type="text" className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" placeholder="Enter country" onChange={(e)=>setCountry(e.target.value)}/>
+                                        <input type="text" className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" value={country} placeholder="Enter country" onChange={(e)=>setCountry(e.target.value)}/>
                                         {country ==""&&valid==1&&<p className='text-red-600 text-xs font-normal'>Country is required</p>} 
+                                    </div>
+                                    <div className="flex flex-col gap-2">
+                                        <label className="text-black-500 font-normal text-base leading-5">Pincode</label>
+                                        <input  type="text" className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" value={houseNo} placeholder="Enter Pincode" onChange={(e)=>setHouseNo(e.target.value)}/>
+                                        {houseNo ==""&&valid==1&&<p className='text-red-600 text-xs font-normal'>Pincode is required</p>} 
                                     </div>
                                 </div>
                                 <a className="h-11 flex justify-center items-center max-w-md m-auto bg-dark-500 text-base text-white font-normal rounded mb-3 cursor-pointer" onClick={handleSubmit}>
