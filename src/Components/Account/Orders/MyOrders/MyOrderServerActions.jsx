@@ -9,6 +9,7 @@ import ReactDatePicker from 'react-datepicker'
 import moment from 'moment/moment'
 import Pagination from '@/utils/Pagination'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import MyOrderList from '@/utils/SkeletonLoader/MyOrderList'
 
 const Status=[   
     {id:0, name: "Choose Status",apiName:""}, 
@@ -22,7 +23,7 @@ const Status=[
 const StatusHistory=[
     {id:0, name: "Choose Status",apiName:""}, 
     {id:1, name: "Delivered",apiName:"delivered"},
-    {id:2, name: "Canceled",apiName:"cancelled"}
+    {id:2, name: "Cancelled",apiName:"cancelled"}
 ]
 
 const Filters = [
@@ -49,7 +50,9 @@ export default function MyOrderServerActions({routers}) {
     const [limit] = useState(10);
     const [totalRecords,setTotalRecords]=useState(0)
     const [validCheck,setValidCheck]=useState(0)
+    const [skeleton,setSkeleton]=useState(true)
     const router=useRouter()
+
 
     console.log(pathNameHistory,"iuyuj")
     const orderList= async ()=>{
@@ -59,6 +62,10 @@ export default function MyOrderServerActions({routers}) {
         setTotalRecords(0)
         let list_var={"lim":10,"off":offset,"filter":{"upcomingOrders": 1}}
         let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
+        if(postData){
+            setSkeleton(false)
+        }
+        console.log(postData,'postData')
         setProductList(postData?.ecommerceProductOrdersList?.productList)
         setTotalRecords(postData?.ecommerceProductOrdersList?.count)
         console.log(postData,"99998iii")
@@ -67,6 +74,9 @@ export default function MyOrderServerActions({routers}) {
         setTotalRecords(0)
         let list_var={"lim":10,"off":offset,"filter":{"orderHistory": 1}}
         let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
+        if(postData){
+            setSkeleton(false)
+        }
         setProductList(postData?.ecommerceProductOrdersList?.productList)
         setTotalRecords(postData?.ecommerceProductOrdersList?.count)  
     }
@@ -78,6 +88,7 @@ export default function MyOrderServerActions({routers}) {
         setTotalRecords(0)
         let list_var={"lim":10,"off":offset,"filter":{"upcomingOrders": 1,"searchKeyword":searchFilter}}
         let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
+        console.log(postData,'postData')
         setProductList(postData?.ecommerceProductOrdersList?.productList)
         setTotalRecords(postData?.ecommerceProductOrdersList?.count)
     }else{
@@ -125,19 +136,21 @@ export default function MyOrderServerActions({routers}) {
                 "startingDate":startDate!=""?moment(startDate).format("YYYY-MM-DD"):"",
                 "endingDate":endDate!=""?moment(endDate).format("YYYY-MM-DD"):"",
                 "orderId":orderId?orderId:"",
-                "upcomingOrders": 1
+                // "upcomingOrders": 1
             }
         }
         let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
         setProductList(postData?.ecommerceProductOrdersList?.productList)
         setTotalRecords(postData?.ecommerceProductOrdersList?.count)
     }
-  }else{
+  }
+  else{
     if(startDate!=""&&endDate==""){
         setValidCheck(1)
     }else{
         setValidCheck(0)
     setApplyFilter(true)
+    
     if(orderId!=""){
         Filters[0].orderId=true
     }
@@ -155,7 +168,7 @@ export default function MyOrderServerActions({routers}) {
             "startingDate":startDate!=""?moment(startDate).format("YYYY-MM-DD"):"",
             "endingDate":endDate!=""?moment(endDate).format("YYYY-MM-DD"):"",
             "orderId":orderId?orderId:"",
-            "orderHistory": 1
+            // "orderHistory": 1
         }
     }
     let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
@@ -165,6 +178,7 @@ export default function MyOrderServerActions({routers}) {
   }
     }
 
+    console.log(deliveryStatus,'deliveryStatus')
     const handleClear=async ()=>{
         if(pathNameHistory==="/account/my-orders"){
         setOrderId("")
@@ -320,6 +334,9 @@ export default function MyOrderServerActions({routers}) {
 
     const handleOrderId=(e)=>{
         setOrderId(e.target.value)
+        if(e.target.value==""){
+            setApplyFilter(false) 
+        }
     }
     const onPageChange=(data)=>{
         // console.log(data,"78799")
@@ -475,11 +492,19 @@ useEffect(()=>{
                             </thead>
                             {pathNameHistory!="/account/my-history"?<>
                             <tbody>
-                                {productList?.length>0?productList?.map((result,index)=>(<>
+                                {
+                                    skeleton
+                                    ?
+                                    <MyOrderList/>
+                                    :
+                                <>
+                                {productList?.length>0?productList?.map((result,index)=>(
+                                <>
+                                {console.log(result,'imagecom')}
                                 <tr>
                                     <td className="px-4 py-2 border-b border-grey text-start">
                                         <div className="flex gap-6 items-center md:flex-row flex-col">
-                                            {/* <img src="/img/checkList-product1.svg" className="w-[60px] h-[38px]s" /> */}
+                                           
                                             <ImageComponets path={"https://demo.spurtcms.com/"+result?.productImagePath}  w={60} h={38}/>
                                             <h3 className="text-sm font-normal text-black-500">{result?.productName}</h3>
                                         </div>
@@ -509,7 +534,10 @@ useEffect(()=>{
                                     <td className="px-4 py-2 border-b border-grey text-start">
                                         <Link href={`/account/my-order-detail/${result?.productSlug}`} className="text-3-light font-light text-sm hover:underline">View Details</Link>
                                     </td>
-                                </tr></>)):<>
+                                </tr>
+                                
+                                </>))
+                                :<>
 
                                 <tr>
                                     <td colSpan={8}>
@@ -521,13 +549,22 @@ useEffect(()=>{
                         </div>
                     </div>
                     </td>
-                    </tr>
-                    </>}
+                                 </tr>
+                             </>}
+                             </>}
                            
                             </tbody></>:<>
 
                             <tbody>
-                                {productList?.length>0?productList?.map((result,index)=>(<>
+
+                                {
+                                      skeleton
+                                    ?
+                                    <MyOrderList/>
+                                    :
+                                <>
+                                {productList?.length>0?productList?.map((result,index)=>(
+                                <>
                                 <tr>
                                     <td className="px-4 py-2 border-b border-grey text-start">
                                         <div className="flex gap-6 items-center md:flex-row flex-col">
@@ -561,7 +598,9 @@ useEffect(()=>{
                                     <td className="px-4 py-2 border-b border-grey text-start">
                                         <Link href={`/account/my-order-detail/${result?.productSlug}`} className="text-3-light font-light text-sm hover:underline">View Details</Link>
                                     </td>
-                                </tr></>)):<>
+                                </tr>
+                                </>))
+                                :<>
 
                                 <tr>
                                     <td colSpan={8}>
@@ -573,10 +612,11 @@ useEffect(()=>{
                         </div>
                     </div>
                     </td>
-                    </tr>
-                    </>}
-                           
-                            </tbody></>}
+                               </tr>
+                               </>}
+                               </> }
+                            </tbody>
+                            </>}
                         </table>
 
                                       

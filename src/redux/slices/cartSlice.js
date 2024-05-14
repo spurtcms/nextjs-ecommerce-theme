@@ -4,7 +4,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState ={
    reloadCount:0,
    checkoutCart:"",
-   address:{}
+   address:{},
+   trrigerChange:false
 };
 
 
@@ -19,7 +20,7 @@ export const userSlice=createSlice({
             state.checkoutCart=action.payload;
         },
         getAddress:(state,action)=>{
-            state.address=action.payload
+            state.address=action.payload;
         }
     },
 });

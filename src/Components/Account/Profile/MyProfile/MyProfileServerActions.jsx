@@ -1,4 +1,9 @@
 'use client'
+import { fetchGraphQl } from '@/api/graphicql'
+import { GET_ADDRESS_DETAIL } from '@/api/query'
+import { EmailValidator } from '@/utils/regexValidation'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
 export default function MyProfileServerActions() {
@@ -12,12 +17,40 @@ export default function MyProfileServerActions() {
     const [country,setCountry]=useState("")
     const [emailError,setEmailError]=useState("")
     const [valid,setValid]=useState(0)
+    const [newDp,setNewDp]=useState();
+    const [dataImg,setDataImg]=useState()
+
+
+    const hadlegetAddress=async()=>{
+        let myAddress=await fetchGraphQl(GET_ADDRESS_DETAIL)
+        setDataImg(myAddress)
+        console.log(myAddress?.ecommerceCustomerDetails,'myAddress');
+        if(myAddress?.ecommerceCustomerDetails){
+          setName(myAddress.ecommerceCustomerDetails.firstName)
+          setEmail(myAddress.ecommerceCustomerDetails.email)
+          setArea(myAddress.ecommerceCustomerDetails.streetAddress)
+          setNumber(myAddress.ecommerceCustomerDetails.mobileNo)
+          setStates(myAddress.ecommerceCustomerDetails.state)
+          setHouseNo(myAddress.ecommerceCustomerDetails.zipCode)
+          setCity(myAddress.ecommerceCustomerDetails.city)
+          setCountry(myAddress.ecommerceCustomerDetails.country)
+  
+        }
+      }
+      useEffect(()=>{
+         hadlegetAddress()
+      },[])
+
+
     useEffect(()=>{
         if(valid==1){
           validCheck()
         }
 
       },[email])
+
+      let router=useRouter();
+
     const handleSubmit=()=>{
         setValid(1)
         if(validCheck()){
@@ -32,7 +65,7 @@ export default function MyProfileServerActions() {
                 "city":city,
                 "country":country
               }
-              dispatch(getAddress(obj))
+            //   dispatch(getAddress(obj))
               router.push("/account/checkout-payment")
 
         }
@@ -60,6 +93,24 @@ export default function MyProfileServerActions() {
           return false
         }
     }
+
+
+    const changeDP = (e) => {
+        const { files } = e.target;
+        if (files && files[0] && files[0].name.match(/\.(jpg|jpeg|png|svg)$/)) {
+          const fsize = files[0].size;
+          const file = Math.round(fsize / 1024);
+    
+          if (file < 2048) {
+            let reader = new FileReader();
+    
+            reader.readAsDataURL(files[0]);
+    
+            reader.onloadend = () => setNewDp(reader.result);
+            // setImageUpload(true)
+          }
+        }
+      };
   return (
   <>
    <div className='p-4 sm:p-10 md:pr-[118px] '>
@@ -67,8 +118,17 @@ export default function MyProfileServerActions() {
                     <h3 className='text-xl text-black mb-8 leading-6 font-normal'>Personal Info</h3>
                     <div className='grid grid-cols-1 sm:grid-1auto gap-5 sm:gap-[70px] items-start mb-8'>
                         <div className='relative w-[120px] h-[120px] m-auto sm:m-0'>
-                            <img src="/img/profile.svg" className='w-full h-full' />
-                            <input type='file' className='absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer' />
+                            {newDp&&
+                            <img src={newDp} className='w-full h-full rounded-full' />}
+                            {dataImg?.ecommerceCustomerDetails?.firstName ?
+                            <div className='flex text-6xl  font-semibold text-black items-center justify-center relative h-full w-full overflow-hidden rounded-full bg-slate-300'>
+                             {dataImg?.ecommerceCustomerDetails?.firstName.at(0)}
+                            </div>
+                            :
+                            <img src='/img/user1.jpg' className='w-full h-full rounded-full' />
+                            }
+                            
+                            <input type='file' className='absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer' onChange={changeDP} />
                         </div>
                         <div className='grid sm:grid-cols-2 grid-cols-1 gap-4 sm:gap-6'>
                             <div className='flex flex-col gap-2'>
@@ -125,7 +185,7 @@ export default function MyProfileServerActions() {
                                 </div>
                             </div>
                             <div className='flex gap-4 justify-end'>
-                                <button className='py-3 px-6 h-11 text-base leading-5 text-black border border-black rounded'>Cancel</button>
+                                <Link href="/" className='py-3 px-6 h-11 text-base leading-5 text-black border border-black rounded'>Cancel</Link>
                                 <button onClick={handleSubmit} className='py-3 px-6 h-11 text-base leading-5 text-white bg-black rounded'>Save</button>
                             </div>
                         </div>

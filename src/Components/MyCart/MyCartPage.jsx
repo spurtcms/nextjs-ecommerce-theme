@@ -30,14 +30,16 @@ const handleMycart=async()=>{
         "offset":0,
       }
     let mycartlist=await fetchGraphQLDa(GET_MY_CART_QUERY,variable)
+    
     mycartlist=mycartlist?.ecommerceCartList?.cartList
     mycartlist?.map((sdata)=>{
-      sdata.quantity=sdata.ecommerceCart.quantity
-
+      sdata.quantity=sdata.ecommerceCart?.quantity
+      console.log(sdata,'mycartlist')
     })
   setCartItemList(mycartlist)
   setSkeleton(false)
 }
+
     useEffect(()=>{
       if(tokenCheck){
        
@@ -59,6 +61,7 @@ const handleMycart=async()=>{
     },[tokenCheck])
 
     const handleQuantityChange=(qty,data)=>{
+        console.log(qty,"huhh",data)
 cartItmeList?.map((sdata)=>{
 if(sdata.id==data.id){
     sdata.quantity= parseInt(qty)
@@ -71,6 +74,7 @@ if(sdata.id==data.id){
         cartItmeList?.map((sdata)=>{
            let priceStore = TaxPriceValidation(sdata.specialPrice,sdata.discountPrice,sdata.defaultPrice,0,"")*sdata.quantity
            priceStart=priceStart+priceStore
+           
             })
             return priceStart
              
@@ -163,7 +167,7 @@ const router=useRouter()
                                 </div>
                                 <div className="align-top">
                                     <a  className="flex items-center gap-2 min-w-20  min-h-9 w-fit justify-center rounded-5 " >
-                                    <select id="countries" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-300 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:[box-shadow:none]" onChange={(e)=>handleQuantityChange(e.target.value,data)} value={data.quantity}>
+                                    <select id="countries" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-300 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:[box-shadow:none]" onChange={(e)=>handleQuantityChange(e.target.value,data)} value={data?.quantity}>
                         {quantityList().map((sdata)=>(
                         <option value={sdata}> Qty {sdata}</option>
                         ))}
@@ -174,7 +178,7 @@ const router=useRouter()
                                 <div className="align-top flex lg:flex-col flex-row lg:justify-normal justify-between flex-wrap">
                                     <p className="flex items-center gap-1.5 text-lg font-medium text-black-500">
                                         <img src="/img/rupee.svg" />
-                                        {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")*data.quantity} 
+                                        {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")*data?.quantity} 
                                     </p>
                                     <button onClick={()=>handleRemove(data)} className="flex items-center gap-1 text-sm font-normal text-black-500 mt-0 lg:mt-[77px]">
                                         <img src="/img/remove.svg" />

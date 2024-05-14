@@ -3,7 +3,7 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import Link from "next/link";
 import ImageComponets from "../ImageComponent";
-import { GET_MY_CART_QUERY, GET_POSTS_LIST_QUERY, Get_CATEGORIES_LIST } from "@/api/query";
+import { GET_ADDRESS_DETAIL, GET_MY_CART_QUERY, GET_POSTS_LIST_QUERY, Get_CATEGORIES_LIST } from "@/api/query";
 import { useRouter } from "next/navigation";
 import { fetchGraphQLDa } from "@/api/clientGraphicql";
 import { useSelector,useDispatch } from "react-redux";
@@ -11,7 +11,7 @@ import HeaderPageSkeleton from "@/utils/SkeletonLoader/HeaderPage";
 import { fetchGraphQl } from "@/api/graphicql";
 import { RemoveToken } from "@/api/serverActions";
 import { catagoryId, catagoryName } from "@/redux/slices/catgorySlice";
-import { checkCartName } from "@/redux/slices/cartSlice";
+import { checkCartName, getTrriger, reloadCartCount } from "@/redux/slices/cartSlice";
 import ToastMessage from "../ToastMessage/ToastMessage";
 // import Loader from "./Loader";
 
@@ -32,7 +32,7 @@ export default function HeaderServerActions({tokenCheck}) {
     const reloadCount=useSelector((state)=>state.cartReducer.reloadCount)
     const catgorId=useSelector((state)=>state.catgoReducer.catgoId)
     const catogoryName=useSelector((state)=>state.catgoReducer.catagoryName)
-
+    
 
   const [catgoData,setCatgoData]=useState()
   const [productListData,setProductListData]=useState()
@@ -43,8 +43,36 @@ export default function HeaderServerActions({tokenCheck}) {
   const [trigger,setTrigger]=useState(0)
   const [cartLoad,setCartrelaod]=useState(0)
   const [focusedIndex, setFocusedIndex] = useState(-1);
+  const [dataImg,setDataImg]=useState('')
+  
+
+  
+  
   const router=useRouter()
   const resultsRef = useRef(null);
+
+
+
+  const hadlegetAddress=async()=>{
+    let myAddress=await fetchGraphQl(GET_ADDRESS_DETAIL)
+    setDataImg(myAddress)
+    console.log(myAddress?.ecommerceCustomerDetails,'myAddress');
+    // if(myAddress?.ecommerceCustomerDetails){
+    //   setName(myAddress.ecommerceCustomerDetails.firstName)
+    //   setEmail(myAddress.ecommerceCustomerDetails.email)
+    //   setArea(myAddress.ecommerceCustomerDetails.streetAddress)
+    //   setNumber(myAddress.ecommerceCustomerDetails.mobileNo)
+    //   setStates(myAddress.ecommerceCustomerDetails.state)
+    //   setHouseNo(myAddress.ecommerceCustomerDetails.zipCode)
+    //   setCity(myAddress.ecommerceCustomerDetails.city)
+    //   setCountry(myAddress.ecommerceCustomerDetails.country)
+    // }
+  }
+  useEffect(()=>{
+     hadlegetAddress()
+     console.log("object")
+  },[reloadCount])
+
 
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
@@ -132,9 +160,10 @@ const Logout=()=>{
   dispatch(checkCartName('')) 
   setCartrelaod(cartLoad+1)
   localStorage.removeItem("add-cart-list")
-  ToastMessage({type:'success',message:"Login Successfull"})
+  ToastMessage({type:'success',message:"Logout Successfull"})
     RemoveToken()
-  
+    // dispatch(getTrriger(false))
+    dispatch(reloadCartCount(reloadCount-1))
     
 }
 
@@ -180,6 +209,7 @@ const handleKeyDown = (event) => {
 
 
 console.log(productListData,"8978")
+console.log(dataImg,'dataImg')
   return (
     <>
     {/* <Loader /> */}
@@ -257,11 +287,26 @@ console.log(productListData,"8978")
                     <Menu as="div" className="relative">
                       <div>
                         <Menu.Button className="relative flex rounded-full text-sm ">
+                          {dataImg?.ecommerceCustomerDetails?.profileImage&&
                           <img
+                          className="w-6 h-6 rounded-full"
+                          src={dataImg?.ecommerceCustomerDetails?.profileImage}
+                          alt="profile"
+                        />}
+                         {dataImg?.ecommerceCustomerDetails?.firstName!=undefined
+                         ?
+                         <div className='flex    text-black items-center justify-center relative h-6 w-6 overflow-hidden rounded-full bg-slate-300'>
+                         {dataImg?.ecommerceCustomerDetails?.firstName.at(0)}
+                        </div>
+                        :
+                        <img className="w-6 h-6 rounded-full" src='/img/user1.jpg' />
+                         }
+                        
+                           {/* <img
                             className="w-6 h-6 rounded-full"
                             src="/img/profile.svg"
                             alt="profile"
-                          />
+                          /> */}
                         </Menu.Button>
                       </div>
                       <Transition

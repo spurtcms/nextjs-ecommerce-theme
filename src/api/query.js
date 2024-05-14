@@ -1,10 +1,21 @@
 
-export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
-  memberRegister(
-    input:$singData
-  )
-}
-  `;
+// export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
+//   memberRegister(
+//     input:$singData
+//   )
+// }
+//   `;
+
+  export const GET_POSTS_SIGN_QUERY = `mutation memberRegister($singData: MemberDetails!,$ecomModule:Int) {
+    memberRegister(
+      input:$singData,
+      ecomModule:$ecomModule
+    )
+  }
+    `;
+
+
+
   export const GET_POSTS_LOGIN_QUERY =`mutation($email:String!,$password:String!){
     templateMemberLogin(
       email:$email
@@ -103,16 +114,11 @@ export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
           deletedOn
         }
       }
-      Count
-      cartSummary{
-        subTotal
-        shippingAmount
-        totalTax
-        totalCost
-        totalQuantity
-      }
+    
+      
     }
-  }`;
+  }
+  `;
 
   export const Get_CATEGORIES_LIST = `query($categoryGroupId: Int!){
     categoriesList(categoryGroupId:$categoryGroupId){

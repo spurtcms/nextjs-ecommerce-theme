@@ -53,7 +53,8 @@ export const TaxPriceValidation=(specialPrice,discountPrice,defaultPrice,tax,str
         if(discountPrice){
             return discountPrice+tax
         }
-       }else{
+       }
+       else{
 
         if(specialPrice){
             return specialPrice+tax

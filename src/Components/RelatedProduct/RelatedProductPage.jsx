@@ -32,6 +32,7 @@ export default function RelatedProductPage({slug}) {
                                                 <h2 className=" text-2xl font-medium leading-8 text-1-dark  ">
                                                 Related Product
                                                 </h2>
+                                                {productList?.length>3&&
                                                 <Link
                                                 href={"/"}
                                                 prefetch
@@ -39,6 +40,7 @@ export default function RelatedProductPage({slug}) {
                                                 >
                                                 See All
                                                 </Link>
+                                                }
                                             </div>
                                     <div class=" grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4 border-t border-s border-grey rounded-5 overflow-hidden">
 

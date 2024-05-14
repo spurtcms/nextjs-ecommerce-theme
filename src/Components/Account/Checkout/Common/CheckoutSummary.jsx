@@ -14,7 +14,7 @@ export default function CheckoutSummary({setCartCount}) {
         let mycartlist=await fetchGraphQLDa(GET_MY_CART_QUERY,variable)
         mycartlist=mycartlist?.ecommerceCartList?.cartList
         mycartlist?.map((sdata)=>{
-          sdata.quantity=sdata.ecommerceCart.quantity
+          sdata.quantity=sdata.ecommerceCart?.quantity
     
         })
         setCartCount(mycartlist)

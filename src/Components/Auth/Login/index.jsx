@@ -30,11 +30,26 @@ console.log(cartPathName,'cartPathName')
         setValidCheck(0)
         const inputdata={"email":email,"password":password}
         postGraphQl(GET_POSTS_LOGIN_QUERY,inputdata,"login",setLoader,cartPathName,reloadCount,dispatch)
-        
       }
-     
+      
 
   }
+
+  const Onkeydownfunc = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      handleLogin()
+    }
+  }
+
+//   const HandleSignin=()=>{
+//     // setValideCheck(true)
+//     if (validate()) {
+//       setValideCheck(true)
+//       handleserver(email,password)
+//       setLoader(true)
+//     }
+//   }
 
   return (
    <>
@@ -69,7 +84,7 @@ console.log(cartPathName,'cartPathName')
                                 >
                                 Email Address
                                 </label>
-                                <input type="text" onChange={(e)=>setEmail(e.target.value)} className=" p-3 border  rounded-md  border-gray-1 text-sm font-normal leading-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black placeholder:text-grey-2 focus:outline-none " placeholder='Enter email' />
+                                <input type="text" onChange={(e)=>setEmail(e.target.value)} onKeyDown={(e) => Onkeydownfunc(e)} className=" p-3 border  rounded-md  border-gray-1 text-sm font-normal leading-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black placeholder:text-grey-2 focus:outline-none " placeholder='Enter email' />
                                     {email ==""&&validCheck==1&&<p className='text-red-600 text-xs font-normal'>Email id required</p>}
                                 
                             </div>
@@ -80,7 +95,7 @@ console.log(cartPathName,'cartPathName')
                                 >
                                 Password
                                 </label>
-                                <input onChange={(e)=>setPassword(e.target.value)} type="text" className="p-3 border  rounded-md border-gray-1  text-sm font-normal leading-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black placeholder:text-grey-2 focus:outline-none" placeholder='Enter password'/>
+                                <input onChange={(e)=>setPassword(e.target.value)} onKeyDown={(e) => Onkeydownfunc(e)} type="text" className="p-3 border  rounded-md border-gray-1  text-sm font-normal leading-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black placeholder:text-grey-2 focus:outline-none" placeholder='Enter password'/>
                                     {password ==""&&validCheck==1&&<p className='text-red-600 text-xs font-normal'>Password is required</p>} 
                             </div>
                             

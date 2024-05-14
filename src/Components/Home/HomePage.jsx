@@ -44,6 +44,7 @@ export default function HomePage() {
 
     const dispatch=useDispatch()
     const catgorId=useSelector((state)=>state.catgoReducer.catgoId)
+    console.log(catgorId,'catgorId')
     const catogoryName=useSelector((state)=>state.catgoReducer.catagoryName)
     const [selected, setSelected] = useState(people);
     let [cardListData,setCardListData]=useState([])

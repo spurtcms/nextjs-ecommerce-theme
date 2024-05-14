@@ -10,7 +10,7 @@ export default function MyOrderDetailSeverActions({params}) {
 
     const [productDetail,setProductDetail]=useState()
 
-console.log(params,"9090909")
+console.log(params.slug,"9090909")
     const detailApi=async()=>{
         let detail_var={"slug":params?.slug}
         let postData= await fetchGraphQLDa(GET_PRODUCT_DETAIL,detail_var)
@@ -84,7 +84,7 @@ console.log(params,"9090909")
                 <div className="flex items-start flex-col sm:flex-row">
                     {/* <img src="/img/checkList-product2.svg" className="w-[135.98px] h-[160px]" /> */}
                     <ImageComponets path={"https://demo.spurtcms.com/"+productDetail?.ecommerceProductOrderDetails?.productImagePath} w={135.98} h={160}/>
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-2 px-4">
                         <h4 className="text-base text-black-500 font-normal">{productDetail?.ecommerceProductOrderDetails?.productName}</h4>
                         <p className="text-1-light text-sm font-light">Black Titanium, 256GB</p>
                     </div>
@@ -102,14 +102,15 @@ console.log(params,"9090909")
                         <h5 className="text-black-500 font-light text-base leading-5">Subtotal (1item)</h5>
                         <p className="flex items-center gap-1 text-3-light text-sm leading-5">
                             <img src="/img/rupee-sm-light.svg" />
-                            15,299
+                            {productDetail?.ecommerceProductOrderDetails?.orderDetails?.price}
+                            {/* 15,299 */}
                         </p>
                     </div>
                     <div className="flex items-center justify-between">
                         <h5 className="text-black-500 font-light text-base leading-5">Sales taxes</h5>
                         <p className="flex items-center gap-1 text-3-light text-sm leading-5">
                             <img src="/img/rupee-sm-light.svg" />
-                            199.00
+                            {productDetail?.ecommerceProductOrderDetails?.orderDetails?.tax}
                         </p>
                     </div>
                     <div className="w-full h-px bg-grey my-4"></div>
@@ -117,7 +118,7 @@ console.log(params,"9090909")
                         <h3 className="text-black-500 font-medium text-base leading-5">Grand Total</h3>
                         <p className="flex items-center gap-1 text-black-500 text-sm leading-5">
                             <img src="/img/rupee.svg" />
-                            15,498
+                            { productDetail?.ecommerceProductOrderDetails?.orderDetails?.price + productDetail?.ecommerceProductOrderDetails?.orderDetails?.tax}
                         </p>
                     </div>
                 </div>

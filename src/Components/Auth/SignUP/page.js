@@ -1,4 +1,5 @@
 'use client'
+import ToastMessage from '@/Components/ToastMessage/ToastMessage'
 import { postGraphQl } from '@/api/graphicql'
 import { GET_POSTS_SIGN_QUERY } from '@/api/query'
 import { EmailValidator, lowerPresent, numPresent, specialPresent, upperPresent } from '@/utils/regexValidation'
@@ -23,6 +24,7 @@ export default function SingUp() {
         }
 
       },[email,password])
+    
       const handlesignup=()=>{
         setValid(1)
 
@@ -33,12 +35,14 @@ export default function SingUp() {
               "email": email,
               "password": password,
              
-            }
+            },
+            "ecomModule": 1
           }
           if(validCheck()){
             setValid(0)
             setLoader(true)
             postGraphQl(GET_POSTS_SIGN_QUERY,inputdata,"signup",setLoader)
+            ToastMessage({type:'success',message:"Register Successfull"})
           }
       }
       const validCheck=()=>{
@@ -86,7 +90,13 @@ export default function SingUp() {
           return false
         }
       }
-
+      const Onkeydownfunc = (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault()
+          handlesignup()
+        }
+      }
+     
   return (
    <>
    <div className="md:p-10 p-4">
@@ -95,23 +105,23 @@ export default function SingUp() {
                     <h5 className="text-black-500 font-lights text-xl leading-6 mb-6">Account Details</h5>
                     <div className="mb-6 flex flex-col gap-2">
                         <label className="text-black-500 font-light text-base leading-5">Full Name</label>
-                        <input type="text" className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" placeholder="Enter Name"  onChange={(e)=>setFirstName(e.target.value)} />
+                        <input type="text" onKeyDown={(e) => Onkeydownfunc(e)} className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" placeholder="Enter Name"  onChange={(e)=>setFirstName(e.target.value)} />
                         {fisrtName ==""&&valid==1&&<p className='text-red-600 text-xs font-normal'>Full name is required</p>} 
                     </div>
                     <div className="mb-6 flex flex-col gap-2">
                         <label className="text-black-500 font-light text-base leading-5">Phone Number</label>
-                        <input type="text" className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" placeholder="Enter Phone Number"  onChange={(e)=>setphNumber(e.target.value)}/>
+                        <input type="text" onKeyDown={(e) => Onkeydownfunc(e)} className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" placeholder="Enter Phone Number"  onChange={(e)=>setphNumber(e.target.value)}/>
                         {phNumber==""&&valid==1&& <p className='text-red-600 text-xs font-normal'>Phone number is required</p>}
              
                     </div>
                     <div className="mb-6 flex flex-col gap-2">
                         <label className="text-black-500 font-light text-base leading-5">Email Id</label>
-                        <input type="text" className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" placeholder="Enter Email Id"  onChange={(e)=>setEmail(e.target.value)} />
+                        <input type="text" onKeyDown={(e) => Onkeydownfunc(e)} className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" placeholder="Enter Email Id"  onChange={(e)=>setEmail(e.target.value)} />
                         {emailError !==""&&valid==1&&<p className='text-red-600 text-xs font-normal'>{emailError}</p>}
                     </div>
                     <div className="mb-6 flex flex-col gap-2">
                         <label className="text-black-500 font-light text-base leading-5">Password</label>
-                        <input type="text" className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" placeholder="Enter Password" onChange={(e)=>setPassword(e.target.value)}/>
+                        <input type="text" onKeyDown={(e) => Onkeydownfunc(e)} className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" placeholder="Enter Password" onChange={(e)=>setPassword(e.target.value)}/>
                         {valid==1&& <div class="mt-1">
         <ul class="grid grid-cols-1 sm:grid-cols-2  ps-2 gap-y-2">
           {passwordError?.map((err)=>(
