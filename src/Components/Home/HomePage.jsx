@@ -50,6 +50,7 @@ export default function HomePage() {
     let [cardListData,setCardListData]=useState([])
     const [catagoryList,setCatagoryList]=useState()
     const [skeleton,setSkeleton]=useState(true)
+    const [scrolCheck,setScrollCheck]=useState()
     let [offset,setOffset]=useState(0)
     const [count,setCount]=useState(null)
     const [disableScroll,setDisableScroll]=useState(false)
@@ -61,10 +62,12 @@ const listData = async ()=>{
 
   let list_varab={"limit":25,"offset":offset,"filter":{"categoryId":catgorId}}
   let postData = await fetchGraphQLDa(GET_POSTS_LIST_QUERY,list_varab)
+  console.log(postData,'postData123')
   setCount(postData?.ecommerceProductList)
   setCardListData(postData?.ecommerceProductList?.productList)
   if(postData){
     setSkeleton(false)
+    setScrollCheck(true)
   }
 }
 
@@ -108,7 +111,7 @@ if(selected.id==3||selected.id==4){
 } 
 
 useEffect(()=>{
-  setCardListData([])
+  // setCardListData([])
   setOffset(0)
   offset=0
   if(offset==0){
@@ -168,11 +171,14 @@ const handleLoad=(data)=>{
     };
   
     useEffect(() => {
-      window.addEventListener("scroll", handleScroll);
+      if(scrolCheck){
+        window.addEventListener("scroll", handleScroll);
+      }
+      
     }, [handleScroll]);
 
     
-
+console.log(cardListData,'cardListData')
   return (
     <>
 {skeleton==true?
@@ -260,7 +266,7 @@ const handleLoad=(data)=>{
              </Listbox>
            </div>
          </>
-    </div>
+        </div>
             <div class=" grid grid-auto-cols     border-t border-s border-grey">
             {/* card */}
             {cardListData?.map((data,index)=>(

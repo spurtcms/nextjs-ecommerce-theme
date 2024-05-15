@@ -57,7 +57,6 @@ export default function MyOrderServerActions({routers}) {
     console.log(pathNameHistory,"iuyuj")
     const orderList= async ()=>{
         if(pathNameHistory==="/account/my-orders"){
-            console.log("iifhfhf")
         setProductList([])
         setTotalRecords(0)
         let list_var={"lim":10,"off":offset,"filter":{"upcomingOrders": 1}}
@@ -100,6 +99,8 @@ export default function MyOrderServerActions({routers}) {
         setTotalRecords(postData?.ecommerceProductOrdersList?.count)
     }
     }
+
+
 
     useEffect(()=>{
         if(searchFilter==""){
@@ -180,6 +181,7 @@ export default function MyOrderServerActions({routers}) {
 
     console.log(deliveryStatus,'deliveryStatus')
     const handleClear=async ()=>{
+        setSkeleton(true)
         if(pathNameHistory==="/account/my-orders"){
         setOrderId("")
         setStartDate("")
@@ -192,6 +194,9 @@ export default function MyOrderServerActions({routers}) {
         Filters[2].date=false
         let list_var={"lim":10,"off":offset,"filter":{"upcomingOrders": 1}}
         let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
+        if(postData){
+            setSkeleton(false)
+        }
         setProductList(postData?.ecommerceProductOrdersList?.productList)
         setTotalRecords(postData?.ecommerceProductOrdersList?.count)
     }else{
@@ -206,6 +211,9 @@ export default function MyOrderServerActions({routers}) {
         Filters[2].date=false
         let list_var={"lim":10,"off":offset,"filter":{"orderHistory": 1}}
         let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
+        if(postData){
+            setSkeleton(false)
+        }
         setProductList(postData?.ecommerceProductOrdersList?.productList)
         setTotalRecords(postData?.ecommerceProductOrdersList?.count)
     }
@@ -339,7 +347,8 @@ export default function MyOrderServerActions({routers}) {
         }
     }
     const onPageChange=(data)=>{
-        // console.log(data,"78799")
+        console.log(data,"78799")
+        setSkeleton(true)
         if(pathNameHistory==="/account/my-orders"){
         let offset = Math.ceil((data - 1) * limit);
         setOffset(offset)
@@ -506,16 +515,21 @@ useEffect(()=>{
                                         <div className="flex gap-6 items-center md:flex-row flex-col">
                                            
                                             <ImageComponets path={"https://demo.spurtcms.com/"+result?.productImagePath}  w={60} h={38}/>
+                                            {/* <img src={"https://demo.spurtcms.com/"+result?.productImagePath} className="w-20 h-15"
+                                            onError={({ currentTarget }) => {
+                                            currentTarget.onerror = null;
+                                            currentTarget.src = "/img/no-image.png";
+                                        }} /> */}
                                             <h3 className="text-sm font-normal text-black-500">{result?.productName}</h3>
                                         </div>
                                     </td>
                                     <td className="px-4 py-2 border-b border-grey text-start">
-                                        <h3 className="text-sm font-normal text-black-500">{result?.orderDetails?.orderUniqueId}</h3>
+                                        <h3 className="text-sm font-normal text-black-500">{result?.orderUniqueId}</h3>
                                     </td>
                                     <td className="px-4 py-2 border-b border-grey text-start">
                                         <p className="flex items-center gap-1 text-3-light text-sm leading-5">
                                             <img src="/img/rupee-sm-light.svg" />
-                                            {result?.orderDetails?.price}
+                                            {result?.orderPrice}
                                         </p>
                                     </td>
                                     <td className="px-4 py-2 border-b border-grey text-start">
@@ -527,7 +541,7 @@ useEffect(()=>{
                                     <td className="px-4 py-2 border-b border-grey text-start">
                                         <div className="flex">
                                             <div className="px-2 py-[3px] bg-sucess text-sucess text-xs font-normal rounded">
-                                                {result?.orderDetails?.status}
+                                                {result?.orderStatus}
                                             </div>
                                         </div>
                                     </td>
@@ -574,12 +588,12 @@ useEffect(()=>{
                                         </div>
                                     </td>
                                     <td className="px-4 py-2 border-b border-grey text-start">
-                                        <h3 className="text-sm font-normal text-black-500">{result?.orderDetails?.orderUniqueId}</h3>
+                                        <h3 className="text-sm font-normal text-black-500">{result?.orderUniqueId}</h3>
                                     </td>
                                     <td className="px-4 py-2 border-b border-grey text-start">
                                         <p className="flex items-center gap-1 text-3-light text-sm leading-5">
                                             <img src="/img/rupee-sm-light.svg" />
-                                            {result?.orderDetails?.price}
+                                            {result?.orderPrice}
                                         </p>
                                     </td>
                                     <td className="px-4 py-2 border-b border-grey text-start">
@@ -591,7 +605,7 @@ useEffect(()=>{
                                     <td className="px-4 py-2 border-b border-grey text-start">
                                         <div className="flex">
                                             <div className="px-2 py-[3px] bg-sucess text-sucess text-xs font-normal rounded">
-                                                {result?.orderDetails?.status}
+                                                {result?.orderStatus}
                                             </div>
                                         </div>
                                     </td>

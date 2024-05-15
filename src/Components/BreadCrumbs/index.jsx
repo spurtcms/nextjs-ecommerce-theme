@@ -3,21 +3,30 @@ import { useRouter } from 'next/navigation'
 import React from 'react'
 import { useSelector,useDispatch } from 'react-redux'
 import { catagoryId, catagoryName } from "@/redux/slices/catgorySlice";
+import { fetchGraphQLDa } from '@/api/clientGraphicql';
+import { Get_CATEGORIES_LIST } from '@/api/query';
+import { checkCartName, gethomeRoute, homeRoute } from '@/redux/slices/cartSlice';
 
 export default function BreadCrubs({productDetail}) {
-  const dispatch=useDispatch()
+  const dispatch=useDispatch();
     const catogoryName=useSelector((state)=>state.catgoReducer.catagoryName)
     const catgoId=useSelector((state)=>state.catgoReducer.catgoId)
     const router=useRouter()
 
 
+    const handleHome=async()=>{
+      let catgo_variab={"categoryGroupId":147}
+      let postData= await fetchGraphQLDa(Get_CATEGORIES_LIST,catgo_variab)
+      dispatch(checkCartName(""),dispatch(catagoryName(postData?.categoriesList?.categories[0]?.categoryName)),
+                    dispatch(catagoryId(postData?.categoriesList?.categories[0]?.id)))
+    }
   
     
   return (
     <>
     <ul className="flex items-center gap-2 py-6 px-5 md:px-10">
         <li>
-          <Link href={`/`} prefetch className="block w-4">
+          <Link href={`/`} onClick={handleHome} prefetch className="block w-4">
             <img src="/img/home.svg" alt="home" />{" "}
           </Link>
         </li>

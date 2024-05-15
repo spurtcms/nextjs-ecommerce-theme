@@ -125,6 +125,8 @@ const router=useRouter()
             dispatch(checkCartName(pathname)) 
         }
     }
+
+    console.log(cartItmeList,'cartItmeList')
   return (
     <>      {skeleton?<MyCartSkeleton/>:
                     <div className="md:p-10 p-4">

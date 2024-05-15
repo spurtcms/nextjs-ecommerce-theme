@@ -23,6 +23,11 @@
     )
   }`
 
+  export const GET_POST_ADDRESS_QUERY=`mutation($cd: customerInput!){
+    customerProfileUpdate(customerDetails: $cd)
+  }
+  `
+
 
   export const GET_POSTS_LIST_QUERY = `query ecommerceProductList(
     $limit: Int!,
@@ -45,6 +50,8 @@
         productDescription
         productImagePath
         productImageArray
+        productYoutubePath
+        productVimeoPath
         sku
        defaultPrice
         isActive
@@ -68,6 +75,8 @@
       productDescription
       productImagePath
       productImageArray
+      productYoutubePath
+      productVimeoPath
       sku
       tax
       totalcost
@@ -149,19 +158,33 @@
         productSlug
         productDescription
         productImagePath
+        productVimeoPath
+        productYoutubePath
         sku
+        tax
+        totalcost
+        isActive
         createdOn
-        orderDetails{
-          id
-          orderId
-          productId
-          quantity
-          price
-          status
-          tax
-          paymentMode
-          orderUniqueId
-        } 
+        createdBy
+        modifiedOn
+        modifiedBy
+        isDeleted
+        deletedBy
+        deletedOn
+        defaultPrice
+        discountPrice
+        specialPrice
+        productImageArray
+        orderId
+        orderUniqueId
+        orderQuantity
+        orderPrice
+        orderTax
+        orderStatus
+        orderCustomer
+        orderTime
+        paymentMode
+        shippingDetails
       }
       count
     }
@@ -171,29 +194,46 @@
     ecommerceOrderPlacement(paymentMode: $mode,shippingAddress: $addr,orderProducts: $prod, orderSummary: $summ)
   }`
 
-  export const GET_PRODUCT_DETAIL=`query($slug: String){
-    ecommerceProductOrderDetails(productSlug: $slug){
+  export const GET_PRODUCT_DETAIL=`query($pid: Int,$pslug: String){
+    ecommerceProductOrderDetails(productId: $pid, productSlug: $pslug){
       id
         productName
         categoriesId
         productSlug
         productDescription
         productImagePath
-        createdOn
+        productVimeoPath
+        productYoutubePath
         sku
-        orderDetails{
-          id
-          orderId
-          productId
-          quantity
-          price
-          status
-          tax
-          paymentMode
-          orderUniqueId
-        } 
+        tax
+        totalcost
+        isActive
+        createdOn
+        createdBy
+        modifiedOn
+        modifiedBy
+        isDeleted
+        deletedBy
+        deletedOn
+        defaultPrice
+        discountPrice
+        specialPrice
+        productImageArray
+        orderId
+        orderUniqueId
+        orderQuantity
+        orderPrice
+        orderTax
+        orderStatus
+        orderCustomer
+        orderTime
+        paymentMode
+        shippingDetails
     }
   }`
+
+
+
 
   export const GET_ADDRESS_DETAIL=`query{
     ecommerceCustomerDetails{

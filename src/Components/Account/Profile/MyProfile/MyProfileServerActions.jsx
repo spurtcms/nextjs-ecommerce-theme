@@ -1,6 +1,7 @@
 'use client'
-import { fetchGraphQl } from '@/api/graphicql'
-import { GET_ADDRESS_DETAIL } from '@/api/query'
+import ToastMessage from '@/Components/ToastMessage/ToastMessage'
+import { fetchGraphQl, postGraphQl } from '@/api/graphicql'
+import { GET_ADDRESS_DETAIL, GET_POST_ADDRESS_QUERY } from '@/api/query'
 import { EmailValidator } from '@/utils/regexValidation'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -56,17 +57,24 @@ export default function MyProfileServerActions() {
         if(validCheck()){
             setValid(0)
             let obj={
-                "name":name,
+              "cd":{
+                "firstName":name,
+                "username": name,
                 "email":email,
-                "area":area,
-                "states":states,
-                "number":number,
-                "houseNo":houseNo,
+                "streetAddress":area,
+                "state":states,
+                "mobileNo":number,
+                "zipCode":houseNo,
                 "city":city,
-                "country":country
+                "country":country,
+                "profileImage":"",
+                "isActive": 1,
+              }  
               }
             //   dispatch(getAddress(obj))
-              router.push("/account/checkout-payment")
+              // router.push("/account/checkout-payment")
+              ToastMessage({type:'success',message:"Update Successfull"})
+              postGraphQl(GET_POST_ADDRESS_QUERY,obj)
 
         }
         

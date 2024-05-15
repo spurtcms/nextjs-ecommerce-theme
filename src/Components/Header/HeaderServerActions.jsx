@@ -28,9 +28,13 @@ import ToastMessage from "../ToastMessage/ToastMessage";
 
 
 export default function HeaderServerActions({tokenCheck}) {
+
+  console.log(tokenCheck,'tokenCheck')
+
     const dispatch=useDispatch()
     const reloadCount=useSelector((state)=>state.cartReducer.reloadCount)
     const catgorId=useSelector((state)=>state.catgoReducer.catgoId)
+
     const catogoryName=useSelector((state)=>state.catgoReducer.catagoryName)
     
 
@@ -263,7 +267,8 @@ console.log(dataImg,'dataImg')
                             <div className="w-10 min-h-10 flex items-center" prefetch onClick={()=>handleProduct(data)}><ImageComponets path={data?.productImageArray?.[0]} w={40} h={40} /></div>
                             <p className="text-sm font-normal text-black cursor-pointer" prefetch onClick={()=>handleProduct(data)}>{data?.productName}</p>
                           </Link></>)):<><div className="p-4 flex items-center justify-center"><p className="text-sm font-medium text-black" >{"No data found"}</p></div></>}
-                        </div>}
+                        </div>
+                        }
                         </div>
 
                         
@@ -274,11 +279,13 @@ console.log(dataImg,'dataImg')
                    <Link href={"/my-cart"} prefetch>
                    <button type="button" className="relative">
                       <img src="/img/cart.svg" alt="search" />
-                      <div>
+                      {cartCount>0&&
+                        <div>
                           <div className="absolute -top-1 -right-2 flex justify-center items-center w-3 h-3 bg-dark-500 rounded-full">
                             <span className="text-white text-[10px] leading-3">{cartCount}</span>
                           </div>
                         </div>
+                      }  
                     </button>
 
                     </Link>
@@ -319,7 +326,9 @@ console.log(dataImg,'dataImg')
                         leaveTo="transform opacity-0 scale-95"
                       >
                         <Menu.Items className="absolute right-0 z-10 mt-2 w-36 origin-top-right bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none  py-1 rounded-md  ">
-                          <Menu.Item>
+                          {tokenCheck&&
+                          <>                   
+                                 <Menu.Item>
                             {({ active }) => (
                               <Link
                                 href="/account/my-profile"
@@ -354,6 +363,8 @@ console.log(dataImg,'dataImg')
                               </Link>
                             )}
                           </Menu.Item>
+                          </>
+}
                           {/* <Menu.Item>
                             {({ active }) => (
                               <a

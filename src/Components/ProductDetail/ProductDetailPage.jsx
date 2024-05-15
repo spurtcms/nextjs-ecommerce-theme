@@ -11,14 +11,18 @@ import BreadCrubs from '../BreadCrumbs';
 import RelatedServerActions from '../RelatedProduct';
 import CartModel from './model/CartModel';
 import CoverImageModel from './model';
+import ReactPlayer from 'react-player';
 
 export default function ProductDetailPage({productDetail,tokenCheck,slug}) {
+
+  console.log(productDetail,'qwerfdasd')
   const dispatch=useDispatch()
   const reloadCount=useSelector((state)=>state.cartReducer.reloadCount)
   const [open, setOpen] = useState(false);
   const [quantity,setQuantity]=useState(1)
   const [skeleton,setSkeleton]=useState(true)
-  const [viewModel,setViewModel]=useState('')
+  const [viewModel,setViewModel]=useState('');
+  const [videoPath,setVideoPath]=useState('')
   
   const handleOpenAddtoCart = () => {
     if(tokenCheck){
@@ -80,6 +84,15 @@ if(productDetail){
   setSkeleton(false)
 }
   },[])
+  const handleImage=(imageurl)=>{
+    setViewModel(imageurl)
+  setVideoPath("")
+  }
+
+ const handleVideo=(videourl)=>{
+  setViewModel(videourl)
+  setVideoPath("video")
+ }
   return (
    <>
     {/* <ul className="flex items-center gap-2 py-6 px-5 md:px-10">
@@ -129,11 +142,13 @@ if(productDetail){
           <div className="grid sm:grid-cols-2 grid-cols-1   p-2 gap-4  h-fit md:sticky relative top-6 ">
             {productDetail?.productImageArray?.map((data,index)=>(
               <>
-              {index==0&&  <div className="sm:col-span-2 grid place-items-center  rounded-5 overflow-hidden">
+              {index==0&& 
+               <div className="sm:col-span-2 grid place-items-center  rounded-5 overflow-hidden">
               <div className="flex gap-3 absolute top-2 right-2">
                 
                 <a
-               onClick={()=>setViewModel(data)}
+              //  onClick={()=>setViewModel(data)}
+              onClick={()=>handleImage(data)}
                   class="grid place-items-center  col-span-2 cursor-pointer"
                 >
                   <img src="/img/zoom-product.svg" alt="view product" />
@@ -144,13 +159,10 @@ if(productDetail){
               </div>
             </div>}
             {index !=0&&
-
-           
-
             <div className=" grid place-items-center  rounded-5 overflow-hidden relative">
               <div className="flex gap-3 absolute top-2 right-2">
                 <a
-                onClick={()=>setViewModel(data)}
+               onClick={()=>handleImage(data)}
                   class="grid place-items-center  col-span-2 cursor-pointer"
                 >
                   <img src="/img/zoom-product.svg" alt="view product" />
@@ -158,14 +170,35 @@ if(productDetail){
               </div>
               <div className="w-full ">
               <ImageComponets path={data} w={200} h={200} alt={productDetail.productName} />
-              </div>
+            </div>
             </div>}
             
 
             </>
             ))}
             
-                {console.log(productDetail,'0000000')}
+          {productDetail?.productYoutubePath&&
+              <>
+              <div className=" grid place-items-center  rounded-5 overflow-hidden relative">                <div className="flex gap-3 absolute top-2 right-2">
+                <a
+                // onClick={()=>setViewModel(productDetail?.productYoutubePath)}
+                onClick={()=>handleVideo(productDetail?.productYoutubePath)}
+                  class="grid place-items-center  col-span-2 cursor-pointer"
+                >
+                  <img src="/img/zoom-product.svg" alt="view product" />
+                </a>
+              </div>
+              <div className="w-full ">
+              <ReactPlayer url={productDetail?.productYoutubePath} height={160} width={260}/>
+            </div>
+            </div>
+
+          
+          </>
+          }
+
+
+         
             {/* <div className=" grid place-items-center  rounded-5 overflow-hidden relative">
               <div className="flex gap-3 absolute top-2 right-2">
                 <a
@@ -242,8 +275,8 @@ if(productDetail){
       </section>
 }
       
-    <CartModel open={open} productDetail={productDetail} quantity={quantity}/>
-                <CoverImageModel viewModel={viewModel} setViewModel={setViewModel}/>   
+           <CartModel open={open} productDetail={productDetail} quantity={quantity}/>
+                <CoverImageModel viewModel={viewModel} setViewModel={setViewModel} videoPath={videoPath}/>   
                  
                          
                     

@@ -77,7 +77,7 @@ function CheckOutPayServerAction() {
     <div className="md:p-10 p-4">
                 <div className="flex flex-col gap-1.5 mb-4">
                     <h5 className="text-2xl font-normal leading-8 uppercase">CheckOut</h5>
-                    <p className="text-3-light text-sm font-normal">({cartCount.length} items)</p>
+                    <p className="text-3-light text-sm font-normal">({cartCount?.length} items)</p>
                 </div>
                 <div className="flex gap-6 md:flex-row flex-col">
                     <div className="md:w-[80%] w-full border border-grey3 rounded">

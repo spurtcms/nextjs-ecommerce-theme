@@ -1,7 +1,9 @@
 import ImageComponets from '@/Components/ImageComponent';
 import React, { useEffect } from 'react'
+import ReactPlayer from 'react-player';
 
-export default function CoverImageModel({viewModel,setViewModel}) {
+export default function CoverImageModel({viewModel,setViewModel,videoPath}) {
+  console.log(videoPath,'viewModel')
     useEffect(() => {
         if (viewModel!=="") {
           
@@ -23,9 +25,17 @@ export default function CoverImageModel({viewModel,setViewModel}) {
                     <span class="sr-only">Close modal</span>
                 </button>
             </div>
+          
+            {videoPath==""?
             <div class="p-4 md:p-5 space-y-4" style={{height: "calc(100% - 5rem)"}}>
             <ImageComponets path={viewModel} w={1000} h={1000} alt={"cover-image"} styAdd={"m-auto h-full w-auto"}/>
             </div>
+            :
+            <div class="p-4 md:p-5 space-y-4" style={{height: "calc(100% - 5rem)"}}>
+            <ReactPlayer url={viewModel} height={"100%"} width={"100%"}/>
+            </div>
+           } 
+            
        
         </div>
     </div>

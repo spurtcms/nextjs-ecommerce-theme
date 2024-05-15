@@ -12,7 +12,7 @@ export default function MyOrderDetailSeverActions({params}) {
 
 console.log(params.slug,"9090909")
     const detailApi=async()=>{
-        let detail_var={"slug":params?.slug}
+        let detail_var={"pslug":params?.slug}
         let postData= await fetchGraphQLDa(GET_PRODUCT_DETAIL,detail_var)
         console.log(postData,"98jhujj")
         setProductDetail(postData)
@@ -29,10 +29,10 @@ console.log(params.slug,"9090909")
         Back
     </Link>
     <div className="flex gap-2 mb-2 flex-wrap">
-        <h3 className="text-black-500 text-base font-normal">Order ID -{productDetail?.ecommerceProductOrderDetails?.orderDetails?.orderUniqueId}</h3>
+        <h3 className="text-black-500 text-base font-normal">Order ID -{productDetail?.ecommerceProductOrderDetails?.orderUniqueId}</h3>
         <div className="px-2 py-[3px] bg-sucess text-sucess text-xs font-normal rounded">
             {/* Out of Delivery */}
-            {productDetail?.ecommerceProductOrderDetails?.orderDetails?.status}
+            {productDetail?.ecommerceProductOrderDetails?.orderStatus}
         </div>
     </div>
     <div className="flex gap-3 items-center mb-6">
@@ -91,18 +91,18 @@ console.log(params.slug,"9090909")
                 </div>
                 <div className="flex gap-1.5 items-center">
                     <p className="text-black text-base font-light">Qty</p>
-                    <span className="text-black text-base font-light">{productDetail?.ecommerceProductOrderDetails?.orderDetails?.quantity}</span>
+                    <span className="text-black text-base font-light">{productDetail?.ecommerceProductOrderDetails?.orderQuantity}</span>
                 </div>
                 <p className="flex items-center gap-1 text-black-500 font-medium text-lg leading-6">
                     <img src="/img/rupee.svg" />
-                   {productDetail?.ecommerceProductOrderDetails?.orderDetails?.price}
+                   {productDetail?.ecommerceProductOrderDetails?.orderPrice}
                 </p>
                 <div className="sm:w-[310px] w-full">
                     <div className="flex items-center justify-between mb-6">
                         <h5 className="text-black-500 font-light text-base leading-5">Subtotal (1item)</h5>
                         <p className="flex items-center gap-1 text-3-light text-sm leading-5">
                             <img src="/img/rupee-sm-light.svg" />
-                            {productDetail?.ecommerceProductOrderDetails?.orderDetails?.price}
+                            {productDetail?.ecommerceProductOrderDetails?.orderPrice}
                             {/* 15,299 */}
                         </p>
                     </div>
@@ -110,7 +110,7 @@ console.log(params.slug,"9090909")
                         <h5 className="text-black-500 font-light text-base leading-5">Sales taxes</h5>
                         <p className="flex items-center gap-1 text-3-light text-sm leading-5">
                             <img src="/img/rupee-sm-light.svg" />
-                            {productDetail?.ecommerceProductOrderDetails?.orderDetails?.tax}
+                            {productDetail?.ecommerceProductOrderDetails?.orderTax}
                         </p>
                     </div>
                     <div className="w-full h-px bg-grey my-4"></div>
@@ -118,7 +118,7 @@ console.log(params.slug,"9090909")
                         <h3 className="text-black-500 font-medium text-base leading-5">Grand Total</h3>
                         <p className="flex items-center gap-1 text-black-500 text-sm leading-5">
                             <img src="/img/rupee.svg" />
-                            { productDetail?.ecommerceProductOrderDetails?.orderDetails?.price + productDetail?.ecommerceProductOrderDetails?.orderDetails?.tax}
+                            { productDetail?.ecommerceProductOrderDetails?.orderPrice + productDetail?.ecommerceProductOrderDetails?.orderTax}
                         </p>
                     </div>
                 </div>
