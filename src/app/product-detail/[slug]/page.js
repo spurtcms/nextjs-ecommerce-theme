@@ -11,6 +11,10 @@ export async function generateMetadata({params}) {
   let metaTata=await fetchGraphQl(GET_POSTS_SLUG_QUERY,variable)
   return {
     title:metaTata?.ecommerceProductDetails?.productName,
+    openGraph: {
+      title:metaTata?.ecommerceProductDetails?.productName,
+      images: [metaTata?.ecommerceProductDetails?.productImageArray?.[0]],
+    }
     
   }
  
