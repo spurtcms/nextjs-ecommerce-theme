@@ -35,8 +35,10 @@ export default function HeaderServerActions({tokenCheck}) {
     const reloadCount=useSelector((state)=>state.cartReducer.reloadCount)
     const catgorId=useSelector((state)=>state.catgoReducer.catgoId)
 
+    const profileUpdate=useSelector((state)=>state.cartReducer.profile)
     const catogoryName=useSelector((state)=>state.catgoReducer.catagoryName)
     
+    console.log(profileUpdate,'profileUpdate')
 
   const [catgoData,setCatgoData]=useState()
   const [productListData,setProductListData]=useState()
@@ -75,7 +77,7 @@ export default function HeaderServerActions({tokenCheck}) {
   useEffect(()=>{
      hadlegetAddress()
      console.log("object")
-  },[reloadCount])
+  },[reloadCount,profileUpdate])
 
 
   function classNames(...classes) {
@@ -122,8 +124,9 @@ export default function HeaderServerActions({tokenCheck}) {
          let mycartlist=await fetchGraphQl(GET_MY_CART_QUERY,variable)
          
           mycartlist=mycartlist?.ecommerceCartList?.cartList
+          console.log(mycartlist?.length,'mycartlisasdadasd')
           
-          setCartcount(mycartlist?.length?mycartlist?.length:0)
+          setCartcount(mycartlist?.length? mycartlist?.length :0)
       }else{
         if(localStorage.getItem("add-cart-list")){
             let count=JSON.parse(localStorage.getItem("add-cart-list"))
@@ -328,7 +331,7 @@ console.log(dataImg,'dataImg')
                         <Menu.Items className="absolute right-0 z-10 mt-2 w-36 origin-top-right bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none  py-1 rounded-md  ">
                           {tokenCheck&&
                           <>                   
-                                 <Menu.Item>
+                         <Menu.Item>
                             {({ active }) => (
                               <Link
                                 href="/account/my-profile"

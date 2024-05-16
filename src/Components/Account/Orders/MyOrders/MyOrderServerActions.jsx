@@ -309,6 +309,9 @@ export default function MyOrderServerActions({routers}) {
 
     const handleChange=(e)=>{
         console.log(e.target.value,"o7897iuk")
+        if(e.target.value){
+            Filters[1].delstatus=false
+        }
         if(pathNameHistory==="/account/my-orders"){
             if(e.target.value!="Choose Status"){
         Status.map((data,index)=>{
@@ -342,10 +345,11 @@ export default function MyOrderServerActions({routers}) {
 
     const handleOrderId=(e)=>{
         setOrderId(e.target.value)
-        if(e.target.value==""){
-            setApplyFilter(false) 
+        if(e.target.value){
+            Filters[0].orderId=false
         }
     }
+    console.log(Filters[0].orderId,"false")
     const onPageChange=(data)=>{
         console.log(data,"78799")
         setSkeleton(true)
@@ -361,6 +365,11 @@ export default function MyOrderServerActions({routers}) {
         router.push(`/account/my-history?offset=${offset}`)
     }
 
+    }
+
+    const handleDate=(date)=>{
+     setStartDate(date)
+     Filters[2].date=false
     }
 useEffect(()=>{
     setCurrentPage(offset/10+1)
@@ -411,7 +420,7 @@ useEffect(()=>{
                                 className="h-8 w-full border-grey3 focus:ring-0 focus:shadow-none focus:border-grey3 text-xs font-light rounded"
                                 dateFormat="dd/MM/yyyy"
                                 selected={startDate}
-                                onChange={(date) => {setStartDate(date);}}
+                                onChange={(date) => (handleDate(date))}
                                 peekNextMonth
                                 showMonthDropdown
                                 showYearDropdown

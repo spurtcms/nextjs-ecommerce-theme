@@ -32,7 +32,7 @@ export default function CoverImageModel({viewModel,setViewModel,videoPath}) {
             </div>
             :
             <div class="p-4 md:p-5 space-y-4" style={{height: "calc(100% - 5rem)"}}>
-            <ReactPlayer url={viewModel} height={"100%"} width={"100%"}/>
+            <ReactPlayer url={viewModel} height={"100%"} width={"100%"} controls/>
             </div>
            } 
             

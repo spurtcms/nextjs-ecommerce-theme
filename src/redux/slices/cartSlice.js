@@ -4,7 +4,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState ={
    reloadCount:0,
    checkoutCart:"",
-   address:{}
+   address:{},
+   profile:0
 };
 
 
@@ -20,12 +21,15 @@ export const userSlice=createSlice({
         },
         getAddress:(state,action)=>{
             state.address=action.payload;
-        }
+        },
+        profileChange:(state,action)=>{
+            state.profile=action.payload;
+        },
 
     },
 });
 
 
-export const {reloadCartCount,checkCartName,getAddress}=userSlice.actions;
+export const {reloadCartCount,checkCartName,getAddress,profileChange}=userSlice.actions;
 
 export default userSlice.reducer;

@@ -151,7 +151,7 @@ const handleLoad=(data)=>{
     setDisableScroll(true)
   }
   
-  let postesArr=cardListData.concat(data?.ecommerceProductList?.productList)
+  let postesArr=cardListData?.concat(data?.ecommerceProductList?.productList)
   setCardListData(postesArr)
   }
 

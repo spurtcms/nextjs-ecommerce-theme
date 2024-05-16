@@ -77,6 +77,7 @@
       productImageArray
       productYoutubePath
       productVimeoPath
+      productSlug
       sku
       tax
       totalcost

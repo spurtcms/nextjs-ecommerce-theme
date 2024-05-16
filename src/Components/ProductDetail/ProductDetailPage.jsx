@@ -148,7 +148,7 @@ if(productDetail){
                 
                 <a
               //  onClick={()=>setViewModel(data)}
-              onClick={()=>handleImage(data)}
+                onClick={()=>handleImage(data)}
                   class="grid place-items-center  col-span-2 cursor-pointer"
                 >
                   <img src="/img/zoom-product.svg" alt="view product" />
@@ -177,9 +177,10 @@ if(productDetail){
             </>
             ))}
             
-          {productDetail?.productYoutubePath&&
+              {productDetail?.productYoutubePath&&
               <>
-              <div className=" grid place-items-center  rounded-5 overflow-hidden relative">                <div className="flex gap-3 absolute top-2 right-2">
+              <div className=" grid place-items-center  rounded-5 overflow-hidden relative">
+                <div className="flex gap-3 absolute top-2 right-2">
                 <a
                 // onClick={()=>setViewModel(productDetail?.productYoutubePath)}
                 onClick={()=>handleVideo(productDetail?.productYoutubePath)}
@@ -189,7 +190,7 @@ if(productDetail){
                 </a>
               </div>
               <div className="w-full ">
-              <ReactPlayer url={productDetail?.productYoutubePath} height={160} width={260}/>
+              <ReactPlayer url={productDetail?.productYoutubePath} height={160} width={260} controls/>
             </div>
             </div>
 

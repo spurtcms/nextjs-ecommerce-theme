@@ -99,6 +99,7 @@ if(sdata.id==data.id){
              if(deletestore?.removeProductFromCartlist){
                 let cartstore=cartItmeList.filter((s)=>s.id != data.id)
                 setCartItemList(cartstore)
+                console.log('revmov')
              }
         }else{
             let cartstore=cartItmeList.filter((s)=>s.id != data.id)

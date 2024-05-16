@@ -2,10 +2,12 @@
 import ToastMessage from '@/Components/ToastMessage/ToastMessage'
 import { fetchGraphQl, postGraphQl } from '@/api/graphicql'
 import { GET_ADDRESS_DETAIL, GET_POST_ADDRESS_QUERY } from '@/api/query'
+import { profileChange } from '@/redux/slices/cartSlice'
 import { EmailValidator } from '@/utils/regexValidation'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
 
 export default function MyProfileServerActions() {
     const [name,setName]=useState("")
@@ -20,6 +22,7 @@ export default function MyProfileServerActions() {
     const [valid,setValid]=useState(0)
     const [newDp,setNewDp]=useState();
     const [dataImg,setDataImg]=useState()
+    const [proChange,setProChange]=useState(0)
 
 
     const hadlegetAddress=async()=>{
@@ -40,7 +43,7 @@ export default function MyProfileServerActions() {
       }
       useEffect(()=>{
          hadlegetAddress()
-      },[])
+      },[proChange])
 
 
     useEffect(()=>{
@@ -51,6 +54,7 @@ export default function MyProfileServerActions() {
       },[email])
 
       let router=useRouter();
+      const dispatch=useDispatch()
 
     const handleSubmit=()=>{
         setValid(1)
@@ -75,6 +79,9 @@ export default function MyProfileServerActions() {
               // router.push("/account/checkout-payment")
               ToastMessage({type:'success',message:"Update Successfull"})
               postGraphQl(GET_POST_ADDRESS_QUERY,obj)
+              setProChange(proChange+1)
+              console.log(name,'proChange')
+              dispatch(profileChange(proChange+1))
 
         }
         
