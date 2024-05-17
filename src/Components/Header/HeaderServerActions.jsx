@@ -13,32 +13,18 @@ import { RemoveToken } from "@/api/serverActions";
 import { catagoryId, catagoryName } from "@/redux/slices/catgorySlice";
 import { checkCartName, getTrriger, reloadCartCount } from "@/redux/slices/cartSlice";
 import ToastMessage from "../ToastMessage/ToastMessage";
-// import Loader from "./Loader";
 
 
-// const navigation = [
-//   { name: "Electronics", href: "#", current: true },
-//   { name: "TVs & Appliances", href: "#", current: false },
-//   { name: "Mens", href: "#", current: false },
-//   { name: "Women", href: "#", current: false },
-//   { name: "Baby & kids", href: "#", current: false },
-//   { name: "Home & Furniture", href: "#", current: false },
-//   { name: "Offer Zone", href: "#", current: false },
-// ];
+
 
 
 export default function HeaderServerActions({tokenCheck}) {
 
-  console.log(tokenCheck,'tokenCheck')
 
     const dispatch=useDispatch()
     const reloadCount=useSelector((state)=>state.cartReducer.reloadCount)
     const catgorId=useSelector((state)=>state.catgoReducer.catgoId)
 
-    const profileUpdate=useSelector((state)=>state.cartReducer.profile)
-    const catogoryName=useSelector((state)=>state.catgoReducer.catagoryName)
-    
-    console.log(profileUpdate,'profileUpdate')
 
   const [catgoData,setCatgoData]=useState()
   const [productListData,setProductListData]=useState()
@@ -62,22 +48,11 @@ export default function HeaderServerActions({tokenCheck}) {
   const hadlegetAddress=async()=>{
     let myAddress=await fetchGraphQl(GET_ADDRESS_DETAIL)
     setDataImg(myAddress)
-    console.log(myAddress?.ecommerceCustomerDetails,'myAddress');
-    // if(myAddress?.ecommerceCustomerDetails){
-    //   setName(myAddress.ecommerceCustomerDetails.firstName)
-    //   setEmail(myAddress.ecommerceCustomerDetails.email)
-    //   setArea(myAddress.ecommerceCustomerDetails.streetAddress)
-    //   setNumber(myAddress.ecommerceCustomerDetails.mobileNo)
-    //   setStates(myAddress.ecommerceCustomerDetails.state)
-    //   setHouseNo(myAddress.ecommerceCustomerDetails.zipCode)
-    //   setCity(myAddress.ecommerceCustomerDetails.city)
-    //   setCountry(myAddress.ecommerceCustomerDetails.country)
-    // }
+ 
   }
   useEffect(()=>{
      hadlegetAddress()
-     console.log("object")
-  },[reloadCount,profileUpdate])
+  },[reloadCount])
 
 
   function classNames(...classes) {
@@ -124,7 +99,6 @@ export default function HeaderServerActions({tokenCheck}) {
          let mycartlist=await fetchGraphQl(GET_MY_CART_QUERY,variable)
          
           mycartlist=mycartlist?.ecommerceCartList?.cartList
-          console.log(mycartlist?.length,'mycartlisasdadasd')
           
           setCartcount(mycartlist?.length? mycartlist?.length :0)
       }else{
@@ -215,8 +189,7 @@ const handleKeyDown = (event) => {
 
 
 
-console.log(productListData,"8978")
-console.log(dataImg,'dataImg')
+
   return (
     <>
     {/* <Loader /> */}
@@ -368,38 +341,7 @@ console.log(dataImg,'dataImg')
                           </Menu.Item>
                           </>
 }
-                          {/* <Menu.Item>
-                            {({ active }) => (
-                              <a
-                                href="javascript:void(0)"
-                                className={classNames(
-                                  active ? "bg-gray-100" : "",
-                                  "flex gap-4 px-3 py-2 text-sm font-light text-black leading-tight"
-                                )}
-                              >
-                                <img
-                                  src="/img/notification.svg"
-                                  alt="notification"
-                                />{" "}
-                                Notifications
-                              </a>
-                            )}
-                          </Menu.Item> */}
-
-                          {/* <Menu.Item>
-                            {({ active }) => (
-                              <a
-                                href="javascript:void(0)"
-                                className={classNames(
-                                  active ? "bg-gray-100" : "",
-                                  "flex gap-4 px-3 py-2 text-sm font-light text-black leading-tight"
-                                )}
-                              >
-                                <img src="/img/coupons.svg" alt="coupons" />
-                                Coupons
-                              </a>
-                            )}
-                          </Menu.Item> */}
+                          
 
                           <Menu.Item>
                             {({ active }) => (

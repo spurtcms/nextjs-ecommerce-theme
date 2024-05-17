@@ -93,9 +93,9 @@ const handleUnauthorized= async(res)=>{
   ToastMessage({type:'error',message:"Api not found"})
  } 
 
- const handleUnProcessableEntry=async()=>{
-  ToastMessage({type:'error',message:"params is missing"})
- }
+ const handleUnProcessableEntry=async(res)=>{
+  ToastMessage({type:'error',message:res?.statusText})
+ }  
 
  const handleServerError=async()=>{
   ToastMessage({type:'error',message:"Internel sever error"})

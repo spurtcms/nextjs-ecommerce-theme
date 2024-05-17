@@ -23,7 +23,6 @@ export default function RelatedProductPage({slug}) {
         }
         
     },[catgoId])
-    console.log(productList,'4444444');
 
   return (
   <>

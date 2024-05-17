@@ -32,6 +32,8 @@ const Filters = [
     {date: false}
   ]
 
+  
+
 
 
 export default function MyOrderServerActions({routers}) {
@@ -51,10 +53,10 @@ export default function MyOrderServerActions({routers}) {
     const [totalRecords,setTotalRecords]=useState(0)
     const [validCheck,setValidCheck]=useState(0)
     const [skeleton,setSkeleton]=useState(true)
+    const [inputData,setInputData]=useState()
     const router=useRouter()
 
 
-    console.log(pathNameHistory,"iuyuj")
     const orderList= async ()=>{
         if(pathNameHistory==="/account/my-orders"){
         setProductList([])
@@ -64,10 +66,8 @@ export default function MyOrderServerActions({routers}) {
         if(postData){
             setSkeleton(false)
         }
-        console.log(postData,'postData')
         setProductList(postData?.ecommerceProductOrdersList?.productList)
         setTotalRecords(postData?.ecommerceProductOrdersList?.count)
-        console.log(postData,"99998iii")
     }else{
         setProductList([])
         setTotalRecords(0)
@@ -87,7 +87,6 @@ export default function MyOrderServerActions({routers}) {
         setTotalRecords(0)
         let list_var={"lim":10,"off":offset,"filter":{"upcomingOrders": 1,"searchKeyword":searchFilter}}
         let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
-        console.log(postData,'postData')
         setProductList(postData?.ecommerceProductOrdersList?.productList)
         setTotalRecords(postData?.ecommerceProductOrdersList?.count)
     }else{
@@ -112,8 +111,13 @@ export default function MyOrderServerActions({routers}) {
         searchData()
     },[searchFilter,offset])
 
-    const nPages1 = Math.ceil(totalRecords!=undefined&&totalRecords / 10)
+   
     const handleFilter=async()=>{
+        setInputData(orderId)
+        
+        if(orderId==""){
+            Filters[0].orderId=false
+        }
         if(pathNameHistory==="/account/my-orders"){
         if(startDate!=""&&endDate==""){
             setValidCheck(1)
@@ -122,6 +126,7 @@ export default function MyOrderServerActions({routers}) {
         setApplyFilter(true)
         if(orderId!=""){
             Filters[0].orderId=true
+           
         }
         if(deliveryStatus?.name!=undefined){
             Filters[1].delstatus=true
@@ -179,8 +184,8 @@ export default function MyOrderServerActions({routers}) {
   }
     }
 
-    console.log(deliveryStatus,'deliveryStatus')
     const handleClear=async ()=>{
+    
         setSkeleton(true)
         if(pathNameHistory==="/account/my-orders"){
         setOrderId("")
@@ -306,9 +311,8 @@ export default function MyOrderServerActions({routers}) {
         setProductList(postData?.ecommerceProductOrdersList?.productList)
         setTotalRecords(postData?.ecommerceProductOrdersList?.count)
     }
-
+    const nPages1 = Math.ceil(totalRecords!=undefined&&totalRecords / 10)
     const handleChange=(e)=>{
-        console.log(e.target.value,"o7897iuk")
         if(e.target.value){
             Filters[1].delstatus=false
         }
@@ -344,14 +348,13 @@ export default function MyOrderServerActions({routers}) {
     }
 
     const handleOrderId=(e)=>{
-        setOrderId(e.target.value)
-        if(e.target.value){
-            Filters[0].orderId=false
-        }
+        
+            setOrderId(e.target.value)
+        
+        
+       
     }
-    console.log(Filters[0].orderId,"false")
     const onPageChange=(data)=>{
-        console.log(data,"78799")
         setSkeleton(true)
         if(pathNameHistory==="/account/my-orders"){
         let offset = Math.ceil((data - 1) * limit);
@@ -375,7 +378,6 @@ useEffect(()=>{
     setCurrentPage(offset/10+1)
 },[])
     
-    console.log(deliveryStatus,"08jl")
   return (
     <>
        <div className="p-4 sm:p-10">
@@ -460,7 +462,7 @@ useEffect(()=>{
                         {Filters[0].orderId==true&&<>
                         <div className="px-2 py-1 border border-grey rounded text-xs font-light text-black-500 relative">
                             {/* SP11478522165456 */}
-                            {orderId}
+                            {inputData}
                             <img src="/img/cancel-bg.svg" className="absolute -right-1.5 -top-1.5 cursor-pointer" onClick={()=>handleSingleFilter("orderId")}/>
                         </div></>}
                         {Filters[1].delstatus==true&&<>
@@ -518,12 +520,11 @@ useEffect(()=>{
                                 <>
                                 {productList?.length>0?productList?.map((result,index)=>(
                                 <>
-                                {console.log(result,'imagecom')}
                                 <tr>
                                     <td className="px-4 py-2 border-b border-grey text-start">
                                         <div className="flex gap-6 items-center md:flex-row flex-col">
                                            
-                                            <ImageComponets path={"https://demo.spurtcms.com/"+result?.productImagePath}  w={60} h={38}/>
+                                            <ImageComponets path={result?.productImageArray?.[0]}  w={60} h={38}/>
                                             {/* <img src={"https://demo.spurtcms.com/"+result?.productImagePath} className="w-20 h-15"
                                             onError={({ currentTarget }) => {
                                             currentTarget.onerror = null;

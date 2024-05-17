@@ -5,7 +5,8 @@ const initialState ={
    reloadCount:0,
    checkoutCart:"",
    address:{},
-   profile:0
+   profile:0,
+   shippRoute:false,
 };
 
 
@@ -25,11 +26,14 @@ export const userSlice=createSlice({
         profileChange:(state,action)=>{
             state.profile=action.payload;
         },
+        shippingRoute:(state,action)=>{
+            state.shippRoute=action.payload;
+        },
 
     },
 });
 
 
-export const {reloadCartCount,checkCartName,getAddress,profileChange}=userSlice.actions;
+export const {reloadCartCount,checkCartName,getAddress,profileChange,shippingRoute}=userSlice.actions;
 
 export default userSlice.reducer;

@@ -1,18 +1,21 @@
 'use client'
-import React, { Suspense, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import Link from 'next/link'
 import CheckoutSummary from '../Common/CheckoutSummary'
 import CheckoutRoutes from '../Common/CheckoutRoutes'
 import { useDispatch, useSelector } from 'react-redux'
 import { postGraphQl } from '@/api/graphicql'
-import { GET_CHECKOUT } from '@/api/query'
+import { GET_CHECKOUT, Get_CATEGORIES_LIST } from '@/api/query'
 import { TaxPriceValidation } from '@/utils/regexValidation'
+import { fetchGraphQLDa } from '@/api/clientGraphicql'
+import { checkCartName } from '@/redux/slices/cartSlice'
+import { catagoryId, catagoryName } from '@/redux/slices/catgorySlice'
 
 function CheckOutPayServerAction() {
     const [cartCount,setCartCount]=useState([])
     const address=useSelector(s=>s.cartReducer.address)
     const [loader,setLoader]=useState()
-    console.log(address,cartCount, '90address');
+    const [catgoData,setCatgoData]=useState()
     const reloadCount=useSelector((state)=>state.cartReducer.reloadCount)
     const dispatch=useDispatch()
     const subtotalPrice=()=>{
@@ -68,11 +71,22 @@ function CheckOutPayServerAction() {
               "totalQuantity":quantityCount()
             }
           }
-        console.log(variableList,'9888checkArr');
 
         postGraphQl(GET_CHECKOUT,variableList,"checkout",setLoader,"",reloadCount,dispatch)
     }
-  return (
+
+    const categorieList= async () =>{
+        let catgo_variab={"categoryGroupId":147}
+        let postData= await fetchGraphQLDa(Get_CATEGORIES_LIST,catgo_variab)
+        setCatgoData(postData)
+       
+      }
+
+      useEffect(()=>{
+        categorieList()
+      },[])
+
+      return (
     <>
     <div className="md:p-10 p-4">
                 <div className="flex flex-col gap-1.5 mb-4">
@@ -89,13 +103,7 @@ function CheckOutPayServerAction() {
                                 <h5 className="text-black-500 font-lights text-xl leading-6 mb-6">Payment Options</h5>
                                 <div className="flex gap-3 items-center mb-4">
 
-                                    {/* <input
-                                        id="UPI"
-                                        name="comment"
-                                        type="radio"
-                                        className=" h-4 w-4 rounded-full border-black-500 text-white focus:ring-0 focus:ring-transparent"
-                                       
-                                    /> */}
+                                    
                                      <input disabled id="disabled-radio-1" type="radio" value="" name="disabled-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
                                     <label className="text-black-500 font-light text-base leading-5 cursor-pointer uppercase" for="UPI">UPI</label>
                                 </div>
@@ -158,10 +166,11 @@ function CheckOutPayServerAction() {
                             </svg>:
                                 "Proceed to Pay"
                             }  
-                                    </a>
-                                    <a className="text-base cursor-pointer font-light leading-5">
-                                    Cancel
-                                    </a>
+                            </a>
+                            <Link href="/" passHref onClick={()=>{ dispatch(checkCartName(""),dispatch(catagoryName(catgoData?.categoriesList?.categories[0]?.categoryName)),
+                                dispatch(catagoryId(catgoData?.categoriesList?.categories[0]?.id)))}} className="text-base cursor-pointer font-light leading-5">
+                             Cancel
+                            </Link>
 
                                 </div>
 

@@ -44,7 +44,6 @@ export default function HomePage() {
 
     const dispatch=useDispatch()
     const catgorId=useSelector((state)=>state.catgoReducer.catgoId)
-    console.log(catgorId,'catgorId')
     const catogoryName=useSelector((state)=>state.catgoReducer.catagoryName)
     const [selected, setSelected] = useState(people);
     let [cardListData,setCardListData]=useState([])
@@ -62,7 +61,6 @@ const listData = async ()=>{
 
   let list_varab={"limit":25,"offset":offset,"filter":{"categoryId":catgorId}}
   let postData = await fetchGraphQLDa(GET_POSTS_LIST_QUERY,list_varab)
-  console.log(postData,'postData123')
   setCount(postData?.ecommerceProductList)
   setCardListData(postData?.ecommerceProductList?.productList)
   if(postData){
@@ -76,7 +74,6 @@ const offsetListData =async()=>{
   let list_varab={"limit":25,"offset":offset,"filter":{"categoryId":catgorId}}
   let postData = await fetchGraphQLDa(GET_POSTS_LIST_QUERY,list_varab)
   handleLoad(postData)
-  // setCardListData(postData?.ecommerceProductList?.productList)
   if(postData){
     setSkeleton(false)
   }
@@ -92,7 +89,6 @@ const offsetListData =async()=>{
   if(catgorId==null){
     dispatch(catagoryId(postData?.categoriesList?.categories[0].id))
   }
-  listData()
 }
 const sortBy = async () =>{
   if(selected.id!=3&&selected.id!=4){
@@ -111,7 +107,7 @@ if(selected.id==3||selected.id==4){
 } 
 
 useEffect(()=>{
-  // setCardListData([])
+  setCardListData([])
   setOffset(0)
   offset=0
   if(offset==0){
@@ -178,7 +174,7 @@ const handleLoad=(data)=>{
     }, [handleScroll]);
 
     
-console.log(cardListData,'cardListData')
+
   return (
     <>
 {skeleton==true?

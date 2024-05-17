@@ -20,31 +20,27 @@ export default function MyCartPage({tokenCheck}) {
       const [cartItmeList,setCartItemList]=useState([])
       const [trigger,setTrigger]=useState(0)
       const [skeleton,setSkeleton]=useState(true)
-    //   const [totalvalue,setTotalvalue]=useState()
-    //   const [taxvalue,setTaxvalue]=useState()
+    
     const pathname = usePathname()
-    console.log(pathname,'pathname')
 const handleMycart=async()=>{
     let variable={
         "limit":10,
         "offset":0,
       }
     let mycartlist=await fetchGraphQLDa(GET_MY_CART_QUERY,variable)
-    
     mycartlist=mycartlist?.ecommerceCartList?.cartList
     mycartlist?.map((sdata)=>{
       sdata.quantity=sdata.ecommerceCart?.quantity
-      console.log(sdata,'mycartlist')
     })
-  setCartItemList(mycartlist)
-  setSkeleton(false)
+    setCartItemList(mycartlist)
+    setSkeleton(false)
+
 }
 
     useEffect(()=>{
       if(tokenCheck){
-       
           handleMycart()
-        
+          
         
       }else{
         if(localStorage.getItem("add-cart-list")){
@@ -61,7 +57,6 @@ const handleMycart=async()=>{
     },[tokenCheck])
 
     const handleQuantityChange=(qty,data)=>{
-        console.log(qty,"huhh",data)
 cartItmeList?.map((sdata)=>{
 if(sdata.id==data.id){
     sdata.quantity= parseInt(qty)
@@ -99,7 +94,6 @@ if(sdata.id==data.id){
              if(deletestore?.removeProductFromCartlist){
                 let cartstore=cartItmeList.filter((s)=>s.id != data.id)
                 setCartItemList(cartstore)
-                console.log('revmov')
              }
         }else{
             let cartstore=cartItmeList.filter((s)=>s.id != data.id)
@@ -127,7 +121,6 @@ const router=useRouter()
         }
     }
 
-    console.log(cartItmeList,'cartItmeList')
   return (
     <>      {skeleton?<MyCartSkeleton/>:
                     <div className="md:p-10 p-4">

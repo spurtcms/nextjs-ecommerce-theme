@@ -247,13 +247,12 @@ if(productDetail){
                 className="flex items-center gap-2 min-w-20  min-h-9 w-fit justify-center rounded-5 "
               >
                
-                  <select id="countries" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-300 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:[box-shadow:none]" onChange={(e)=>setQuantity(e.target.value)}>
+                  <select id="countries" className=" bg-gray-50 border cursor-pointer border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-300 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:[box-shadow:none]" onChange={(e)=>setQuantity(e.target.value)}>
                     {quantityList().map((data,index)=>(
-                      <option value={data} > Qty {data}</option>
-                    ))}
-                    
+                      <option value={data} className="cursor-pointer	py-4 px-3"> Qty {data}</option>
+                    ))} 
                   </select>
-               </a>
+               </a> 
 
               <a
                

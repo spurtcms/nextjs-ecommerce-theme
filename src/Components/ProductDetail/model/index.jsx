@@ -3,7 +3,6 @@ import React, { useEffect } from 'react'
 import ReactPlayer from 'react-player';
 
 export default function CoverImageModel({viewModel,setViewModel,videoPath}) {
-  console.log(videoPath,'viewModel')
     useEffect(() => {
         if (viewModel!=="") {
           

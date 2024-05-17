@@ -4,7 +4,7 @@ import CheckoutSummary from '../Common/CheckoutSummary'
 import CheckoutRoutes from '../Common/CheckoutRoutes'
 import { EmailValidator } from '@/utils/regexValidation'
 import { useDispatch } from 'react-redux'
-import { getAddress } from '@/redux/slices/cartSlice'
+import { getAddress, shippingRoute } from '@/redux/slices/cartSlice'
 import { useRouter } from 'next/navigation'
 import { GET_ADDRESS_DETAIL } from '@/api/query'
 import { fetchGraphQl } from '@/api/graphicql'
@@ -24,10 +24,10 @@ function CheckOutShipServerAction() {
     const [emailError,setEmailError]=useState("")
     const [valid,setValid]=useState(0)
     const [loader,setLoader]=useState()
+    const [shipRoutes,setShipRoutes]=useState()
 
     const hadlegetAddress=async()=>{
       let myAddress=await fetchGraphQl(GET_ADDRESS_DETAIL)
-      console.log(myAddress?.ecommerceCustomerDetails,'myAddress');
       if(myAddress?.ecommerceCustomerDetails){
         setName(myAddress.ecommerceCustomerDetails.firstName)
         setEmail(myAddress.ecommerceCustomerDetails.email)
@@ -50,9 +50,10 @@ function CheckOutShipServerAction() {
 
       },[email])
     const handleSubmit=()=>{
-      setLoader(true)
         setValid(1)
         if(validCheck()){
+          setLoader(true)
+          dispatch(shippingRoute(true))
             setValid(0)
             let obj={
                 "name":name,
@@ -66,7 +67,7 @@ function CheckOutShipServerAction() {
               }
               dispatch(getAddress(obj))
               router.push("/account/checkout-payment")
-              // setLoader(false)
+              
         }
         
     }
@@ -103,7 +104,7 @@ function CheckOutShipServerAction() {
                 <div className="flex gap-6 md:flex-row flex-col">
                     <div className="md:w-[80%] w-full border border-grey3 rounded">
                     <Suspense fallback={null}>
-                        <CheckoutRoutes />
+                        <CheckoutRoutes/>
                         </Suspense>
                         <div className="p-4">
                             <div className="w-full">

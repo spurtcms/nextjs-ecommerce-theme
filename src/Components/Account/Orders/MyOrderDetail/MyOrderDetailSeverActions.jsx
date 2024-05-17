@@ -10,11 +10,9 @@ export default function MyOrderDetailSeverActions({params}) {
 
     const [productDetail,setProductDetail]=useState()
 
-console.log(params.slug,"9090909")
     const detailApi=async()=>{
         let detail_var={"pslug":params?.slug}
         let postData= await fetchGraphQLDa(GET_PRODUCT_DETAIL,detail_var)
-        console.log(postData,"98jhujj")
         setProductDetail(postData)
     }
 

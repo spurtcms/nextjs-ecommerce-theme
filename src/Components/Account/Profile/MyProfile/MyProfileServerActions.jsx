@@ -2,12 +2,12 @@
 import ToastMessage from '@/Components/ToastMessage/ToastMessage'
 import { fetchGraphQl, postGraphQl } from '@/api/graphicql'
 import { GET_ADDRESS_DETAIL, GET_POST_ADDRESS_QUERY } from '@/api/query'
-import { profileChange } from '@/redux/slices/cartSlice'
+import { profileChange, reloadCartCount } from '@/redux/slices/cartSlice'
 import { EmailValidator } from '@/utils/regexValidation'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 export default function MyProfileServerActions() {
     const [name,setName]=useState("")
@@ -24,11 +24,12 @@ export default function MyProfileServerActions() {
     const [dataImg,setDataImg]=useState()
     const [proChange,setProChange]=useState(0)
 
+    const reloadCount=useSelector((state)=>state.cartReducer.reloadCount)
+
 
     const hadlegetAddress=async()=>{
         let myAddress=await fetchGraphQl(GET_ADDRESS_DETAIL)
         setDataImg(myAddress)
-        console.log(myAddress?.ecommerceCustomerDetails,'myAddress');
         if(myAddress?.ecommerceCustomerDetails){
           setName(myAddress.ecommerceCustomerDetails.firstName)
           setEmail(myAddress.ecommerceCustomerDetails.email)
@@ -43,6 +44,8 @@ export default function MyProfileServerActions() {
       }
       useEffect(()=>{
          hadlegetAddress()
+         dispatch(reloadCartCount(reloadCount+1))
+
       },[proChange])
 
 
@@ -75,17 +78,14 @@ export default function MyProfileServerActions() {
                 "isActive": 1,
               }  
               }
-            //   dispatch(getAddress(obj))
+              // dispatch(getAddress(obj))
               // router.push("/account/checkout-payment")
               ToastMessage({type:'success',message:"Update Successfull"})
               postGraphQl(GET_POST_ADDRESS_QUERY,obj)
               setProChange(proChange+1)
-              console.log(name,'proChange')
-              dispatch(profileChange(proChange+1))
 
         }
-        
-    }
+        }
     const validCheck=()=>{
         let emailcheck=false
         if (email !== "") {

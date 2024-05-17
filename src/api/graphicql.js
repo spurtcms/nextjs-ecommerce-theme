@@ -20,7 +20,7 @@ export const fetchGraphQl = async (GET_POSTS_QUERY,varia) => {
       return entries?.data
     }else{
     if(entries?.status){
-      console.log(entries?.status,'wdsadasd')
+     
       return entries
     }
       
@@ -31,7 +31,6 @@ export const fetchGraphQl = async (GET_POSTS_QUERY,varia) => {
     // } 
      
   // } catch (error) {
-  //   console.log(error,'ygygytftrftrt')
   //   throw error;
   // }
 };
@@ -40,7 +39,6 @@ export const postGraphQl = async (GET_POSTS_QUERY,varia,check,setLoader,cartName
 
   try {
     const entries = await fetchGraphQl(GET_POSTS_QUERY,varia);
-    console.log(entries?.status,'0998978877887')
     if(check==="signup"){
       if(entries?.memberRegister==true){
         setLoader(false)
@@ -52,7 +50,6 @@ export const postGraphQl = async (GET_POSTS_QUERY,varia,check,setLoader,cartName
 
     }
     if(check==="login"){
-      console.log(cartName,'cartName32423424')
       
       if(entries?.templateMemberLogin!=undefined&&entries?.templateMemberLogin!=""){
       BearerToken(entries?.templateMemberLogin) 
@@ -81,7 +78,6 @@ export const postGraphQl = async (GET_POSTS_QUERY,varia,check,setLoader,cartName
 
     }
     if(check==="checkout"){
-      console.log(entries?.ecommerceOrderPlacement,'entries?.ecommerceOrderPlacement');
       if(entries?.ecommerceOrderPlacement){
         localStorage.removeItem("add-cart-list")
         Redirect("/account/my-orders")
