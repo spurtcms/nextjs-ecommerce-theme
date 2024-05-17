@@ -133,8 +133,10 @@ export default function MyProfileServerActions() {
                     <h3 className='text-xl text-black mb-8 leading-6 font-normal'>Personal Info</h3>
                     <div className='grid grid-cols-1 sm:grid-1auto gap-5 sm:gap-[70px] items-start mb-8'>
                         <div className='relative w-[120px] h-[120px] m-auto sm:m-0'>
-                            {newDp&&
-                            <img src={newDp} className='w-full h-full rounded-full' />}
+                            {newDp?
+                            <img src={newDp} className='w-full h-full rounded-full' />
+                            :
+                            <>
                             {dataImg?.ecommerceCustomerDetails?.firstName ?
                             <div className='flex text-6xl  font-semibold text-black items-center justify-center relative h-full w-full overflow-hidden rounded-full bg-slate-300'>
                              {dataImg?.ecommerceCustomerDetails?.firstName.at(0)}
@@ -142,6 +144,7 @@ export default function MyProfileServerActions() {
                             :
                             <img src='/img/user1.jpg' className='w-full h-full rounded-full' />
                             }
+                            </>}
                             
                             <input type='file' className='absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer' onChange={changeDP} />
                         </div>

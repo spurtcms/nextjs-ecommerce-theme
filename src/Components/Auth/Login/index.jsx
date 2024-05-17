@@ -81,7 +81,7 @@ export default function LoginPage() {
                                 "Login"
                             }
                             </button>
-                            <Link href="/auth/sign-up" className="text-base font-light text-black-500 text-center block w-full">Don&apos;t Have a account? <span className="font-medium">Sign in</span></Link>
+                            <Link href="/auth/sign-up" className="text-base font-light text-black-500 text-center block w-full">Don&apos;t Have a account? <span className="font-medium">Sign up</span></Link>
                  </div>
             </div>
         </section>
