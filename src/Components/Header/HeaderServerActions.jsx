@@ -37,6 +37,7 @@ export default function HeaderServerActions({tokenCheck}) {
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const [dataImg,setDataImg]=useState('')
   
+  
 
   
   
@@ -50,11 +51,12 @@ export default function HeaderServerActions({tokenCheck}) {
     setDataImg(myAddress)
  
   }
+
   useEffect(()=>{
      hadlegetAddress()
   },[reloadCount])
 
-
+console.log(reloadCount,'reloadCount')
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
   }

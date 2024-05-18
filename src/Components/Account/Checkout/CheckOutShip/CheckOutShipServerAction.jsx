@@ -3,11 +3,11 @@ import React, { Suspense, useEffect, useState } from 'react'
 import CheckoutSummary from '../Common/CheckoutSummary'
 import CheckoutRoutes from '../Common/CheckoutRoutes'
 import { EmailValidator } from '@/utils/regexValidation'
-import { useDispatch } from 'react-redux'
-import { getAddress, shippingRoute } from '@/redux/slices/cartSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { getAddress, reloadCartCount, shippingRoute } from '@/redux/slices/cartSlice'
 import { useRouter } from 'next/navigation'
-import { GET_ADDRESS_DETAIL } from '@/api/query'
-import { fetchGraphQl } from '@/api/graphicql'
+import { GET_ADDRESS_DETAIL, GET_POST_ADDRESS_QUERY } from '@/api/query'
+import { fetchGraphQl, postGraphQl } from '@/api/graphicql'
 
 function CheckOutShipServerAction() {
     const dispatch=useDispatch()
@@ -25,6 +25,8 @@ function CheckOutShipServerAction() {
     const [valid,setValid]=useState(0)
     const [loader,setLoader]=useState()
     const [shipRoutes,setShipRoutes]=useState()
+
+    const reloadCount=useSelector((state)=>state.cartReducer.reloadCount)
 
     const hadlegetAddress=async()=>{
       let myAddress=await fetchGraphQl(GET_ADDRESS_DETAIL)
@@ -53,20 +55,29 @@ function CheckOutShipServerAction() {
         setValid(1)
         if(validCheck()){
           setLoader(true)
+          
           dispatch(shippingRoute(true))
             setValid(0)
             let obj={
-                "name":name,
+              "cd":{
+                "firstName":name,
+                "username": name,
                 "email":email,
-                "area":area,
-                "states":states,
-                "number":number,
-                "houseNo":houseNo,
+                "streetAddress":area,
+                "state":states,
+                "mobileNo":number,
+                "zipCode":houseNo,
                 "city":city,
-                "country":country
+                "country":country,
+                "profileImage":"",
+                "isActive": 1,
+              }  
               }
-              dispatch(getAddress(obj))
-              router.push("/account/checkout-payment")
+              // dispatch(getAddress(obj))
+              // router.push("/account/checkout-payment")
+              // ToastMessage({type:'success',message:"Update Successfull"})
+              postGraphQl(GET_POST_ADDRESS_QUERY,obj,"Address",setLoader,"",reloadCount,dispatch)
+             
               
         }
         

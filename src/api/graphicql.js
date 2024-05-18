@@ -87,6 +87,19 @@ export const postGraphQl = async (GET_POSTS_QUERY,varia,check,setLoader,cartName
       }else{
         setLoader(false)
       }
+      
+    }
+    if(check==="Address"){
+      console.log(entries,'entries4567')
+      if(entries?.customerProfileUpdate){
+        Redirect("/account/checkout-payment")
+        setLoader(false)
+        dispatch(reloadCartCount(reloadCount+1))
+        ToastMessage({type:'success',message:"Address Update Successfull"})
+      } else{
+        setLoader(false)
+      }
+     
     }
   } catch (error) {
     throw error;
