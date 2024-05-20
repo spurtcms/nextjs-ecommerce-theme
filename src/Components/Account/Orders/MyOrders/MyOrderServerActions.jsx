@@ -556,7 +556,7 @@ useEffect(()=>{
                                         </div>
                                     </td>
                                     <td className="px-4 py-2 border-b border-grey text-start">
-                                        <Link href={`/account/my-order-detail/${result?.productSlug}`} className="text-3-light font-light text-sm hover:underline">View Details</Link>
+                                        <Link href={`/account/my-order-detail/${result?.productSlug}`} className="text-3-light font-medium text-sm hover:underline">View Details</Link>
                                     </td>
                                 </tr>
                                 
@@ -620,7 +620,7 @@ useEffect(()=>{
                                         </div>
                                     </td>
                                     <td className="px-4 py-2 border-b border-grey text-start">
-                                        <Link href={`/account/my-order-detail/${result?.productSlug}`} className="text-3-light font-light text-sm hover:underline">View Details</Link>
+                                        <Link href={`/account/my-order-detail/${result?.productSlug}`} className="text-3-light font-medium text-sm hover:underline">View Details</Link>
                                     </td>
                                 </tr>
                                 </>))

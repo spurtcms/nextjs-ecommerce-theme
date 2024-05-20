@@ -90,7 +90,6 @@ export const postGraphQl = async (GET_POSTS_QUERY,varia,check,setLoader,cartName
       
     }
     if(check==="Address"){
-      console.log(entries,'entries4567')
       if(entries?.customerProfileUpdate){
         Redirect("/account/checkout-payment")
         setLoader(false)

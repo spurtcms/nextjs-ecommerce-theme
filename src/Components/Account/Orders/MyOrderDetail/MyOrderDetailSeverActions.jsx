@@ -20,6 +20,12 @@ export default function MyOrderDetailSeverActions({params}) {
         detailApi()
     },[])
 
+    let AddressData;
+    if(productDetail?.ecommerceProductOrderDetails?.shippingDetails!=undefined){
+        AddressData=JSON.parse(productDetail?.ecommerceProductOrderDetails?.shippingDetails)
+    }
+
+
   return (
     <div className="sm:px-10 px-4 py-4 ">
     <Link href="/account/my-orders?offset=0" className="flex gap-1.5 items-center text-grey-300 text-xs font-light mb-6">
@@ -81,7 +87,7 @@ export default function MyOrderDetailSeverActions({params}) {
             <div className="flex items-start justify-between flex-wrap gap-4">
                 <div className="flex items-start flex-col sm:flex-row">
                     {/* <img src="/img/checkList-product2.svg" className="w-[135.98px] h-[160px]" /> */}
-                    <ImageComponets path={"https://demo.spurtcms.com/"+productDetail?.ecommerceProductOrderDetails?.productImagePath} w={135.98} h={160}/>
+                    <ImageComponets path={productDetail?.ecommerceProductOrderDetails?.productImageArray?.[0]} w={135.98} h={160}/>
                     <div className="flex flex-col gap-2 px-4">
                         <h4 className="text-base text-black-500 font-normal">{productDetail?.ecommerceProductOrderDetails?.productName}</h4>
                         <p className="text-1-light text-sm font-light">Black Titanium, 256GB</p>
@@ -116,7 +122,7 @@ export default function MyOrderDetailSeverActions({params}) {
                         <h3 className="text-black-500 font-medium text-base leading-5">Grand Total</h3>
                         <p className="flex items-center gap-1 text-black-500 text-sm leading-5">
                             <img src="/img/rupee.svg" />
-                            { productDetail?.ecommerceProductOrderDetails?.orderPrice + productDetail?.ecommerceProductOrderDetails?.orderTax}
+                            {productDetail?.ecommerceProductOrderDetails?.orderPrice + productDetail?.ecommerceProductOrderDetails?.orderTax}
                         </p>
                     </div>
                 </div>
@@ -128,22 +134,23 @@ export default function MyOrderDetailSeverActions({params}) {
             <div className="flex flex-col sm:flex-row sm:gap-x-[84px] gap-3 mb-3">
                 <div className="flex gap-1 flex-col">
                     <h3 className="text-light-black text-sm font-normal">Customer Name</h3>
-                    <p className="text-3-light font-normal text-sm">Santina Jerde</p>
+                    <p className="text-3-light font-normal text-sm">{AddressData?.name}</p>
+                    
                 </div>
                 <div className="flex gap-1 flex-col">
                     <h3 className="text-light-black text-sm font-normal">Customer Address</h3>
-                    <p className="text-3-light font-normal text-sm">No.10 Cntr Cottg Indu Empo,</p>
-                    <p className="text-3-light font-normal text-sm"> Janpath, Delhi, India - 110001</p>
+                    <p className="text-3-light font-normal text-sm">No-{AddressData?.houseNo},{AddressData?.area},{AddressData?.city},</p>
+                    <p className="text-3-light font-normal text-sm"> {AddressData?.states},{AddressData?.country}</p>
                 </div>
             </div>
             <div  className="flex flex-col sm:flex-row sm:gap-x-[70px] gap-3">
                 <div className="flex gap-1 flex-col">
                     <h3 className="text-light-black text-sm font-normal">Customer Number</h3>
-                    <p className="text-3-light font-normal text-sm">9632587410</p>
+                    <p className="text-3-light font-normal text-sm">{AddressData?.number}</p>
                 </div>
                 <div className="flex gap-1 flex-col">
                     <h3 className="text-light-black text-sm font-normal">Customer Mail</h3>
-                    <p className="text-3-light font-normal text-sm">SantinaJerde@gmail.com</p>
+                    <p className="text-3-light font-normal text-sm">{AddressData?.email}</p>
                 </div>
             </div>
         </div>

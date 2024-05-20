@@ -4,8 +4,8 @@ import Link from 'next/link'
 import CheckoutSummary from '../Common/CheckoutSummary'
 import CheckoutRoutes from '../Common/CheckoutRoutes'
 import { useDispatch, useSelector } from 'react-redux'
-import { postGraphQl } from '@/api/graphicql'
-import { GET_CHECKOUT, Get_CATEGORIES_LIST } from '@/api/query'
+import { fetchGraphQl, postGraphQl } from '@/api/graphicql'
+import { GET_ADDRESS_DETAIL, GET_CHECKOUT, Get_CATEGORIES_LIST } from '@/api/query'
 import { TaxPriceValidation } from '@/utils/regexValidation'
 import { fetchGraphQLDa } from '@/api/clientGraphicql'
 import { checkCartName } from '@/redux/slices/cartSlice'
@@ -16,7 +16,17 @@ function CheckOutPayServerAction() {
     const address=useSelector(s=>s.cartReducer.address)
     const [loader,setLoader]=useState()
     const [catgoData,setCatgoData]=useState()
+    const [name,setName]=useState("")
+    const [email,setEmail]=useState("")
+    const [area,setArea]=useState("")
+    const [states,setStates]=useState("")
+    const [number,setNumber]=useState("")
+    const [houseNo,setHouseNo]=useState("")
+    const [city,setCity]=useState("")
+    const [country,setCountry]=useState("")
     const reloadCount=useSelector((state)=>state.cartReducer.reloadCount)
+
+
     const dispatch=useDispatch()
     const subtotalPrice=()=>{
         let priceStart=0
@@ -45,9 +55,43 @@ function CheckOutPayServerAction() {
             return priceStart
             
     }
+
+    const hadlegetAddress=async()=>{
+        let myAddress=await fetchGraphQl(GET_ADDRESS_DETAIL)
+        if(myAddress?.ecommerceCustomerDetails){
+          setName(myAddress.ecommerceCustomerDetails.firstName)
+          setEmail(myAddress.ecommerceCustomerDetails.email)
+          setArea(myAddress.ecommerceCustomerDetails.streetAddress)
+          setNumber(myAddress.ecommerceCustomerDetails.mobileNo)
+          setStates(myAddress.ecommerceCustomerDetails.state)
+          setHouseNo(myAddress.ecommerceCustomerDetails.zipCode)
+          setCity(myAddress.ecommerceCustomerDetails.city)
+          setCountry(myAddress.ecommerceCustomerDetails.country)
+  
+        }
+      }
+      useEffect(()=>{
+         hadlegetAddress()
+      },[])
+
     const handleCheckout=()=>{
+        let addressObj={
+            "cd":{
+              "firstName":name,
+              "username": name,
+              "email":email,
+              "streetAddress":area,
+              "state":states,
+              "mobileNo":number,
+              "zipCode":houseNo,
+              "city":city,
+              "country":country,
+              "profileImage":"",
+              "isActive": 1,
+            }  
+            }
         setLoader(true)
-        let add=JSON.stringify(address)
+        let add=JSON.stringify(addressObj)
         let checkArr=[]
         let obj={}
         cartCount?.map((data)=>{

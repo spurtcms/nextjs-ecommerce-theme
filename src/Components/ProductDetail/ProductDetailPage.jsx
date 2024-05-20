@@ -3,7 +3,7 @@ import { TaxPriceValidation, quantityList } from '@/utils/regexValidation';
 import React, { useEffect, useState } from 'react'
 import ImageComponets from '../ImageComponent';
 import { fetchGraphQl } from '@/api/graphicql';
-import { GET_ADD_TO_CART } from '@/api/query';
+import { GET_ADD_TO_CART, GET_MY_CART_QUERY } from '@/api/query';
 import ProductDetailSkeleton from '@/utils/SkeletonLoader/ProductDetail';
 import { useDispatch, useSelector } from 'react-redux';
 import { reloadCartCount } from '@/redux/slices/cartSlice';
@@ -12,10 +12,12 @@ import RelatedServerActions from '../RelatedProduct';
 import CartModel from './model/CartModel';
 import CoverImageModel from './model';
 import ReactPlayer from 'react-player';
+import { fetchGraphQLDa } from '@/api/clientGraphicql';
+import ToastMessage from '../ToastMessage/ToastMessage';
 
 export default function ProductDetailPage({productDetail,tokenCheck,slug}) {
 
-  console.log(productDetail,'qwerfdasd')
+  
   const dispatch=useDispatch()
   const reloadCount=useSelector((state)=>state.cartReducer.reloadCount)
   const [open, setOpen] = useState(false);
@@ -23,7 +25,21 @@ export default function ProductDetailPage({productDetail,tokenCheck,slug}) {
   const [skeleton,setSkeleton]=useState(true)
   const [viewModel,setViewModel]=useState('');
   const [videoPath,setVideoPath]=useState('')
-  
+  // const [cartQty,setCartQty]=useState([])
+
+  // const handleMycart=async()=>{
+  //   let variable={
+  //       "limit":10,
+  //       "offset":0,
+  //     }
+  //   let mycartlist=await fetchGraphQLDa(GET_MY_CART_QUERY,variable)
+  //   setCartQty(mycartlist)
+    
+  //   }
+  //   useEffect(()=>{
+  //     handleMycart()
+  //   },[])
+ 
   const handleOpenAddtoCart = () => {
     if(tokenCheck){
      let variable= {
@@ -56,14 +72,15 @@ export default function ProductDetailPage({productDetail,tokenCheck,slug}) {
         qytArr.push(productDetail)
         localStorage.setItem("add-cart-list",JSON.stringify(qytArr))
       }
-      
-    
     }
     dispatch(reloadCartCount(reloadCount+1))
-    setOpen(true);
-    setTimeout(()=>{
-      setOpen(false);
-    },2000)
+
+  
+      setOpen(true);
+      setTimeout(()=>{
+        setOpen(false);
+      },2000)
+
   };
   useEffect(() => {
     if (typeof window !== 'undefined' && open) {
@@ -95,44 +112,7 @@ if(productDetail){
  }
   return (
    <>
-    {/* <ul className="flex items-center gap-2 py-6 px-5 md:px-10">
-        <li>
-          <a href="javascript:void(0)" className="block w-4">
-            <img src="/img/home.svg" alt="home" />{" "}
-          </a>
-        </li>
-        <li>
-          <img
-            src="/img/bread-arrow.svg"
-            alt="arrow"
-            className="min-w-3 w-3 max-h-2"
-          />
-        </li>
-        <li>
-          <a
-            href="javascript:void(0)"
-            className="text-2-light font-normal leading-tight text-sm hover:text-black block"
-          >
-            Electronics
-          </a>
-        </li>
-        <li>
-          <img
-            src="/img/bread-arrow.svg"
-            alt="arrow"
-            className="min-w-3 w-3 max-h-2"
-          />
-        </li>
-        <li>
-          <a
-            href="javascript:void(0)"
-            className="text-2-light hover:text-black md:w-56 w-40 overflow-hidden text-ellipsis block whitespace-nowrap"
-          >
-            Samsung 65" class CU7000 class CU7000 class class CU7000 class
-            CU7000 class class CU7000 class CU7000 class CU7000
-          </a>
-        </li>
-    </ul> */}
+
     <BreadCrubs productDetail={productDetail}/>
 {skeleton==true?
 <ProductDetailSkeleton/>
@@ -197,25 +177,6 @@ if(productDetail){
           
           </>
           }
-
-
-         
-            {/* <div className=" grid place-items-center  rounded-5 overflow-hidden relative">
-              <div className="flex gap-3 absolute top-2 right-2">
-                <a
-                  class="grid place-items-center  col-span-2"
-                >
-                  <img src="/img/zoom-product.svg" alt="view product" />
-                </a>
-              </div>
-              <div className="w-full ">
-                <img
-                  src="/img/detail-product5.svg"
-                  alt="product image"
-                  className="w-full"
-                />
-              </div>
-            </div> */}
 
           </div>
 

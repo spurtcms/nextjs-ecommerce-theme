@@ -14,24 +14,29 @@ import { catagoryId, catagoryName } from "@/redux/slices/catgorySlice";
 
 const people = [
     {
+      id:0,
+      name:"Relevancy",
+      
+    },
+    {
       id: 1,
-      name: "Low to High",
+      name: "Low to high",
       setNo:0
     },
     {
       id: 2,
-      name: "High to Low ",
+      name: "High to low ",
       setNo:1,
     },
     {
       id: 3,
-      name: "New Arrival",
+      name: "Most Viewed",
       setNo:1,
       
     },
     {
       id: 4,
-      name: "Rating",
+      name: "High Rating",
       setNo:1,
     },
   ];
@@ -91,6 +96,11 @@ const offsetListData =async()=>{
   }
 }
 const sortBy = async () =>{
+  if(selected.id==0){
+    let catgo_variab={"categoryGroupId":147}
+  let postData= await fetchGraphQLDa(Get_CATEGORIES_LIST,catgo_variab)
+  setCatagoryList(postData?.categoriesList?.categories[0]?.categoryName)
+  }
   if(selected.id!=3&&selected.id!=4){
   let list_varab={"limit":25,"offset":offset,"filter":{"categoryId":catgorId},"sort":{"price":selected.setNo}}
   let sortByData= await fetchGraphQLDa(GET_POSTS_LIST_QUERY,list_varab)

@@ -29,6 +29,7 @@ export default function MyProfileServerActions() {
 
     const hadlegetAddress=async()=>{
         let myAddress=await fetchGraphQl(GET_ADDRESS_DETAIL)
+       
         setDataImg(myAddress)
         if(myAddress?.ecommerceCustomerDetails){
           setName(myAddress.ecommerceCustomerDetails.firstName)

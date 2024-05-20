@@ -28,6 +28,7 @@ const handleMycart=async()=>{
         "offset":0,
       }
     let mycartlist=await fetchGraphQLDa(GET_MY_CART_QUERY,variable)
+   
     mycartlist=mycartlist?.ecommerceCartList?.cartList
     mycartlist?.map((sdata)=>{
       sdata.quantity=sdata.ecommerceCart?.quantity
@@ -175,8 +176,9 @@ const router=useRouter()
                                     <p className="flex items-center gap-1.5 text-lg font-medium text-black-500">
                                         <img src="/img/rupee.svg" />
                                         {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")*data?.quantity} 
+                                        
                                     </p>
-                                    <button onClick={()=>handleRemove(data)} className="flex items-center gap-1 text-sm font-normal text-black-500 mt-0 lg:mt-[77px]">
+                                    <button onClick={()=>handleRemove(data)} className="flex items-center gap-1 text-sm font-normal text-black-500 mt-0 lg:mt-[30px]">
                                         <img src="/img/remove.svg" />
                                         Remove
                                     </button>

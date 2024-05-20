@@ -56,7 +56,7 @@ export default function HeaderServerActions({tokenCheck}) {
      hadlegetAddress()
   },[reloadCount])
 
-console.log(reloadCount,'reloadCount')
+
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
   }
