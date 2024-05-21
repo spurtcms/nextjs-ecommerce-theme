@@ -483,8 +483,8 @@ useEffect(()=>{
                         </div></>}
                         </>}
                     </div>
-                    <div className="overflow-auto min-h-[530px]">
-                        <table className="w-full table border-collapse">
+                    <div className="overflow-auto min-h-[510px]">
+                        <table className="w-full table border-collapse lastdata">
                             <thead>
                                 <tr>
                                     <th className="px-4 py-2 border-b border-grey text-start text-base font-normal text-black-500">

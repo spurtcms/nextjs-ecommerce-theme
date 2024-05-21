@@ -146,7 +146,7 @@ const router=useRouter()
                                     Total
                                 </h3>
                             </div>
-                        
+                            
                                 {cartItmeList?.map((data,index)=>(
                                     
                                     <div className="p-6 pb-9 border-b border-grey3 grid grid-cols-1 sm:grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-6 last:border-0">
@@ -187,7 +187,7 @@ const router=useRouter()
                                 
 
                                 ))}
-                            
+                           
                             
                             
                         </div>
@@ -197,6 +197,7 @@ const router=useRouter()
                                     <h3 className="text-black-500 text-base font-normal">Order Summary</h3>
                                 </div>
                                 <div className="px-4 py-5">
+                                    
                                     {cartItmeList?.map((data)=>(
                                         <div className="flex items-center justify-between mb-4">
                                         <div className="flex items-center gap-[15px]">
@@ -214,7 +215,7 @@ const router=useRouter()
                                     </div>
                                     ))}
                                     
-                                
+                                    
                                     <div className="w-full h-px bg-grey mt-10 mb-6"></div>
                                     <div className="flex items-center justify-between mb-6">
                                         <h5 className="text-black-500 font-light text-base leading-5">Subtotal</h5>

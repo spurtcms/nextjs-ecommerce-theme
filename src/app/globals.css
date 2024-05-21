@@ -241,3 +241,6 @@
   --tw-text-opacity: 1;
   color: rgb(8 145 178/var(--tw-text-opacity));
 }
+.lastdata tr:last-child td{
+  border: 0 !important;
+}

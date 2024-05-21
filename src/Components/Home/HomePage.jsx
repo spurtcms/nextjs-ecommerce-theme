@@ -14,11 +14,6 @@ import { catagoryId, catagoryName } from "@/redux/slices/catgorySlice";
 
 const people = [
     {
-      id:0,
-      name:"Relevancy",
-      
-    },
-    {
       id: 1,
       name: "Low to high",
       setNo:0
@@ -221,7 +216,7 @@ const handleLoad=(data)=>{
                            Price:
                          </span>
                          <span className=" text-xs font-normal text-black leading-4">
-                           {selected.name}
+                          {selected.name}
                          </span>
                        </span>
                        <span className="pointer-events-none  absolute inset-y-0 right-0 ml-3 flex items-center pr-2">

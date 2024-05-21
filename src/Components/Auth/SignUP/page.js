@@ -99,7 +99,7 @@ export default function SingUp() {
      
   return (
    <>
-   <div className="md:p-10 p-4">
+   <div className="grid place-items-center min-h-90 p-4  bg-blue-2 h-responsive">
                 <div className="w-full max-w-[534px] m-auto">
                     <h3 className="text-2xl leading-7 font-normal text-primary mb-10">Sign up</h3>
                     <h5 className="text-black-500 font-lights text-xl leading-6 mb-6">Account Details</h5>

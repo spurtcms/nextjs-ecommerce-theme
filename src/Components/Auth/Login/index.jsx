@@ -26,8 +26,6 @@ export default function LoginPage() {
         const inputdata={"email":email,"password":password}
         postGraphQl(GET_POSTS_LOGIN_QUERY,inputdata,"login",setLoader,cartPathName,reloadCount,dispatch)
       }
-      
-
   }
 
   const Onkeydownfunc = (e) => {
@@ -36,8 +34,6 @@ export default function LoginPage() {
       handleLogin()
     }
   }
-
-
 
   return (
    <>
