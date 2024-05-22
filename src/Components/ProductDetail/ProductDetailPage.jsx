@@ -96,6 +96,8 @@ export default function ProductDetailPage({productDetail,tokenCheck,slug}) {
     }
   }, [open]);
 
+  console.log(open,'assas212')
+
   useEffect(()=>{
 if(productDetail){
   setSkeleton(false)

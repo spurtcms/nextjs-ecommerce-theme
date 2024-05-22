@@ -8,11 +8,11 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 export default function LoginPage() {
-    const[email,setEmail]=useState("")
+  const[email,setEmail]=useState("")
   const [password,setPassword]=useState("")
   const [validCheck,setValidCheck]=useState(0)
   const [loader,setLoader]=useState()
- const dispatch=useDispatch()
+  const dispatch=useDispatch()
   const cartPathName=useSelector((state)=>state.cartReducer.checkoutCart)
   const reloadCount=useSelector((state)=>state.cartReducer.reloadCount)
 

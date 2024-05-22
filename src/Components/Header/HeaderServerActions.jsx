@@ -99,6 +99,9 @@ export default function HeaderServerActions({tokenCheck}) {
             "offset":0,
           }
          let mycartlist=await fetchGraphQl(GET_MY_CART_QUERY,variable)
+
+         console.log(mycartlist,'mycartlist')
+
          
           mycartlist=mycartlist?.ecommerceCartList?.cartList
           
@@ -271,7 +274,7 @@ const handleKeyDown = (event) => {
                     {/* Profile dropdown */}
                     <Menu as="div" className="relative">
                       <div>
-                        <Menu.Button className="relative flex rounded-full text-sm ">
+                        <Menu.Button className="relative flex rounded-full text-sm">
                           {dataImg?.ecommerceCustomerDetails?.profileImage&&
                           <img
                           className="w-6 h-6 rounded-full"
@@ -303,7 +306,7 @@ const handleKeyDown = (event) => {
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-95"
                       >
-                        <Menu.Items className="absolute right-0 z-10 mt-2 w-36 origin-top-right bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none  py-1 rounded-md  ">
+                        <Menu.Items className="absolute right-0 z-10 mt-2 w-36 origin-top-right bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none  py-1 rounded-md">
                           {tokenCheck&&
                           <>                   
                          <Menu.Item>
@@ -336,36 +339,48 @@ const handleKeyDown = (event) => {
                                   "flex gap-4 px-3 py-2 text-sm font-light text-black leading-tight"
                                 )}
                               >
-                                <img src="/img/order.svg" alt="order" /> My
-                                Orders
+                                <img src="/img/order.svg" alt="order" /> 
+                                My Orders
+                                
                               </Link>
                             )}
                           </Menu.Item>
                           </>
-}
+                          }
                           
-
+                         {tokenCheck?
                           <Menu.Item>
+                          {({ active }) => (
+                             <a onClick={()=>Logout()} className={classNames(
+                                  active ? "bg-gray-100" : "",
+                                  "flex gap-4 px-3 py-2 text-sm font-light text-black leading-tight cursor-pointer"
+                                )}> <img src="/img/logout.svg" alt="logout" />
+                              Logout
+                              </a>
+                          )}
+                        </Menu.Item>
+                        :
+                             <Menu.Item>
                             {({ active }) => (
-                                tokenCheck?<a onClick={()=>Logout()} className={classNames(
-                                    active ? "bg-gray-100" : "",
-                                    "flex gap-4 px-3 py-2 text-sm font-light text-black leading-tight cursor-pointer"
-                                  )}> <img src="/img/logout.svg" alt="logout" />
-                                Logout</a>:<><Link
-                               href={"/auth/login"}
-                               prefetch
+                              <Link
+                                href={"/auth/login"}
+                                // href={{
+                                //   pathname: "/account/my-orders", query: { offset: 0 },
+                                // }}
+                                prefetch
                                 className={classNames(
                                   active ? "bg-gray-100" : "",
                                   "flex gap-4 px-3 py-2 text-sm font-light text-black leading-tight"
                                 )}
                               >
-                                <img src="/img/login.svg" alt="logout" />
+                               <img src="/img/login.svg" alt="logout" />
                                 Login
-                               
-                              </Link></>
-                              
+                                
+                              </Link>
                             )}
                           </Menu.Item>
+                        }
+
                         </Menu.Items>
                       </Transition>
                     </Menu>

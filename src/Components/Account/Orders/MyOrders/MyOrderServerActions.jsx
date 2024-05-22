@@ -311,7 +311,7 @@ const Filters = [
         setProductList(postData?.ecommerceProductOrdersList?.productList)
         setTotalRecords(postData?.ecommerceProductOrdersList?.count)
     }
-    const nPages1 = Math.ceil(totalRecords!=undefined&&totalRecords / 10)
+   
     const handleChange=(e)=>{
         if(e.target.value){
             Filters[1].delstatus=false
@@ -355,6 +355,7 @@ const Filters = [
        
     }
     const onPageChange=(data)=>{
+        console.log(data,'qwdsewdsd')
         setSkeleton(true)
         if(pathNameHistory==="/account/my-orders"){
         let offset = Math.ceil((data - 1) * limit);
@@ -370,6 +371,8 @@ const Filters = [
 
     }
 
+    const nPages1 = Math.ceil(totalRecords!=undefined&&totalRecords / 10)
+    
     const handleDate=(date)=>{
      setStartDate(date)
      Filters[2].date=false

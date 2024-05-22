@@ -69,6 +69,8 @@ const listData = async ()=>{
   }
 }
 
+console.log(cardListData,'cardListData')
+
 const offsetListData =async()=>{
   if(disableScroll==false){
   let list_varab={"limit":25,"offset":offset,"filter":{"categoryId":catgorId}}
@@ -179,7 +181,7 @@ const handleLoad=(data)=>{
     }, [handleScroll]);
 
     
-
+console.log(cardListData,'cardListData')
   return (
     <>
 {skeleton==true?
@@ -271,10 +273,12 @@ const handleLoad=(data)=>{
             <div class=" grid grid-auto-cols     border-t border-s border-grey">
             {/* card */}
             {cardListData?.map((data,index)=>(
+              
+
               <div key={index} class="group p-5 hover:shadow-3xl transition-shadow border-e border-b border-grey">
               <Link href={`/product-detail/${data?.productSlug}`} prefetch className="grid place-items-center">
                 
-                <ImageComponets path={data.productImageArray?.[0]} alt={data.productName} w={300} h={200}/>
+                <ImageComponets path={data?.productImageArray?.[0]} alt={data?.productName} w={300} h={200}/>
               </Link>
               <div className="text-center">
               <Link
@@ -282,22 +286,22 @@ const handleLoad=(data)=>{
                  prefetch
                   className=" text-base text-black font-medium leading-5 mt-5 block"
                 >
-                 {data.productName}
+                 {data?.productName}
                 </Link>
 
                 <p className="text-sm font-light leading-4 text-1-light mt-2 line-clamp-2">
-                  {data.productDescription}
+                  {data?.productDescription}
                 </p>
                 <div className="flex gap-2 items-center justify-center mt-3">
                   <strong className="flex gap-1 items-center text-base font-semibold leading-5 text-black before:content-[''] before:inline-block before:w-2 before:h-3 before:bg-[url('/img/rupee.svg')]   ">
                   {/* {data.discountPrice} */}
-                  {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")} 
+                  {TaxPriceValidation(data?.specialPrice,data?.discountPrice,data?.defaultPrice,data?.tax,"")} 
                   
                   </strong>
                  
                   <del className="text-xs font-normal text-1-light leading-4 ">
                   {/* {data.specialPrice} */}
-                 {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"strike")}
+                 {TaxPriceValidation(data?.specialPrice,data?.discountPrice,data?.defaultPrice,data?.tax,"strike")}
                   </del>
                 </div>
                 <div className="flex items-center rounded h-9 overflow-hidden border border-black max-w-56 mx-auto mt-4 invisible transition-opacity duration-200 opacity-0 group-hover:visible group-hover:opacity-100">
