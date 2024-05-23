@@ -14,8 +14,9 @@ export default function ImageComponets({path,w,h,alt,styAdd}) {
                         alt={alt}
                         width={w}
                         height={h}
-                        priority
                         className={styAdd}
+                        priority
+                        
                       />
    </>
   )

@@ -80,7 +80,7 @@ export const postGraphQl = async (GET_POSTS_QUERY,varia,check,setLoader,cartName
     if(check==="checkout"){
       if(entries?.ecommerceOrderPlacement){
         localStorage.removeItem("add-cart-list")
-        Redirect("/account/my-orders")
+        Redirect("/account/my-orders?offset=0")
         setLoader(false)
         dispatch(getAddress({}))
         dispatch(reloadCartCount(reloadCount+1))

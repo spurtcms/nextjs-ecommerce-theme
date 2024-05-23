@@ -28,6 +28,8 @@ const handleMycart=async()=>{
         "offset":0,
       }
     let mycartlist=await fetchGraphQLDa(GET_MY_CART_QUERY,variable)
+
+    console.log(mycartlist,'mycartlist')
    
     mycartlist=mycartlist?.ecommerceCartList?.cartList
     mycartlist?.map((sdata)=>{

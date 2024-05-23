@@ -63,6 +63,7 @@ const Filters = [
         setTotalRecords(0)
         let list_var={"lim":10,"off":offset,"filter":{"upcomingOrders": 1}}
         let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
+        console.log(postData,'postData')
         if(postData){
             setSkeleton(false)
         }
@@ -106,7 +107,7 @@ const Filters = [
         orderList()
     }
     },[offset])
-
+console.log(productList,'productList')
     useEffect(()=>{
         searchData()
     },[searchFilter,offset])
@@ -368,7 +369,6 @@ const Filters = [
         setCurrentPage(data)
         router.push(`/account/my-history?offset=${offset}`)
     }
-
     }
 
     const nPages1 = Math.ceil(totalRecords!=undefined&&totalRecords / 10)
@@ -377,9 +377,9 @@ const Filters = [
      setStartDate(date)
      Filters[2].date=false
     }
-useEffect(()=>{
-    setCurrentPage(offset/10+1)
-},[])
+    useEffect(()=>{
+        setCurrentPage(offset/10+1)
+    },[])
     
   return (
     <>

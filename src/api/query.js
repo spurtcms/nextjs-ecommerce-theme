@@ -28,6 +28,10 @@
   }
   `
 
+  export const GET_POST_VIEWCOUNT_QUERY=`mutation($pid: Int,$slug: String){
+    UpdateProductViewCount(productId: $pid, productSlug: $slug)
+  }`
+
 
   export const GET_POSTS_LIST_QUERY = `query ecommerceProductList(
     $limit: Int!,
@@ -53,10 +57,11 @@
         productYoutubePath
         productVimeoPath
         sku
-       defaultPrice
+        defaultPrice
         isActive
         discountPrice
         specialPrice 
+        viewCount
       }
       count
     }
@@ -189,6 +194,7 @@
       }
       count
     }
+
   }`
 
   export const GET_CHECKOUT=`mutation ecommerceOrderPlacement($summ:OrderSummary,$mode: String!,$addr: String!,$prod: [orderProduct!]!){

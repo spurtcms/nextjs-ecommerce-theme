@@ -96,8 +96,8 @@ function CheckOutPayServerAction() {
         let obj={}
         cartCount?.map((data)=>{
           
-            obj.productId=data.id
-            obj.quantity=data.quantity
+            obj.productId=data?.ecommerceCart?.productId
+            obj.quantity=data?.quantity
             obj.price=subtotalPrice()
             obj.tax=salesTaxPrice()
             obj.totalCost=subtotalPrice()+salesTaxPrice()
@@ -119,6 +119,7 @@ function CheckOutPayServerAction() {
         postGraphQl(GET_CHECKOUT,variableList,"checkout",setLoader,"",reloadCount,dispatch)
     }
 
+    console.log(cartCount,'cartCount')
     const categorieList= async () =>{
         let catgo_variab={"categoryGroupId":147}
         let postData= await fetchGraphQLDa(Get_CATEGORIES_LIST,catgo_variab)

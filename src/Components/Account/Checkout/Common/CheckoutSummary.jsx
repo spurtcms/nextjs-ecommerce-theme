@@ -4,6 +4,7 @@ import { TaxPriceValidation } from '@/utils/regexValidation'
 import React, { useEffect, useState } from 'react'
 
 export default function CheckoutSummary({setCartCount}) {
+    console.log(setCartCount,'ASDAD')
     const [productSummary,setProductSummary]=useState([])
    
     const handleMycart=async()=>{

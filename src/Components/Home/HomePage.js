@@ -5,12 +5,13 @@ import Link from 'next/link';
 import ImageComponets from '../ImageComponent';
 
 
-import { GET_POSTS_LIST_QUERY, Get_CATEGORIES_LIST } from '@/api/query';
+import { GET_POSTS_LIST_QUERY, GET_POST_VIEWCOUNT_QUERY, Get_CATEGORIES_LIST } from '@/api/query';
 import { TaxPriceValidation } from '@/utils/regexValidation';
 import { fetchGraphQLDa } from '@/api/clientGraphicql';
 import HomePageSkeleton from '@/utils/SkeletonLoader/HomePage';
 import { useSelector,useDispatch } from "react-redux";
 import { catagoryId, catagoryName } from "@/redux/slices/catgorySlice";
+import { fetchGraphQl } from '@/api/graphicql';
 
 const people = [
     {
@@ -105,7 +106,7 @@ const sortBy = async () =>{
   setCardListData(postData)
 }
 if(selected.id==3||selected.id==4){
-  let list_varab={"limit":25,"offset":offset,"filter":{"categoryId":catgorId},"sort":{"date":selected.setNo}}
+  let list_varab={"limit":25,"offset":offset,"filter":{"categoryId":catgorId},"sort":{"viewCount":selected.setNo}}
   let sortByData= await fetchGraphQLDa(GET_POSTS_LIST_QUERY,list_varab)
   let postData=cardListData.concat(sortByData?.ecommerceProductList?.productList)
   setCardListData(postData)
@@ -180,8 +181,12 @@ const handleLoad=(data)=>{
       
     }, [handleScroll]);
 
-    
-console.log(cardListData,'cardListData')
+    const handleCount=(slug)=>{
+      let variable_count={
+        "slug":slug
+      }
+      fetchGraphQl(GET_POST_VIEWCOUNT_QUERY,variable_count)
+    }
   return (
     <>
 {skeleton==true?
@@ -270,16 +275,18 @@ console.log(cardListData,'cardListData')
            </div>
          </>
         </div>
-            <div class=" grid grid-auto-cols     border-t border-s border-grey">
+            <div class=" grid grid-auto-cols border-t border-s border-grey">
             {/* card */}
             {cardListData?.map((data,index)=>(
               
 
               <div key={index} class="group p-5 hover:shadow-3xl transition-shadow border-e border-b border-grey">
-              <Link href={`/product-detail/${data?.productSlug}`} prefetch className="grid place-items-center">
+               
+              <Link href={`/product-detail/${data?.productSlug}`} prefetch className="grid place-items-center" onClick={()=>handleCount(data?.productSlug)}>
                 
-                <ImageComponets path={data?.productImageArray?.[0]} alt={data?.productName} w={300} h={200}/>
+                <ImageComponets path={data?.productImageArray?.[0]} alt={data?.productName} w={300} h={200} styAdd={`h-40`}/>
               </Link>
+              
               <div className="text-center">
               <Link
                  href={`/product-detail/${data?.productSlug}`}
@@ -309,13 +316,13 @@ console.log(cardListData,'cardListData')
                     href={`/product-detail/${data?.productSlug}`}
                     prefetch
                     className="flex items-center bg-black gap-2 p-2 size-full justify-center"
+                    onClick={()=>handleCount(data?.productSlug)}
                   >
                     <img src="\img\card-cart.svg" alt="cart" />{" "}
                     <span className=" text-white font-normal text-sm leading-4 ">
                       Add to Cart
                     </span>
                   </Link>
-                 
                 </div>
               </div>
             </div>
