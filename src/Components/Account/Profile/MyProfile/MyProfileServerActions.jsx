@@ -127,6 +127,19 @@ export default function MyProfileServerActions() {
           }
         }
       };
+      const handleNumValid=(e,values)=>{
+        var roleExpression = /[^0-9]/g;
+        var regex = new RegExp(roleExpression);
+        var t = e;
+        if (!t.match(regex)) {
+          if (values == "number") {
+            setNumber(e)
+          }
+          if(values == "pincode"){
+            setHouseNo(e)
+          }
+        }
+      }
   return (
   <>
    <div className='p-4 sm:p-10 md:pr-[118px] '>
@@ -157,7 +170,7 @@ export default function MyProfileServerActions() {
                             </div>
                             <div className='flex flex-col gap-2'>
                                 <p className='text-base leading-5 text-black font-light'>Mobile Number </p>
-                                <input type='number' className='border-grey3 border px-3 py-4 text-base text-black leading-5 font-normal rounded-xl h-[52px] focus-visible:outline-none w-full'  value={number} placeholder="Enter number" onChange={(e)=>setNumber(e.target.value)}/>
+                                <input type='text' className='border-grey3 border px-3 py-4 text-base text-black leading-5 font-normal rounded-xl h-[52px] focus-visible:outline-none w-full'  value={number} placeholder="Enter number" onChange={(e)=>handleNumValid(e.target.value.trimStart(),"number")}/>
                                         {number ==""&&valid==1&&<p className='text-red-600 text-xs font-normal'>Mobile number is required</p>} 
                             </div>
                             <div className='flex flex-col gap-2'>
@@ -199,7 +212,7 @@ export default function MyProfileServerActions() {
                                 </div>
                                 <div className='flex flex-col gap-2'>
                                     <p className='text-base leading-5 text-black font-light'>Pincode </p>
-                                    <input type='number' className='border-grey3 border px-3 py-4 text-base text-black leading-5 font-normal rounded-xl h-[52px] focus-visible:outline-none w-full'value={houseNo} placeholder="Enter Pincode" onChange={(e)=>setHouseNo(e.target.value)}/>
+                                    <input type='text' className='border-grey3 border px-3 py-4 text-base text-black leading-5 font-normal rounded-xl h-[52px] focus-visible:outline-none w-full'value={houseNo} placeholder="Enter Pincode" onChange={(e)=>handleNumValid(e.target.value.trimStart(),"pincode")}/>
                                         {houseNo ==""&&valid==1&&<p className='text-red-600 text-xs font-normal'>Pincode is required</p>} 
                                 </div>
                             </div>

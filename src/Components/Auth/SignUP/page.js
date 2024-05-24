@@ -96,6 +96,17 @@ export default function SingUp() {
           handlesignup()
         }
       }
+
+      const handleNumValid=(e,values)=>{
+        var roleExpression = /[^0-9]/g;
+        var regex = new RegExp(roleExpression);
+        var t = e;
+        if (!t.match(regex)) {
+          if (values == "number") {
+            setphNumber(e)
+          }
+        }
+      }
      
   return (
    <>
@@ -110,7 +121,7 @@ export default function SingUp() {
                     </div>
                     <div className="mb-6 flex flex-col gap-2">
                         <label className="text-black-500 font-light text-base leading-5">Phone Number</label>
-                        <input type="number" onKeyDown={(e) => Onkeydownfunc(e)} className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" placeholder="Enter Phone Number"  onChange={(e)=>setphNumber(e.target.value)}/>
+                        <input type="text" onKeyDown={(e) => Onkeydownfunc(e)} className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" placeholder="Enter Phone Number"  onChange={(e)=>handleNumValid(e.target.value.trimStart(),"number")}/>
                         {phNumber==""&&valid==1&& <p className='text-red-600 text-xs font-normal'>Phone number is required</p>}
              
                     </div>
@@ -123,13 +134,13 @@ export default function SingUp() {
                         <label className="text-black-500 font-light text-base leading-5">Password</label>
                         <input type="text" onKeyDown={(e) => Onkeydownfunc(e)} className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" placeholder="Enter Password" onChange={(e)=>setPassword(e.target.value)}/>
                         {valid==1&& <div class="mt-1">
-        <ul class="grid grid-cols-1 sm:grid-cols-2  ps-2 gap-y-2">
-          {passwordError?.map((err)=>(
-           <li class="text-xs font-normal text-red-600">{err}</li>
-          ))}
-       
-         </ul>
-      </div>}
+                        <ul class="grid grid-cols-1 sm:grid-cols-2  ps-2 gap-y-2">
+                          {passwordError?.map((err)=>(
+                          <li class="text-xs font-normal text-red-600">{err}</li>
+                          ))}
+                      
+                        </ul>
+                      </div>}
                     </div>
                     <button onClick={()=>handlesignup()} className="h-11 flex justify-center items-center w-full bg-dark-500 text-base text-white font-normal rounded mb-3">
                    
