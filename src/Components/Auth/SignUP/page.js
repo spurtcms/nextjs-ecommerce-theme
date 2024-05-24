@@ -110,13 +110,13 @@ export default function SingUp() {
                     </div>
                     <div className="mb-6 flex flex-col gap-2">
                         <label className="text-black-500 font-light text-base leading-5">Phone Number</label>
-                        <input type="text" onKeyDown={(e) => Onkeydownfunc(e)} className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" placeholder="Enter Phone Number"  onChange={(e)=>setphNumber(e.target.value)}/>
+                        <input type="number" onKeyDown={(e) => Onkeydownfunc(e)} className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" placeholder="Enter Phone Number"  onChange={(e)=>setphNumber(e.target.value)}/>
                         {phNumber==""&&valid==1&& <p className='text-red-600 text-xs font-normal'>Phone number is required</p>}
              
                     </div>
                     <div className="mb-6 flex flex-col gap-2">
                         <label className="text-black-500 font-light text-base leading-5">Email Id</label>
-                        <input type="text" onKeyDown={(e) => Onkeydownfunc(e)} className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" placeholder="Enter Email Id"  onChange={(e)=>setEmail(e.target.value)} />
+                        <input type="email" onKeyDown={(e) => Onkeydownfunc(e)} className="border-grey3 rounded-lg h-[52px] placeholder:text-grey px-3 py-4 focus:border-grey3 focus:shadow-none focus:ring-0 text-black-500" placeholder="Enter Email Id"  onChange={(e)=>setEmail(e.target.value)} />
                         {emailError !==""&&valid==1&&<p className='text-red-600 text-xs font-normal'>{emailError}</p>}
                     </div>
                     <div className="mb-6 flex flex-col gap-2">
@@ -133,7 +133,7 @@ export default function SingUp() {
                     </div>
                     <button onClick={()=>handlesignup()} className="h-11 flex justify-center items-center w-full bg-dark-500 text-base text-white font-normal rounded mb-3">
                    
-                      {loader==true?spinner():" Register"}
+                      {loader==true?<div className="loader"></div> :" Register"}
                     </button>
                     <Link  href="/auth/login" className="text-base font-light text-black-500 text-center block w-full">Have an account?  <span className="font-medium">Sign in</span></Link>
                 </div>

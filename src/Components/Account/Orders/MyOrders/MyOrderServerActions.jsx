@@ -63,7 +63,8 @@ const Filters = [
         setTotalRecords(0)
         let list_var={"lim":10,"off":offset,"filter":{"upcomingOrders": 1}}
         let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
-        console.log(postData,'postData')
+      console.log(postData,'postData')
+
         if(postData){
             setSkeleton(false)
         }
@@ -107,7 +108,7 @@ const Filters = [
         orderList()
     }
     },[offset])
-console.log(productList,'productList')
+
     useEffect(()=>{
         searchData()
     },[searchFilter,offset])
@@ -340,7 +341,6 @@ console.log(productList,'productList')
                     "name":e.target.value,
                     "apiName":data.apiName
                 }
-
                 setDeliveryStatus(obj)
             }
         })
@@ -356,7 +356,7 @@ console.log(productList,'productList')
        
     }
     const onPageChange=(data)=>{
-        console.log(data,'qwdsewdsd')
+
         setSkeleton(true)
         if(pathNameHistory==="/account/my-orders"){
         let offset = Math.ceil((data - 1) * limit);
@@ -505,10 +505,10 @@ console.log(productList,'productList')
                                     <th className="px-4 py-2 border-b border-grey text-start text-base font-normal text-black-500">
                                         Delivery Date
                                     </th>
-                                    <th className="px-4 py-2 border-b border-grey text-start text-base font-normal text-black-500">
+                                    <th className="px-4 py-2 border-b border-grey text-center text-base font-normal text-black-500">
                                         Status
                                     </th>
-                                    <th className="px-4 py-2 border-b border-grey text-start text-base font-normal text-black-500">
+                                    <th className="px-4 py-2 border-b border-grey text-center text-base font-normal text-black-500">
                                         Action
                                     </th>
                                 </tr>
@@ -546,19 +546,19 @@ console.log(productList,'productList')
                                         </p>
                                     </td>
                                     <td className="px-4 py-2 border-b border-grey text-start">
-                                        <p className="text-3-light text-sm leading-5">{moment(result?.createdOn).format("DD MMMM YYYY")}</p>
+                                        <p className="text-3-light text-sm leading-5">{moment(result?.orderTime).format("DD MMMM YYYY")}</p>
                                     </td>
                                     <td className="px-4 py-2 border-b border-grey text-start">
                                         <p className="text-3-light text-sm leading-5"></p>
                                     </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <div className="flex">
-                                            <div className="px-2 py-[3px] bg-sucess text-sucess text-xs font-normal rounded">
+                                    <td className="px-4 py-2 border-b border-grey text-center">
+                                        <div className="flex justify-center">
+                                            <div className={`px-2 py-[3px] ${result?.orderStatus=="canceled"?'bg-danger text-danger':'bg-sucess text-sucess'} text-xs font-normal rounded`}>
                                                 {result?.orderStatus}
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
+                                    <td className="px-4 py-2 border-b border-grey text-center">
                                         <Link href={`/account/my-order-detail/${result?.productSlug}`} className="text-3-light font-medium text-sm hover:underline">View Details</Link>
                                     </td>
                                 </tr>
@@ -615,14 +615,14 @@ console.log(productList,'productList')
                                     <td className="px-4 py-2 border-b border-grey text-start">
                                         <p className="text-3-light text-sm leading-5"></p>
                                     </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
-                                        <div className="flex">
+                                    <td className="px-4 py-2 border-b border-grey text-center">
+                                        <div className="flex justify-center">
                                             <div className="px-2 py-[3px] bg-sucess text-sucess text-xs font-normal rounded">
                                                 {result?.orderStatus}
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-4 py-2 border-b border-grey text-start">
+                                    <td className="px-4 py-2 border-b border-grey text-center">
                                         <Link href={`/account/my-order-detail/${result?.productSlug}`} className="text-3-light font-medium text-sm hover:underline">View Details</Link>
                                     </td>
                                 </tr>

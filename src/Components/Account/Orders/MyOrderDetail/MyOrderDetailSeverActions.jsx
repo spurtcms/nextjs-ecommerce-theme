@@ -25,7 +25,7 @@ export default function MyOrderDetailSeverActions({params}) {
         AddressData=JSON.parse(productDetail?.ecommerceProductOrderDetails?.shippingDetails)
     }
 
-
+console.log(productDetail,'productDetail')
   return (
     <div className="sm:px-10 px-4 py-4 ">
     <Link href="/account/my-orders?offset=0" className="flex gap-1.5 items-center text-grey-300 text-xs font-light mb-6">
@@ -43,7 +43,8 @@ export default function MyOrderDetailSeverActions({params}) {
         <div className="flex">
             <p className="text-xs font-normal text-grey-300 flex gap-1">
                 Order Date :
-                <span className="text-grey-500">{ moment(productDetail?.ecommerceProductOrderDetails?.createdOn).format("DD MMMM YYYY")}</span>
+                <span className="text-grey-500">{ moment(productDetail?.ecommerceProductOrderDetails?.
+orderTime).format("DD MMMM YYYY")}</span>
             </p>
         </div>
         <div className="w-px h-4 bg-grey3"></div>

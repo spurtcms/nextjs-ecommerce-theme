@@ -17,6 +17,8 @@ import ToastMessage from '../ToastMessage/ToastMessage';
 
 export default function ProductDetailPage({productDetail,tokenCheck,slug}) {
 
+
+
   
   const dispatch=useDispatch()
   const reloadCount=useSelector((state)=>state.cartReducer.reloadCount)
@@ -96,7 +98,6 @@ export default function ProductDetailPage({productDetail,tokenCheck,slug}) {
     }
   }, [open]);
 
-  console.log(open,'assas212')
 
   useEffect(()=>{
 if(productDetail){

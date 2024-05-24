@@ -70,7 +70,7 @@ const listData = async ()=>{
   }
 }
 
-console.log(cardListData,'cardListData')
+
 
 const offsetListData =async()=>{
   if(disableScroll==false){

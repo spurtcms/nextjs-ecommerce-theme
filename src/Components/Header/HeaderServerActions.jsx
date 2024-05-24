@@ -100,7 +100,7 @@ export default function HeaderServerActions({tokenCheck}) {
           }
          let mycartlist=await fetchGraphQl(GET_MY_CART_QUERY,variable)
 
-         console.log(mycartlist,'mycartlist')
+
 
          
           mycartlist=mycartlist?.ecommerceCartList?.cartList

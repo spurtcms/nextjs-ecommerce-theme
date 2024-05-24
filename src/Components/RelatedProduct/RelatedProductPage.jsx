@@ -24,6 +24,8 @@ export default function RelatedProductPage({slug}) {
         
     },[catgoId])
 
+
+
   return (
   <>
                                     <div className="flex flex-col  gap-6">

@@ -157,12 +157,12 @@ export default function MyProfileServerActions() {
                             </div>
                             <div className='flex flex-col gap-2'>
                                 <p className='text-base leading-5 text-black font-light'>Mobile Number </p>
-                                <input className='border-grey3 border px-3 py-4 text-base text-black leading-5 font-normal rounded-xl h-[52px] focus-visible:outline-none w-full'  value={number} placeholder="Enter number" onChange={(e)=>setNumber(e.target.value)}/>
+                                <input type='number' className='border-grey3 border px-3 py-4 text-base text-black leading-5 font-normal rounded-xl h-[52px] focus-visible:outline-none w-full'  value={number} placeholder="Enter number" onChange={(e)=>setNumber(e.target.value)}/>
                                         {number ==""&&valid==1&&<p className='text-red-600 text-xs font-normal'>Mobile number is required</p>} 
                             </div>
                             <div className='flex flex-col gap-2'>
                                 <p className='text-base leading-5 text-black font-light'>Email Id  </p>
-                                <input className='border-grey3 border px-3 py-4 text-base text-black leading-5 font-normal rounded-xl h-[52px] focus-visible:outline-none w-full' value={email}  placeholder="Enter Email Id" onChange={(e)=>setEmail(e.target.value)}/>
+                                <input type='email' className='border-grey3 border px-3 py-4 text-base text-black leading-5 font-normal rounded-xl h-[52px] focus-visible:outline-none w-full' value={email}  placeholder="Enter Email Id" onChange={(e)=>setEmail(e.target.value)}/>
                                         {emailError !==""&&valid==1&&<p className='text-red-600 text-xs font-normal'>{emailError}</p>}
                             </div>
                             <div className='flex flex-col gap-2'>
@@ -199,7 +199,7 @@ export default function MyProfileServerActions() {
                                 </div>
                                 <div className='flex flex-col gap-2'>
                                     <p className='text-base leading-5 text-black font-light'>Pincode </p>
-                                    <input className='border-grey3 border px-3 py-4 text-base text-black leading-5 font-normal rounded-xl h-[52px] focus-visible:outline-none w-full'value={houseNo} placeholder="Enter Pincode" onChange={(e)=>setHouseNo(e.target.value)}/>
+                                    <input type='number' className='border-grey3 border px-3 py-4 text-base text-black leading-5 font-normal rounded-xl h-[52px] focus-visible:outline-none w-full'value={houseNo} placeholder="Enter Pincode" onChange={(e)=>setHouseNo(e.target.value)}/>
                                         {houseNo ==""&&valid==1&&<p className='text-red-600 text-xs font-normal'>Pincode is required</p>} 
                                 </div>
                             </div>

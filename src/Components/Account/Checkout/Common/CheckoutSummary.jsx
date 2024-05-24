@@ -1,10 +1,10 @@
+import ImageComponets from '@/Components/ImageComponent'
 import { fetchGraphQLDa } from '@/api/clientGraphicql'
 import { GET_MY_CART_QUERY } from '@/api/query'
 import { TaxPriceValidation } from '@/utils/regexValidation'
 import React, { useEffect, useState } from 'react'
 
 export default function CheckoutSummary({setCartCount}) {
-    console.log(setCartCount,'ASDAD')
     const [productSummary,setProductSummary]=useState([])
    
     const handleMycart=async()=>{
@@ -43,6 +43,8 @@ export default function CheckoutSummary({setCartCount}) {
             return priceStart
             
     }
+
+    console.log(productSummary,'productSummary')
   return (
    <>
      <div className="w-full md:w-[20%]">
@@ -54,7 +56,8 @@ export default function CheckoutSummary({setCartCount}) {
                                
                                     {productSummary?.map((data)=>(
                                          <div className="flex items-start gap-2 mb-4">
-                                         <img src="/img/detail-product1.svg" className="w-[100px] h-[64px]" />
+                                         {/* <img src="/img/detail-product1.svg" className="w-[100px] h-[64px]" /> */}
+                                         <ImageComponets path={data?.productImageArray?.[0]} w={100} h={100}/>
                                          <div>
                                          <p className="text-xs text-black-500 font-light mb-3">{data.productName}</p>
                                          <div className="flex items-center gap-2 mb-2">
