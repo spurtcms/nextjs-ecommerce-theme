@@ -78,7 +78,6 @@ function CheckOutPayServerAction() {
 
     const handleCheckout=()=>{
         let addressObj={
-            "cd":{
               "firstName":name,
               "username": name,
               "email":email,
@@ -89,24 +88,25 @@ function CheckOutPayServerAction() {
               "city":city,
               "country":country,
               "profileImage":"",
-              "isActive": 1,
-            }  
+              "isActive": 1
             }
-        setLoader(true)
+        // setLoader(true)
         let add=JSON.stringify(addressObj)
         let checkArr=[]
-        let obj={}
+       
         cartCount?.map((data)=>{
+            let obj={}
           console.log(data,'datasddsa')
             obj.productId=data?.ecommerceCart?.productId
             obj.quantity=data?.quantity
-            obj.price=subtotalPrice()
-            obj.tax=salesTaxPrice()
-            obj.totalCost=subtotalPrice()+salesTaxPrice()
+            obj.price=TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,0,"")*data.quantity
+            obj.tax=data.tax*data.quantity
+            obj.totalCost=TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,0,"")*data.quantity+data.tax*data.quantity
             checkArr.push(obj)
               }
+              
         )
-        // console.log(checkArr,'checkArr')
+        console.log(checkArr,'checkArr')
       let variableList={
             "mode": "cash on delivery",
             "addr": add,

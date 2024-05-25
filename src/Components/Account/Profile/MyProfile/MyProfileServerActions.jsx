@@ -84,10 +84,9 @@ export default function MyProfileServerActions() {
               ToastMessage({type:'success',message:"Update Successfull"})
               postGraphQl(GET_POST_ADDRESS_QUERY,obj)
               setProChange(proChange+1)
-
         }
         }
-    const validCheck=()=>{
+        const validCheck=()=>{
         let emailcheck=false
         if (email !== "") {
           let emailCheck = EmailValidator(email);

@@ -21,11 +21,46 @@ export default function MyOrderDetailSeverActions({params}) {
     },[])
 
     let AddressData;
-    if(productDetail?.ecommerceProductOrderDetails?.shippingDetails!=undefined){
+    if(productDetail?.ecommerceProductOrderDetails?.shippingDetails&&productDetail?.ecommerceProductOrderDetails?.shippingDetails!=undefined){
         AddressData=JSON.parse(productDetail?.ecommerceProductOrderDetails?.shippingDetails)
     }
 
-console.log(productDetail,'productDetail')
+console.log(productDetail?.ecommerceProductOrderDetails,'productDetail')
+
+
+let statusData=[
+    {
+        id:1,
+        status:"Order Accepted",
+        date:"07 Oct 2023, 06:12 PM"
+    },
+    {
+        id:2,
+        status:"Order Placed",
+        date:"07 Oct 2023, 06:12 PM"
+    },
+    {
+        id:3,
+        status:"Packing in Progress",
+        date:"07 Oct 2023, 06:12 PM"
+    },
+    {
+        id:4,
+        status:"Out of Delivery",
+        date:"07 Oct 2023, 06:12 PM"
+    },
+    {
+        id:5,
+        status:"Delivered",
+        date:"07 Oct 2023, 06:12 PM"
+    },
+]
+// if(statusData)
+// {result?.status=="Order Placed"&&statusData.indexOf(result?.status)}
+
+let statusCheck=statusData.findIndex((data,index)=>data.status=="Order Placed")
+
+console.log(statusCheck,'wqdsadadad')
   return (
     <div className="sm:px-10 px-4 py-4 ">
     <Link href="/account/my-orders?offset=0" className="flex gap-1.5 items-center text-grey-300 text-xs font-light mb-6">
@@ -52,13 +87,18 @@ orderTime).format("DD MMMM YYYY")}</span>
     </div>
     <div className="border border-grey3 rounded p-6">
         <div className=" flex whitespace-nowrap overflow-auto pb-6">
-            <div className="flex flex-col items-center justify-center w-full relative pe-6 md:pe-0">
-                <img src="/img/submit.svg" className="relative z-10" />
-                <h5 className="text-sm font-normal text-light-black mb-1 mt-2">Order Accepted</h5>
+            {statusData.map((result,index)=>(
+                
+                <>
+            <div className="flex flex-col items-center justify-center w-full relative pe-6 md:pe-0 active-border">
+                <img src={`${index<=statusCheck?"/img/submit.svg":"/img/not-submit.svg"}` }className="relative z-10" />
+                <h5 className="text-sm font-normal text-light-black mb-1 mt-2">{result?.status}</h5>
                 <p className="text-xs text-3-light font-light">07 Oct 2023, 06:12 PM</p>
-                <div className="w-1/2 h-px bg-grey3 absolute top-2.5 right-0 "></div>
+                <div className="w-full h-px bg-grey3 absolute top-2.5 left-0 line"></div>
             </div>
-            <div className="flex flex-col items-center justify-center w-full relative pe-6 md:pe-0">
+            </>
+            ))}
+            {/* <div className="flex flex-col items-center justify-center w-full relative pe-6 md:pe-0">
                 <img src="/img/submit.svg" className="relative z-10"/>
                 <h5 className="text-sm font-normal text-light-black mb-1 mt-2">Order Placed</h5>
                 <p className="text-xs text-3-light font-light">07 Oct 2023, 06:12 PM</p>
@@ -81,7 +121,7 @@ orderTime).format("DD MMMM YYYY")}</span>
                 <h5 className="text-sm font-normal text-light-black mb-1 mt-2">Delivered</h5>
                 <p className="text-xs text-3-light font-light">07 Oct 2023, 06:12 PM</p>
                 <div className="h-px w-1/2 bg-grey3 absolute top-2.5 left-0 "></div>
-            </div>
+            </div> */}
         </div>
         <div className="py-6 border-y border-grey3">
             <h3 className="text-base font-normal leading-5 text-black-500 mb-4">Order Information</h3>
