@@ -44,7 +44,6 @@ export default function CheckoutSummary({setCartCount}) {
             
     }
 
-    console.log(productSummary,'productSummary')
   return (
    <>
      <div className="w-full md:w-[20%]">

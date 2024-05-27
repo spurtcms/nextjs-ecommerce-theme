@@ -7,6 +7,7 @@ const initialState ={
    address:{},
    profile:0,
    shippRoute:false,
+   orderid:0,
 };
 
 
@@ -29,11 +30,13 @@ export const userSlice=createSlice({
         shippingRoute:(state,action)=>{
             state.shippRoute=action.payload;
         },
-
+        orderIdValue:(state,action)=>{
+            state.orderid=action.payload;
+        },
     },
 });
 
 
-export const {reloadCartCount,checkCartName,getAddress,profileChange,shippingRoute}=userSlice.actions;
+export const {reloadCartCount,checkCartName,getAddress,profileChange,shippingRoute,orderIdValue}=userSlice.actions;
 
 export default userSlice.reducer;

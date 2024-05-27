@@ -10,6 +10,9 @@ import moment from 'moment/moment'
 import Pagination from '@/utils/Pagination'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import MyOrderList from '@/utils/SkeletonLoader/MyOrderList'
+import { handleOrder } from '@/api/clientActions'
+import { useDispatch } from 'react-redux'
+import { orderIdValue } from '@/redux/slices/cartSlice'
 
 const Status=[   
     {id:0, name: "Choose Status",apiName:""}, 
@@ -63,7 +66,6 @@ const Filters = [
         setTotalRecords(0)
         let list_var={"lim":10,"off":offset,"filter":{"upcomingOrders": 1}}
         let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
-      console.log(postData,'postData')
 
         if(postData){
             setSkeleton(false)
@@ -380,6 +382,11 @@ const Filters = [
     useEffect(()=>{
         setCurrentPage(offset/10+1)
     },[])
+
+    //  let disptach=useDispatch()
+    // const handleClick=(id)=>{
+    //     disptach(orderIdValue(id))
+    // }
     
   return (
     <>
@@ -559,7 +566,7 @@ const Filters = [
                                         </div>
                                     </td>
                                     <td className="px-4 py-2 border-b border-grey text-center">
-                                        <Link href={`/account/my-order-detail/${result?.productSlug}`} className="text-3-light font-medium text-sm hover:underline">View Details</Link>
+                                        <Link href={`/account/my-order-detail/${result?.productSlug}/${result?.orderId}`} className="text-3-light font-medium text-sm hover:underline">View Details</Link>
                                     </td>
                                 </tr>
                                 

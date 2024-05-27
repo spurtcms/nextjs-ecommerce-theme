@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
+import { handleOrderClient } from "../clientActions"
 
 export async function Rememberme(data) {
    let sess= cookies().get("remeber-key")
@@ -30,3 +31,7 @@ export async function TokenGetValue(){
    const tokenValue=cookies().get('Token')
    return tokenValue&&tokenValue?.value;
 }
+
+// export const handleOrder=async(handleOrderClient)=>{
+//     return  handleOrderClient
+//     }

@@ -43,9 +43,11 @@ export const postGraphQl = async (GET_POSTS_QUERY,varia,check,setLoader,cartName
       if(entries?.memberRegister==true){
         setLoader(false)
         Redirect("/auth/login")
+        ToastMessage({type:'success',message:"Register Successfull"})
         
       }else{
         setLoader(false)
+
       }
 
     }

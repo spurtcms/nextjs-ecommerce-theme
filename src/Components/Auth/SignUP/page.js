@@ -42,7 +42,7 @@ export default function SingUp() {
             setValid(0)
             setLoader(true)
             postGraphQl(GET_POSTS_SIGN_QUERY,inputdata,"signup",setLoader,"","","")
-            ToastMessage({type:'success',message:"Register Successfull"})
+            
           }
       }
       const validCheck=()=>{

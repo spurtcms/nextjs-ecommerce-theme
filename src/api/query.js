@@ -201,9 +201,10 @@
     ecommerceOrderPlacement(paymentMode: $mode,shippingAddress: $addr,orderProducts: $prod, orderSummary: $summ)
   }`
 
-  export const GET_PRODUCT_DETAIL=`query($pid: Int,$pslug: String){
-    ecommerceProductOrderDetails(productId: $pid, productSlug: $pslug){
-      id
+  export const GET_PRODUCT_DETAIL=`query($pid: Int,$pslug: String, $oid: Int!){
+    ecommerceProductOrderDetails(productId: $pid, productSlug: $pslug, orderId: $oid){
+      EcommerceProduct{
+        id
         productName
         categoriesId
         productSlug
@@ -236,7 +237,15 @@
         orderTime
         paymentMode
         shippingDetails
-    }
+      }
+      OrderStatuses{
+        id
+        orderId
+        orderStatus
+        createdBy
+        createdOn
+      }
+  }
   }`
 
 

@@ -76,7 +76,7 @@ export const apiinstance=async(url,options)=>{
      
 }
 const handleBadRequest=async(res)=>{
-  ToastMessage({type:'error',message:"Bad request"})
+  ToastMessage({type:'error',message:res?.statusText})
 }
 
 const handleUnauthorized= async(res)=>{
@@ -94,7 +94,7 @@ const handleUnauthorized= async(res)=>{
  } 
 
  const handleUnProcessableEntry=async(res)=>{
-  ToastMessage({type:'error',message:res?.statusText})
+  ToastMessage({type:'error',message:""})
  }  
 
  const handleServerError=async()=>{

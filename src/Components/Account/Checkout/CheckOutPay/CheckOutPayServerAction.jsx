@@ -31,7 +31,6 @@ function CheckOutPayServerAction() {
     const subtotalPrice=()=>{
         let priceStart=0
         cartCount?.map((sdata)=>{
-            console.log(sdata,'sasdqwe')
            let priceStore = TaxPriceValidation(sdata.specialPrice,sdata.discountPrice,sdata.defaultPrice,0,"")*sdata.quantity
            priceStart=priceStart+priceStore
            
@@ -96,7 +95,6 @@ function CheckOutPayServerAction() {
        
         cartCount?.map((data)=>{
             let obj={}
-          console.log(data,'datasddsa')
             obj.productId=data?.ecommerceCart?.productId
             obj.quantity=data?.quantity
             obj.price=TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,0,"")*data.quantity
@@ -106,7 +104,6 @@ function CheckOutPayServerAction() {
               }
               
         )
-        console.log(checkArr,'checkArr')
       let variableList={
             "mode": "cash on delivery",
             "addr": add,

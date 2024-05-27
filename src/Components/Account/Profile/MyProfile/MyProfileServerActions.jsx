@@ -67,7 +67,6 @@ export default function MyProfileServerActions() {
             let obj={
               "cd":{
                 "firstName":name,
-                "username": name,
                 "email":email,
                 "streetAddress":area,
                 "state":states,

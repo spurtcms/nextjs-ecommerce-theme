@@ -87,7 +87,6 @@ const offsetListData =async()=>{
 
   let catgo_variab={"categoryGroupId":147}
   let postData= await fetchGraphQLDa(Get_CATEGORIES_LIST,catgo_variab)
-  console.log(postData,'postData')
   setCatagoryList(postData?.categoriesList?.categories[0]?.categoryName)
   
   if(catgorId==null){
@@ -189,7 +188,6 @@ const handleLoad=(data)=>{
       fetchGraphQl(GET_POST_VIEWCOUNT_QUERY,variable_count)
     }
 
-    console.log(cardListData,'cardListData')
   return (
     <>
 {skeleton==true?

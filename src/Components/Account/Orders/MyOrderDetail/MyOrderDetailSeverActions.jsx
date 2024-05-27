@@ -11,7 +11,7 @@ export default function MyOrderDetailSeverActions({params}) {
     const [productDetail,setProductDetail]=useState()
 
     const detailApi=async()=>{
-        let detail_var={"pslug":params?.slug}
+        let detail_var={"pslug":params?.slug?.[0],"oid":params?.slug?.[1]}
         let postData= await fetchGraphQLDa(GET_PRODUCT_DETAIL,detail_var)
         setProductDetail(postData)
     }
@@ -19,38 +19,32 @@ export default function MyOrderDetailSeverActions({params}) {
     useEffect(()=>{
         detailApi()
     },[])
-
     let AddressData;
-    if(productDetail?.ecommerceProductOrderDetails?.shippingDetails&&productDetail?.ecommerceProductOrderDetails?.shippingDetails!=undefined){
-        AddressData=JSON.parse(productDetail?.ecommerceProductOrderDetails?.shippingDetails)
+    if(productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.shippingDetails&&productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.shippingDetails!=undefined){
+        AddressData=JSON.parse(productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.shippingDetails)
     }
 
-console.log(productDetail?.ecommerceProductOrderDetails,'productDetail')
+
 
 
 let statusData=[
     {
         id:1,
-        status:"Order Accepted",
+        status:"Order Confirmed",
         date:"07 Oct 2023, 06:12 PM"
     },
     {
         id:2,
-        status:"Order Placed",
+        status:"Shipped",
         date:"07 Oct 2023, 06:12 PM"
     },
     {
         id:3,
-        status:"Packing in Progress",
-        date:"07 Oct 2023, 06:12 PM"
-    },
-    {
-        id:4,
         status:"Out of Delivery",
         date:"07 Oct 2023, 06:12 PM"
     },
     {
-        id:5,
+        id:4,
         status:"Delivered",
         date:"07 Oct 2023, 06:12 PM"
     },
@@ -58,9 +52,9 @@ let statusData=[
 // if(statusData)
 // {result?.status=="Order Placed"&&statusData.indexOf(result?.status)}
 
-let statusCheck=statusData.findIndex((data,index)=>data.status=="Order Placed")
+let statusCheck=statusData.findIndex((data,index)=>data.status=="Out of Delivery"
+)
 
-console.log(statusCheck,'wqdsadadad')
   return (
     <div className="sm:px-10 px-4 py-4 ">
     <Link href="/account/my-orders?offset=0" className="flex gap-1.5 items-center text-grey-300 text-xs font-light mb-6">
@@ -68,17 +62,17 @@ console.log(statusCheck,'wqdsadadad')
         Back
     </Link>
     <div className="flex gap-2 mb-2 flex-wrap">
-        <h3 className="text-black-500 text-base font-normal">Order ID -{productDetail?.ecommerceProductOrderDetails?.orderUniqueId}</h3>
+        <h3 className="text-black-500 text-base font-normal">Order ID -{productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.orderUniqueId}</h3>
         <div className="px-2 py-[3px] bg-sucess text-sucess text-xs font-normal rounded">
             {/* Out of Delivery */}
-            {productDetail?.ecommerceProductOrderDetails?.orderStatus}
+            {productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.orderStatus}
         </div>
     </div>
     <div className="flex gap-3 items-center mb-6">
         <div className="flex">
             <p className="text-xs font-normal text-grey-300 flex gap-1">
                 Order Date :
-                <span className="text-grey-500">{ moment(productDetail?.ecommerceProductOrderDetails?.
+                <span className="text-grey-500">{ moment(productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.
 orderTime).format("DD MMMM YYYY")}</span>
             </p>
         </div>
@@ -128,26 +122,26 @@ orderTime).format("DD MMMM YYYY")}</span>
             <div className="flex items-start justify-between flex-wrap gap-4">
                 <div className="flex items-start flex-col sm:flex-row">
                     {/* <img src="/img/checkList-product2.svg" className="w-[135.98px] h-[160px]" /> */}
-                    <ImageComponets path={productDetail?.ecommerceProductOrderDetails?.productImageArray?.[0]} w={135.98} h={160}/>
+                    <ImageComponets path={productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.productImageArray?.[0]} w={135.98} h={160}/>
                     <div className="flex flex-col gap-2 px-4">
-                        <h4 className="text-base text-black-500 font-normal">{productDetail?.ecommerceProductOrderDetails?.productName}</h4>
+                        <h4 className="text-base text-black-500 font-normal">{productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.productName}</h4>
                         <p className="text-1-light text-sm font-light">Black Titanium, 256GB</p>
                     </div>
                 </div>
                 <div className="flex gap-1.5 items-center">
                     <p className="text-black text-base font-light">Qty</p>
-                    <span className="text-black text-base font-light">{productDetail?.ecommerceProductOrderDetails?.orderQuantity}</span>
+                    <span className="text-black text-base font-light">{productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.orderQuantity}</span>
                 </div>
                 <p className="flex items-center gap-1 text-black-500 font-medium text-lg leading-6">
                     <img src="/img/rupee.svg" />
-                   {productDetail?.ecommerceProductOrderDetails?.orderPrice}
+                   {productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.orderPrice}
                 </p>
                 <div className="sm:w-[310px] w-full">
                     <div className="flex items-center justify-between mb-6">
                         <h5 className="text-black-500 font-light text-base leading-5">Subtotal (1item)</h5>
                         <p className="flex items-center gap-1 text-3-light text-sm leading-5">
                             <img src="/img/rupee-sm-light.svg" />
-                            {productDetail?.ecommerceProductOrderDetails?.orderPrice}
+                            {productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.orderPrice}
                             {/* 15,299 */}
                         </p>
                     </div>
@@ -155,7 +149,7 @@ orderTime).format("DD MMMM YYYY")}</span>
                         <h5 className="text-black-500 font-light text-base leading-5">Sales taxes</h5>
                         <p className="flex items-center gap-1 text-3-light text-sm leading-5">
                             <img src="/img/rupee-sm-light.svg" />
-                            {productDetail?.ecommerceProductOrderDetails?.orderTax}
+                            {productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.orderTax}
                         </p>
                     </div>
                     <div className="w-full h-px bg-grey my-4"></div>
@@ -163,7 +157,7 @@ orderTime).format("DD MMMM YYYY")}</span>
                         <h3 className="text-black-500 font-medium text-base leading-5">Grand Total</h3>
                         <p className="flex items-center gap-1 text-black-500 text-sm leading-5">
                             <img src="/img/rupee.svg" />
-                            {productDetail?.ecommerceProductOrderDetails?.orderPrice + productDetail?.ecommerceProductOrderDetails?.orderTax}
+                            {productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.orderPrice + productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.orderTax}
                         </p>
                     </div>
                 </div>
@@ -175,19 +169,19 @@ orderTime).format("DD MMMM YYYY")}</span>
             <div className="flex flex-col sm:flex-row sm:gap-x-[84px] gap-3 mb-3">
                 <div className="flex gap-1 flex-col">
                     <h3 className="text-light-black text-sm font-normal">Customer Name</h3>
-                    <p className="text-3-light font-normal text-sm">{AddressData?.name}</p>
+                    <p className="text-3-light font-normal text-sm">{AddressData?.firstName}</p>
                     
                 </div>
                 <div className="flex gap-1 flex-col">
                     <h3 className="text-light-black text-sm font-normal">Customer Address</h3>
-                    <p className="text-3-light font-normal text-sm">No-{AddressData?.houseNo},{AddressData?.area},{AddressData?.city},</p>
-                    <p className="text-3-light font-normal text-sm"> {AddressData?.states},{AddressData?.country}</p>
+                    <p className="text-3-light font-normal text-sm">No-{AddressData?.streetAddress}{AddressData?.area},{AddressData?.city},</p>
+                    <p className="text-3-light font-normal text-sm"> {AddressData?.state},{AddressData?.country}-{AddressData?.zipCode}</p>
                 </div>
             </div>
             <div  className="flex flex-col sm:flex-row sm:gap-x-[70px] gap-3">
                 <div className="flex gap-1 flex-col">
                     <h3 className="text-light-black text-sm font-normal">Customer Number</h3>
-                    <p className="text-3-light font-normal text-sm">{AddressData?.number}</p>
+                    <p className="text-3-light font-normal text-sm">{AddressData?.mobileNo}</p>
                 </div>
                 <div className="flex gap-1 flex-col">
                     <h3 className="text-light-black text-sm font-normal">Customer Mail</h3>
