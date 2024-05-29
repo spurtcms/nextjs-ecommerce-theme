@@ -40,7 +40,7 @@ const people = [
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
   }
-  
+
 export default function HomePage() {
 
     const dispatch=useDispatch()
@@ -59,7 +59,6 @@ export default function HomePage() {
 
 
 const listData = async ()=>{
-
   let list_varab={"limit":25,"offset":offset,"filter":{"categoryId":catgorId}}
   let postData = await fetchGraphQLDa(GET_POSTS_LIST_QUERY,list_varab)
   setCount(postData?.ecommerceProductList)
@@ -69,6 +68,7 @@ const listData = async ()=>{
     setScrollCheck(true)
   }
 }
+
 
 
 
@@ -90,7 +90,7 @@ const offsetListData =async()=>{
   setCatagoryList(postData?.categoriesList?.categories[0]?.categoryName)
   
   if(catgorId==null){
-    dispatch(catagoryId(postData?.categoriesList?.categories[0].id))
+    dispatch(catagoryId(postData?.categoriesList?.categories[0]?.id))
   }
 }
 const sortBy = async () =>{
@@ -280,7 +280,7 @@ const handleLoad=(data)=>{
             {/* card */}
             {cardListData?.map((data,index)=>(
               
-
+               <>
               <div key={index} class="group p-5 hover:shadow-3xl transition-shadow border-e border-b border-grey">
                
               <Link href={`/product-detail/${data?.productSlug}`} prefetch className="grid place-items-center" onClick={()=>handleCount(data?.productSlug)}>
@@ -327,6 +327,7 @@ const handleLoad=(data)=>{
                 </div>
               </div>
             </div>
+            </> 
             ))}
             
             </div>

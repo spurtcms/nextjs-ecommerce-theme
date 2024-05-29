@@ -100,9 +100,6 @@ export default function HeaderServerActions({tokenCheck}) {
           }
          let mycartlist=await fetchGraphQl(GET_MY_CART_QUERY,variable)
 
-
-
-         
           mycartlist=mycartlist?.ecommerceCartList?.cartList
           
           setCartcount(mycartlist?.length? mycartlist?.length :0)

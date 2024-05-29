@@ -77,7 +77,7 @@ orderTime).format("DD MMMM YYYY")}</span>
             </p>
         </div>
         <div className="w-px h-4 bg-grey3"></div>
-        <p className="text-xs font-normal text-primary">Estimated Delivery :</p>
+        {/* <p className="text-xs font-normal text-primary">Estimated Delivery :</p> */}
     </div>
     <div className="border border-grey3 rounded p-6">
         <div className=" flex whitespace-nowrap overflow-auto pb-6">

@@ -119,12 +119,14 @@ export default function MyProfileServerActions() {
             let reader = new FileReader();
     
             reader.readAsDataURL(files[0]);
-    
+            
             reader.onloadend = () => setNewDp(reader.result);
             // setImageUpload(true)
           }
         }
       };
+
+    
       const handleNumValid=(e,values)=>{
         var roleExpression = /[^0-9]/g;
         var regex = new RegExp(roleExpression);
