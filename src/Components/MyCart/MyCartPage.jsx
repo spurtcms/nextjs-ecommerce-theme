@@ -35,9 +35,16 @@ const handleMycart=async()=>{
     mycartlist?.map((sdata)=>{
       sdata.quantity=sdata.ecommerceCart?.quantity
     })
+    // let filterD=localData.filter((d)=>d.id==sdata.id)
+    // console.log(filterD,'43433r3')
+    // let localData=JSON.parse(localStorage.getItem("add-cart-list"))
+
+  
+    // let newData=mycartlist.concat(localData)
+  
     setCartItemList(mycartlist)
     setSkeleton(false)
-
+    
 }
 
     useEffect(()=>{

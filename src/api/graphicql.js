@@ -86,6 +86,7 @@ export const postGraphQl = async (GET_POSTS_QUERY,varia,check,setLoader,cartName
         setLoader(false)
         dispatch(getAddress({}))
         dispatch(reloadCartCount(reloadCount+1))
+        ToastMessage({type:'success',message:"Order Successfull"})
       }else{
         setLoader(false)
       }

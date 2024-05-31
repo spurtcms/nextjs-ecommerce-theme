@@ -30,11 +30,11 @@ const people = [
       setNo:1,
       
     },
-    {
-      id: 4,
-      name: "High Rating",
-      setNo:1,
-    },
+    // {
+    //   id: 4,
+    //   name: "High Rating",
+    //   setNo:1,
+    // },
   ];
   
   function classNames(...classes) {
@@ -221,6 +221,7 @@ const handleLoad=(data)=>{
                      <Listbox.Button className="relative  ">
                        <span className="flex items-center w-40 border border-grey py-2 ps-3  ">
                          <span className="text-xs font-normal text-black leading-4 me-1">
+                           {/* Price:{selected.name==undefined&&' Choose filter'} */}
                            Price:
                          </span>
                          <span className=" text-xs font-normal text-black leading-4">

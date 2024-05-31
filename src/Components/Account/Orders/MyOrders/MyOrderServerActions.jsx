@@ -630,7 +630,7 @@ const Filters = [
                                         </div>
                                     </td>
                                     <td className="px-4 py-2 border-b border-grey text-center">
-                                        <Link href={`/account/my-order-detail/${result?.productSlug}`} className="text-3-light font-medium text-sm hover:underline">View Details</Link>
+                                        <Link href={`/account/my-order-detail/${result?.productSlug}/${result?.orderId}`} className="text-3-light font-medium text-sm hover:underline">View Details</Link>
                                     </td>
                                 </tr>
                                 </>))

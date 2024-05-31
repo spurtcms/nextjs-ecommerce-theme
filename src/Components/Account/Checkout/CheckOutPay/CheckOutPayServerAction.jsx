@@ -10,6 +10,7 @@ import { TaxPriceValidation } from '@/utils/regexValidation'
 import { fetchGraphQLDa } from '@/api/clientGraphicql'
 import { checkCartName } from '@/redux/slices/cartSlice'
 import { catagoryId, catagoryName } from '@/redux/slices/catgorySlice'
+import ToastMessage from '@/Components/ToastMessage/ToastMessage'
 
 function CheckOutPayServerAction() {
     const [cartCount,setCartCount]=useState([])
@@ -104,19 +105,25 @@ function CheckOutPayServerAction() {
               }
               
         )
-      let variableList={
-            "mode": "cash on delivery",
-            "addr": add,
-            "prod":checkArr,
-            "summ": {
-              "subTotal": subtotalPrice(),
-              "totalTax": salesTaxPrice(),
-              "totalCost": subtotalPrice()+salesTaxPrice(),
-              "totalQuantity":quantityCount()
-            }
-          }
-
-        postGraphQl(GET_CHECKOUT,variableList,"checkout",setLoader,"",reloadCount,dispatch)
+        if(checkArr&&checkArr?.length!=0){
+            let variableList={
+                "mode": "cash on delivery",
+                "addr": add,
+                "prod":checkArr,
+                "summ": {
+                  "subTotal": subtotalPrice(),
+                  "totalTax": salesTaxPrice(),
+                  "totalCost": subtotalPrice()+salesTaxPrice(),
+                  "totalQuantity":quantityCount()
+                }
+              }
+    
+            postGraphQl(GET_CHECKOUT,variableList,"checkout",setLoader,"",reloadCount,dispatch)
+        }
+        else{
+            ToastMessage({type:'info',message:"Your cart is empty"})
+        }
+  
     }
 
     const categorieList= async () =>{
