@@ -36,6 +36,7 @@ export default function HeaderServerActions({tokenCheck}) {
   const [cartLoad,setCartrelaod]=useState(0)
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const [dataImg,setDataImg]=useState('')
+  const [localLength,setLocalLength]=useState()
   
   
 
@@ -92,6 +93,7 @@ export default function HeaderServerActions({tokenCheck}) {
     listData()
   },[search])
 
+  let localLengthvalue;
   const handleCartCountCheck=async()=>{
     if(tokenCheck){
         let variable={
@@ -101,9 +103,42 @@ export default function HeaderServerActions({tokenCheck}) {
          let mycartlist=await fetchGraphQl(GET_MY_CART_QUERY,variable)
 
           mycartlist=mycartlist?.ecommerceCartList?.cartList
+          // console.log(mycartlist.length,'cartCountasdasda')
+          let localData=[]
+          if(localStorage.getItem("add-cart-list") !== undefined&&localStorage.getItem("add-cart-list") !== "undefined"){
+            console.log(localStorage.getItem("add-cart-list"),'ewewewe')
+            localData=JSON.parse(localStorage.getItem("add-cart-list"))
+
+          }
           
-          setCartcount(mycartlist?.length? mycartlist?.length :0)
-      }else{
+          console.log(localData,'wew3434345')
+          console.log(mycartlist,'877887545')
+          
+          // mycartlist?.map((val)=>{
+            if (mycartlist && mycartlist.length !== 0) {
+              // console.log(localData.filter((res) =>res.id != val.id),"099876756")
+              const filterData = localData?.filter((res) => !mycartlist?.some((val) => val.id === res.id));
+              
+              console.log(filterData, 'qdqwdw');
+              if(filterData!=undefined){
+                localLengthvalue = filterData; 
+              }
+              else{
+                localLengthvalue=[]
+              }
+              
+            }
+          // }) 
+          if(mycartlist?.length==0){
+            console.log(localData,'00990987')
+            localLengthvalue=localData
+          }
+   
+          setCartcount(mycartlist?.length || localData?.length ? mycartlist?.length+localLengthvalue?.length :0)
+          
+      }
+      
+      else{
         if(localStorage.getItem("add-cart-list")){
             let count=JSON.parse(localStorage.getItem("add-cart-list"))
             setCartcount(count.length)
@@ -113,6 +148,8 @@ export default function HeaderServerActions({tokenCheck}) {
       }
     
   }
+
+  
   useEffect(()=>{
     handleCartCountCheck()
   
@@ -142,7 +179,7 @@ const handleCatagory=(data)=>{
 const Logout=()=>{
   dispatch(checkCartName('')) 
   setCartrelaod(cartLoad+1)
-  localStorage.removeItem("add-cart-list")
+  // localStorage.removeItem("add-cart-list")
   ToastMessage({type:'success',message:"Logout Successfull"})
     RemoveToken()
     // dispatch(getTrriger(false))

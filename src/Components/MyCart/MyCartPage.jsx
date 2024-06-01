@@ -32,21 +32,51 @@ const handleMycart=async()=>{
 
    
     mycartlist=mycartlist?.ecommerceCartList?.cartList
+    console.log(mycartlist,'mycartlist')
     mycartlist?.map((sdata)=>{
       sdata.quantity=sdata.ecommerceCart?.quantity
     })
     // let filterD=localData.filter((d)=>d.id==sdata.id)
     // console.log(filterD,'43433r3')
-    // let localData=JSON.parse(localStorage.getItem("add-cart-list"))
+    let localData=[]
+    if(localStorage.getItem("add-cart-list")!=undefined&&localStorage.getItem("add-cart-list")!="undefined"){
+    localData=JSON.parse(localStorage.getItem("add-cart-list"))
+
+    }
+ 
+
+    console.log(localData,'qswd32')
+  if(localData!=null){
+    const mergedArray = mycartlist?.map((item1) => {
+        const item2 = localData?.find((item) => item?.id === item1.id);
+        if (item2) {
+
+            item1.quantity=item1?.quantity + (item2?.quantity || 0)
+          return item1;
+
+        } else {
+          return item1;
+          
+        }
+      }).concat(
+        localData?.filter((item) => mycartlist?.every((item1) => item1?.id != item?.id))
+      );
+      setCartItemList(mergedArray)
+    }
+    else{
+        setCartItemList(mycartlist)
+    }
+    
+      
+    //   console.log(mergedArray,'qwwqd324234');
 
   
-    // let newData=mycartlist.concat(localData)
-  
-    setCartItemList(mycartlist)
+    
     setSkeleton(false)
     
 }
 
+console.log(cartItmeList,'cartItmeList')
     useEffect(()=>{
       if(tokenCheck){
           handleMycart()
@@ -77,7 +107,7 @@ if(sdata.id==data.id){
     const subtotalPrice=()=>{
         let priceStart=0
         cartItmeList?.map((sdata)=>{
-           let priceStore = TaxPriceValidation(sdata.specialPrice,sdata.discountPrice,sdata.defaultPrice,0,"")*sdata.quantity
+           let priceStore = TaxPriceValidation(sdata?.specialPrice,sdata?.discountPrice,sdata?.defaultPrice,0,"")*sdata?.quantity
            priceStart=priceStart+priceStore
            
             })
@@ -88,7 +118,7 @@ if(sdata.id==data.id){
     const salesTaxPrice=()=>{
         let priceStart=0
         cartItmeList?.map((sdata)=>{
-           let priceStore = sdata.tax*sdata.quantity
+           let priceStore = sdata?.tax*sdata?.quantity
            priceStart=priceStart+priceStore
             })
             return priceStart
@@ -98,11 +128,17 @@ if(sdata.id==data.id){
     const handleRemove= async(data)=>{  
         if(tokenCheck){
             let variable={
-                "pid": data.id
+                "pid": data?.id
               }
              let deletestore = await fetchGraphQl(GET_REMOVE_CART_LIST,variable)
+
+             let localData=JSON?.parse(localStorage.getItem("add-cart-list"))
+
+             const newLocal=localData?.filter((res)=>res.id!=data.id);
+             localStorage.setItem("add-cart-list",JSON.stringify(newLocal))
+
              if(deletestore?.removeProductFromCartlist){
-                let cartstore=cartItmeList.filter((s)=>s.id != data.id)
+                let cartstore=cartItmeList.filter((s)=>s?.id != data?.id)
                 setCartItemList(cartstore)
              }
         }else{
@@ -162,14 +198,14 @@ const router=useRouter()
                                     <div className="p-6 pb-9 border-b border-grey3 grid grid-cols-1 sm:grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-6 last:border-0">
                                     <div className="align-top">
                                     <div className="flex gap-6 items-center sm:items-start md:flex-row flex-col">
-                                    <ImageComponets path={data?.productImageArray?.[0]} w={80} h={80} alt={data.productName} />
-                                        <h3 className="text-base font-normal text-black-500 line-clamp-3 break-words">{data.productName}</h3>
+                                    <ImageComponets path={data?.productImageArray?.[0]} w={80} h={80} alt={data?.productName} />
+                                        <h3 className="text-base font-normal text-black-500 line-clamp-3 break-words">{data?.productName}</h3>
                                     </div>
                                 </div>
                                 <div className=" align-top">
                                     <p className="flex items-center gap-1.5 text-lg font-medium text-black-500">
                                         <img src="/img/rupee.svg" />
-                                        {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")} 
+                                        {TaxPriceValidation(data?.specialPrice,data?.discountPrice,data?.defaultPrice,data?.tax,"")} 
                                     </p>
                                 </div>
                                 <div className="align-top">
@@ -185,7 +221,7 @@ const router=useRouter()
                                 <div className="align-top flex lg:flex-col flex-row lg:justify-normal justify-between flex-wrap">
                                     <p className="flex items-center gap-1.5 text-lg font-medium text-black-500">
                                         <img src="/img/rupee.svg" />
-                                        {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")*data?.quantity} 
+                                        {TaxPriceValidation(data?.specialPrice,data?.discountPrice,data?.defaultPrice,data?.tax,"")*data?.quantity} 
                                         
                                     </p>
                                     <button onClick={()=>handleRemove(data)} className="flex items-center gap-1 text-sm font-normal text-black-500 mt-0 lg:mt-[30px]">
@@ -213,14 +249,14 @@ const router=useRouter()
                                         <div className="flex items-center gap-[15px]">
                                             <div className="flex items-center text-sm font-normal text-black-500 gap-[3px]">
                                                 <img src="/img/multiples.svg" />
-                                                {data.quantity}
+                                                {data?.quantity}
                                             </div>
-                                            <p className="text-3-light text-xs leading-4 font-normal line-clamp-1">{data.productName} </p>
+                                            <p className="text-3-light text-xs leading-4 font-normal line-clamp-1">{data?.productName} </p>
                                         </div>
                                         <p className="flex items-center gap-1 text-3-light text-sm leading-5">
                                     <img src="/img/rupee-sm-light.svg" />
                                    
-                                    {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")*data.quantity} 
+                                    {TaxPriceValidation(data?.specialPrice,data?.discountPrice,data?.defaultPrice,data?.tax,"")*data?.quantity} 
                                         </p>
                                     </div>
                                     ))}
