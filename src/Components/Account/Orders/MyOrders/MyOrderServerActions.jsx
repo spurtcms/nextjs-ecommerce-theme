@@ -67,7 +67,6 @@ const Filters = [
         let list_var={"lim":10,"off":offset,"filter":{"upcomingOrders": 1}}
         let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
 
-        console.log(postData,'postData')
         if(postData){
             setSkeleton(false)
         }

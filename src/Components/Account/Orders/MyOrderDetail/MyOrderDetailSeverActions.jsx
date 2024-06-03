@@ -1,7 +1,7 @@
 'use client'
 import ImageComponets from '@/Components/ImageComponent'
 import { fetchGraphQLDa } from '@/api/clientGraphicql'
-import { GET_PRODUCT_DETAIL } from '@/api/query'
+import { GET_PRODUCT_DETAIL, GET_PRODUCT_DETAIL_STATUSNAME } from '@/api/query'
 import moment from 'moment/moment'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
@@ -9,6 +9,11 @@ import React, { useEffect, useState } from 'react'
 export default function MyOrderDetailSeverActions({params}) {
 
     const [productDetail,setProductDetail]=useState()
+
+    // const detailName=async()=>{
+    //    let detailstatus= await fetchGraphQLDa(GET_PRODUCT_DETAIL_STATUSNAME)
+    //    console.log(detailstatus,'detailstatus')
+    // }
 
     const detailApi=async()=>{
         let detail_var={"pslug":params?.slug?.[0],"oid":params?.slug?.[1]}
@@ -18,7 +23,9 @@ export default function MyOrderDetailSeverActions({params}) {
 
     useEffect(()=>{
         detailApi()
+        // detailName()
     },[])
+
     let AddressData;
     if(productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.shippingDetails&&productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.shippingDetails!=undefined){
         AddressData=JSON.parse(productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.shippingDetails)

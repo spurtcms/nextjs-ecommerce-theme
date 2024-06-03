@@ -103,23 +103,17 @@ export default function HeaderServerActions({tokenCheck}) {
          let mycartlist=await fetchGraphQl(GET_MY_CART_QUERY,variable)
 
           mycartlist=mycartlist?.ecommerceCartList?.cartList
-          // console.log(mycartlist.length,'cartCountasdasda')
           let localData=[]
           if(localStorage.getItem("add-cart-list") !== undefined&&localStorage.getItem("add-cart-list") !== "undefined"){
-            console.log(localStorage.getItem("add-cart-list"),'ewewewe')
             localData=JSON.parse(localStorage.getItem("add-cart-list"))
 
           }
           
-          console.log(localData,'wew3434345')
-          console.log(mycartlist,'877887545')
           
           // mycartlist?.map((val)=>{
             if (mycartlist && mycartlist.length !== 0) {
-              // console.log(localData.filter((res) =>res.id != val.id),"099876756")
               const filterData = localData?.filter((res) => !mycartlist?.some((val) => val.id === res.id));
               
-              console.log(filterData, 'qdqwdw');
               if(filterData!=undefined){
                 localLengthvalue = filterData; 
               }
@@ -130,7 +124,6 @@ export default function HeaderServerActions({tokenCheck}) {
             }
           // }) 
           if(mycartlist?.length==0){
-            console.log(localData,'00990987')
             localLengthvalue=localData
           }
    

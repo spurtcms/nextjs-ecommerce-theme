@@ -11,6 +11,7 @@ import MyCartSkeleton from '@/utils/SkeletonLoader/MyCart';
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation'
 import { fetchGraphQLDa } from '@/api/clientGraphicql';
+import ToastMessage from '../ToastMessage/ToastMessage';
 
 
 export default function MyCartPage({tokenCheck}) {
@@ -32,12 +33,10 @@ const handleMycart=async()=>{
 
    
     mycartlist=mycartlist?.ecommerceCartList?.cartList
-    console.log(mycartlist,'mycartlist')
     mycartlist?.map((sdata)=>{
       sdata.quantity=sdata.ecommerceCart?.quantity
     })
     // let filterD=localData.filter((d)=>d.id==sdata.id)
-    // console.log(filterD,'43433r3')
     let localData=[]
     if(localStorage.getItem("add-cart-list")!=undefined&&localStorage.getItem("add-cart-list")!="undefined"){
     localData=JSON.parse(localStorage.getItem("add-cart-list"))
@@ -45,7 +44,6 @@ const handleMycart=async()=>{
     }
  
 
-    console.log(localData,'qswd32')
   if(localData!=null){
     const mergedArray = mycartlist?.map((item1) => {
         const item2 = localData?.find((item) => item?.id === item1.id);
@@ -66,17 +64,10 @@ const handleMycart=async()=>{
     else{
         setCartItemList(mycartlist)
     }
-    
-      
-    //   console.log(mergedArray,'qwwqd324234');
 
-  
-    
-    setSkeleton(false)
-    
+    setSkeleton(false) 
 }
 
-console.log(cartItmeList,'cartItmeList')
     useEffect(()=>{
       if(tokenCheck){
           handleMycart()
@@ -140,17 +131,21 @@ if(sdata.id==data.id){
              if(deletestore?.removeProductFromCartlist){
                 let cartstore=cartItmeList.filter((s)=>s?.id != data?.id)
                 setCartItemList(cartstore)
+                ToastMessage({type:"success",message:"Product removed from cart"})
              }
-        }else{
-            let cartstore=cartItmeList.filter((s)=>s.id != data.id)
-            if(cartstore.length){
-                localStorage.setItem("add-cart-list",JSON.stringify(cartstore))
-            setCartItemList(cartstore)
-            }
-            else{
-                localStorage.removeItem("add-cart-list")
+        
+            }else{
+                let cartstore=cartItmeList.filter((s)=>s.id != data.id)
+                if(cartstore.length){
+                    localStorage.setItem("add-cart-list",JSON.stringify(cartstore))
                 setCartItemList(cartstore)
-            }
+                ToastMessage({type:"success",message:"Product removed from cart"})
+                }
+                else{
+                    localStorage.removeItem("add-cart-list")
+                    setCartItemList(cartstore)
+                    ToastMessage({type:"success",message:"Product removed from cart"})
+                }
 
             
         }

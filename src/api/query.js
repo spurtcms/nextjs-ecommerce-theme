@@ -204,6 +204,17 @@
     ecommerceOrderPlacement(paymentMode: $mode,shippingAddress: $addr,orderProducts: $prod, orderSummary: $summ)
   }`
 
+
+  export const GET_PRODUCT_DETAIL_STATUSNAME=`
+  query{
+    ecommerceOrderStatusNames{
+      OrderStatusNames{
+        id
+        status
+      }
+    }
+  }
+  `
   export const GET_PRODUCT_DETAIL=`query($pid: Int,$pslug: String, $oid: Int!){
     ecommerceProductOrderDetails(productId: $pid, productSlug: $pslug, orderId: $oid){
       EcommerceProduct{
