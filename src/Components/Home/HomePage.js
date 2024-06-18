@@ -85,8 +85,8 @@ const offsetListData =async()=>{
 
  const categorieList= async () =>{
 
-  let catgo_variab={"categoryGroupId":147}
-  let postData= await fetchGraphQLDa(Get_CATEGORIES_LIST,catgo_variab)
+  // let catgo_variab={"categoryGroupId":147}
+  let postData= await fetchGraphQLDa(Get_CATEGORIES_LIST)
   setCatagoryList(postData?.categoriesList?.categories[0]?.categoryName)
   
   if(catgorId==null){

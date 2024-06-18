@@ -138,8 +138,8 @@
   }
   `;
 
-  export const Get_CATEGORIES_LIST = `query($categoryGroupId: Int!){
-    categoriesList(categoryGroupId:$categoryGroupId){
+  export const Get_CATEGORIES_LIST = `query(){
+    categoriesList(){
       categories{
         id
         categoryName
