@@ -1,126 +1,106 @@
-import ToastMessage from '@/Components/toast'
-import { AdminGetToken, DeleteCookie, GetToken, Unauthorized } from './serverActions/cookies'
-import { baseUrl } from './url'
-import { AdminGetTokenSessions } from './clientActions'
+import ToastMessage from "@/Components/ToastMessage/ToastMessage";
+import { Token } from "./clientGraphicql";
+import { RemoveToken } from "./serverActions";
+import { handleCartStore } from "./clientActions";
 
 
 
-export const apiinstance = async (url, options) => {
+export const apiinstance=async(url,options)=>{
+    const headers = {
+        'Content-Type': 'application/json',
+      }
+      const token = await Token();
+    
+      if (token==""||token==undefined) {
+        headers['Authorization']=process.env.NEXT_PUBLIC_SPURTCMS_TOKEN
+        
+      }
+      else{
+        headers['Authorization'] = token
+      }
+    
+      const config = {
+        method: options.method || 'GET',
+        headers,
+        ...options,
+      }
+    
+      if (config.method === 'GET') {
+        delete config.body
+      } else {
+        config.body = config.body
+      }
 
-  let token = await GetToken()
-  // let admintoken= await AdminGetToken()
-  let admintoken= await AdminGetTokenSessions()
-
-  const headers = {
-    'Content-Type': 'application/json',
-    "Authorization": process.env.NEXT_PUBLIC_OWNDESK_GUESTUSER_TOKEN
-    // "Authorization": "%$HEID$#PDGH*&MGEAFCC"
-  }
-  if(admintoken){
-    headers['Authorization'] = admintoken
-  }
-  else 
-  if (token) {
-    headers['Authorization'] = token
-  }
-  const config = {
-    method: options.method || 'GET',
-    headers,
-    ...options,
-  }
-
-  if (config.method === 'GET') {
-    delete config.body
-  } else {
-    config.body = config.body
-  }
-
-
-  // const res = await fetch(`${"http://192.168.29.81:8081/query"}${url}`, config);
-  //  const res = await fetch(`${baseUrl}${url}`,config,{next:{revalidate:5}});
-  const res = await fetch(`${baseUrl}${url}`, config);
-  // const res = await fetch(`${"http://localhost:8081/query"}${url}`, config);
-
-  if (res.ok) {
-    return await res.json();
-  } else {
-
-    switch (res.status) {
-
-      case 400:
-
-        handleBadRequest(res.statusText);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SPURTCMS_BASEURL}${url}`,config);
+        if(res.ok){
+            return await res.json();
+        }else{
+         
+          switch(res.status){
+           
+        case 400:
+          handleBadRequest(res);
         break;
 
-      case 401:
-        handleUnauthorized(res.statusText);
-        break;
+        case 401:
+          handleUnauthorized(res)
+          break;
 
-      case 403:
-        handleForBidden(res.statusText);
-        break;
+        case 403:
+          handleForbidden(res);
+          break;
 
-      case 404:
-        handleNotFound(res.statusText);
-        break;
+        case 404:
+          handleNotFound(res);
+          break;
 
-      case 422:
-        handleUnProcessableEntry(res.statusText);
-        break;
+        case 422:
+          handleUnProcessableEntry(res);
+          break;
 
-      case 500:
-        handleServerError(res.statusText);
-        break;
-      case 409:
-        handleErrorMessages(res.statusText);
-        break;
+        case 500:
+          handleServerError(res);
+          break;
+        case 409:
+          handleErrorMessages(res);
+          break;
+        case 0:
+          handleServerError502(res);
+          break;
+        default:
+          break;
+          }
 
-      default:
-        break;
-    }
-    return res;
-  }
-
-  async function handleBadRequest(error) {
-    ToastMessage({ type: "error", message: error });
-  }
-
-  async function handleUnauthorized(error) {
-    ToastMessage({ type: "error", message: error });
-    // localStorage.clear();
-    // sessionStorage.clear();
-    // Router.push('/auth/signin')
-    // DeleteCookie('Token')
-    // DeleteCookie('MemberProfile')
-    // window.location.reload();
-    Unauthorized()
-
-  }
-  async function handleForBidden(error) {
-    ToastMessage({ type: "error", message: error })
-
-    // DeleteCookie('Token')
-    // DeleteCookie('MemberProfile')
-    // window.location.reload();
-    // localStorage.clear();
-    // sessionStorage.clear();
-    // Router.push('/auth/signin')
-    Unauthorized()
-  }
-
-  async function handleNotFound(error) {
-    ToastMessage({ type: "error", message: error });
-  }
-
-  async function handleUnProcessableEntry(error) {
-    ToastMessage({ type: "error", message: error });
-  }
-
-  async function handleServerError(error) {
-    ToastMessage({ type: "error", message: error });
-  }
-  async function handleErrorMessages(error) {
-    ToastMessage({ type: "error", message: error });
-  }
-
+          return res
+        }
+     
 }
+const handleBadRequest=async(res)=>{
+  ToastMessage({type:'error',message:res?.statusText})
+}
+
+const handleUnauthorized= async(res)=>{
+  handleCartStore()
+  RemoveToken()
+  ToastMessage({type:'error',message:"Unauthorized"})
+   }
+ 
+ const handleForbidden=async()=>{
+  ToastMessage({type:'error',message:"Forbidden"})
+ }  
+
+ const handleNotFound=async()=>{
+  ToastMessage({type:'error',message:"Api not found"})
+ } 
+
+ const handleUnProcessableEntry=async(res)=>{
+  ToastMessage({type:'error',message:""})
+ }  
+
+ const handleServerError=async()=>{
+  ToastMessage({type:'error',message:"Internel sever error"})
+ }
+
+ const handleServerError502=async()=>{
+
+ }
