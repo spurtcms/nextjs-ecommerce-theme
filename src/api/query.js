@@ -1,290 +1,371 @@
 
-// export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
-//   memberRegister(
-//     input:$singData
-//   )
-// }
-//   `;
-
-  export const GET_POSTS_SIGN_QUERY = `mutation memberRegister($singData: MemberDetails!,$ecomModule:Int) {
-    memberRegister(
-      input:$singData,
-      ecomModule:$ecomModule
-    )
-  }
-    `;
-
-
-
-  export const GET_POSTS_LOGIN_QUERY =`mutation($email:String!,$password:String!){
+export const GET_POSTS_SIGN_QUERY = `mutation($singData: MemberDetails!) {
+  memberRegister(
+    input:$singData
+  )
+}
+  `;
+export const GET_POSTS_LOGIN_QUERY = `mutation($username:String!,$password:String!){
     templateMemberLogin(
-      email:$email
+      username:$username
       password:$password
     )
   }`
 
-  export const GET_POST_ADDRESS_QUERY=`mutation($cd: customerInput!){
-    customerProfileUpdate(customerDetails: $cd)
-  }
-  `
 
-  export const GET_POST_VIEWCOUNT_QUERY=`mutation($pid: Int,$slug: String){
-    UpdateProductViewCount(productId: $pid, productSlug: $slug)
-  }`
-
-
-  export const GET_POSTS_LIST_QUERY = `query ecommerceProductList(
-    $limit: Int!,
-    $offset: Int!,
-    $filter: ProductFilter,
-    $sort: ProductSort
-  ) {
-    ecommerceProductList(
-      limit: $limit,
-      offset: $offset,
-      filter: $filter,
-      sort: $sort
-    ) {
-      productList {
-        id
-        tax
-        categoriesId
-        productName
-        productSlug
-        productDescription
-        productImagePath
-        productImageArray
-        productYoutubePath
-        productVimeoPath
-        sku
-        defaultPrice
-        isActive
-        discountPrice
-        specialPrice 
-        viewCount
+/// Category List Query
+export const CategoryQuery = `
+ query($limit: Int,$offset: Int,$level: Int,$groupid: Int,$checkEntriesPresence: Int){
+      categoriesList(limit: $limit,offset:$offset,hierarchyLevel: $level,categoryGroupId: $groupid,checkEntriesPresence: $checkEntriesPresence){
+        categories{
+          id
+          categoryName
+          categorySlug
+          description
+          imagePath
+          createdOn
+          createdBy
+          modifiedOn
+          modifiedBy
+          parentId
+        }
+        count
+        
       }
-      count
+    }`;
+
+
+export const CategoryChildQuery = `
+     query($limit: Int,$offset: Int,$level: Int,$groupid: Int,$checkEntriesPresence: Int,$slug:String){
+      categoriesList(limit: $limit,offset:$offset,hierarchyLevel: $level,categoryGroupId: $groupid,checkEntriesPresence: $checkEntriesPresence,categoryGroupSlug:$slug){
+        categories{
+          id
+          categoryName
+          categorySlug
+          description
+          imagePath
+          createdOn
+          createdBy
+          modifiedOn
+          modifiedBy
+          parentId
+        }
+        count
+        
+      }
     }
-  }
-  
-  `;
+    `
 
-
-  export const GET_POSTS_SLUG_QUERY = `query ecommerceProductDetails(
-    $productSlug: String!, 
-  ){
-    ecommerceProductDetails(productSlug:$productSlug){
+/// Channel Entry List Query
+export const ChannelEntriesListQuery = `
+query($channelId: Int, $categoryId: Int,$limit: Int!,$offset: Int!,$keyword:String,$requireData: RequireData, $categorySlug: String,$categoryChildSlug:String){
+  channelEntriesList(channelId: $channelId,categoryId: $categoryId, limit: $limit,offset: $offset,title:$keyword,requireData: $requireData, categorySlug: $categorySlug ,categoryChildSlug:$categoryChildSlug){
+    channelEntriesList{
       id
-      categoriesId
-      productName
-      productDescription
-      productImagePath
-      productImageArray
-      productYoutubePath
-      productVimeoPath
-      productSlug
-      sku
-      tax
-      totalcost
+      title
+      slug
+      description
+      userId
+      channelId
+      status
       isActive
       createdOn
-      discountPrice
-      specialPrice 
-      defaultPrice
-  }
-  }
-  `;
-
-
- 
-
-  export const GET_MY_CART_QUERY=`query($limit: Int!,$offset: Int!){
-    ecommerceCartList(limit: $limit,offset: $offset){
-      cartList{
-        id
-        categoriesId
-        productName
-        productDescription
-        productImagePath
-        productImageArray
-        sku
-        tax
-        totalcost
-        isActive
-        createdOn
-        createdBy
-        modifiedOn
-        modifiedBy
-        isDeleted
-        deletedOn
-        deletedBy
-        defaultPrice
-        discountPrice
-        specialPrice
-        ecommerceCart{
-          id
-          productId
-          customerId
-          quantity
-          createdOn
-          modifiedOn
-          isDeleted
-          deletedOn
-        }
-      }
-    
-      
-    }
-  }
-  `;
-
-  export const Get_CATEGORIES_LIST = `query(){
-    categoriesList(){
+      createdBy
+      modifiedBy
+      modifiedOn
+      coverImage
+      thumbnailImage
+      metaTitle
+      metaDescription
+      keyword
+      categoriesId
+      relatedArticles
+      featuredEntry
       categories{
         id
         categoryName
-        categorySlug
+        imagePath
         parentId
       }
-    }
-  }`
-
-  export const GET_REMOVE_CART_LIST=`mutation($pid: Int!){
-    removeProductFromCartlist(productId: $pid)
-  }`
-
-
-  export const GET_ADD_TO_CART=`mutation ecommerceAddToCart($productId: Int!,$quantity: Int!){
-    ecommerceAddToCart(productId:$productId,quantity:$quantity)
-  }`
-
-  export const GET_MY_ORDERED_LIST=`query($lim: Int!,$off: Int!,$filter: orderFilter,$sort: orderSort){
-    ecommerceProductOrdersList(limit: $lim,offset:$off,filter: $filter,sort: $sort){
-      productList{
-        id
-        productName
-        categoriesId
-        productSlug
-        productDescription
-        productImagePath
-        productVimeoPath
-        productYoutubePath
-        sku
-        tax
-        totalcost
-        isActive
+      additionalFields{
+        sections{
+          sectionId
+          sectionName
+          sectionTypeId
+          createdOn
+          createdBy
+          modifiedOn
+          modifiedBY
+          orderIndex
+        }
+        fields{
+          fieldId
+          fieldName
+          fieldTypeId
+          mandatoryField
+          optionExist
+          createdOn
+          createdBy
+          imagePath
+          fieldValue{
+            fieldValue
+            id
+          }
+          
+        }
+      }
+      memberProfile{
+        memberId
+        profileName
+        companyLogo
+        memberDetails
+        profilePage 
+        profileSlug
         createdOn
         createdBy
         modifiedOn
         modifiedBy
-        isDeleted
-        deletedBy
-        deletedOn
-        defaultPrice
-        discountPrice
-        specialPrice
-        productImageArray
-        orderId
-        orderUniqueId
-        orderQuantity
-        orderPrice
-        orderTax
-        orderStatus
-        orderCustomer
-        orderTime
-        paymentMode
-        shippingDetails
+        claimStatus
+        linkedin
+        twitter
+        website
+        companyName
+        companyLocation
       }
-      count
+      authorDetails{
+        AuthorId
+        FirstName
+        LastName
+        ProfileImagePath
+        IsActive
+        CreatedBy
+      Email
+      }
+      tags
+          publishedTime
+          author
+          createTime
+          readingTime
+          sortOrder
+          imageAltTag
     }
+    count
+  }
+}
+    `;
 
-  }`
+/// Login Query
+export const LoginQuery = `mutation($email: String!){
+  memberLogin(email: $email)
+}
+`;
 
-  export const GET_CHECKOUT=`mutation ecommerceOrderPlacement($summ:OrderSummary,$mode: String!,$addr: String!,$prod: [orderProduct!]!){
-    ecommerceOrderPlacement(paymentMode: $mode,shippingAddress: $addr,orderProducts: $prod, orderSummary: $summ)
-  }`
+/// Login OTP Verify Query
+export const LoginOTPVerifyQuery = `
+mutation($otp: Int!,$email: String!){
+  verifyMemberOtp(otp: $otp,email: $email){
+   memberProfileData{
+        memberId
+        profileName
+        companyLogo
+        profilePage
+        profileSlug
+        createdOn
+        createdBy
+        modifiedOn
+        modifiedBy
+        claimStatus
+      }
+    token
+  }
+}
+`;
+
+/// Member Profile Query
+export const profileQuery = `
+query{
+  memberProfileDetails{
+         id
+    memberId
+    profileName
+    companyLogo
+    profilePage
+    profileSlug
+    createdOn
+    createdBy
+    modifiedOn
+    modifiedBy
+    claimStatus
+    companyName
+    companyLocation
+    about
+    linkedin
+    twitter
+    website
+  }
+}
+`;
 
 
-  export const GET_PRODUCT_DETAIL_STATUSNAME=`
-  query{
-    ecommerceOrderStatusNames{
-      OrderStatusNames{
+export const memberProfile = `
+query($id:Int,$slug: String){
+  getMemberProfileDetails(id:$id,profileSlug:$slug){
         id
+        memberId
+        profileName
+        companyLogo
+        profilePage
+        profileSlug
+        createdOn
+        createdBy
+        modifiedOn
+        modifiedBy
+        claimStatus
+        memberDetails
+        companyName
+        companyLocation
+        about
+        linkedin
+        twitter
+        website
+    
+  }
+}
+`
+
+
+/// ClaimNow Profilename Check Query
+export const ProfileNameCheckQuery = `
+mutation($profileSlug: String!,$profileId : Int!){
+  profileNameVerification(profileSlug: $profileSlug,profileId: $profileId)
+}
+`
+/// ClaimNow Query
+export const claimNowQuery = `
+mutation($claim: ClaimData!,$profileId:Int,$profileSlug: String ){
+  memberclaimnow(input: $claim,profileSlug:$profileSlug,profileId:$profileId)
+}
+`;
+
+/// Channel Detail Query
+export const MemberProfileDetailQuery = `
+query($id: Int,$slug: String){
+  getMemberProfileDetails(id: $id,profileSlug: $slug){
+    id
+    memberId
+    profileSlug
+    memberDetails
+    profileName
+    profilePage
+    companyName
+    companyLocation
+    memberDetails
+    companyLogo
+    about
+    seoTitle
+    seoDescription
+    seoKeyword
+    linkedin
+    twitter
+    website
+    createdBy
+    createdOn
+    modifiedOn
+    modifiedBy
+    claimStatus
+  }
+}
+`;
+
+/// Company Detail Update Query
+export const CompanyDetailUpdateQuery = `
+mutation memeberProfUpdate($profiledata: ProfileData!){
+  memberProfileUpdate(profiledata:$profiledata)
+}
+`
+// mutation($profiledata : ProfileData!){
+//   memberProfileUpdate(profiledata: $profiledata)
+// }
+
+export const MyRofileUpdateQuery = `
+  mutation memberUpdate($memberData:MemberDetails!){
+  memberUpdate(memberdata:$memberData)
+}
+ `
+//  mutation($memberdata: MemberDetails!){
+//   memberUpdate(memberdata: $memberdata)
+// }
+
+export const MyRofileDetailQuery = `query{
+  getMemberDetails{
+    id
+    firstName
+    lastName
+    email
+    mobileNo
+    isActive
+    profileImage
+    profileImagePath
+    createdOn
+    createdBy
+    modifiedOn
+    modifiedBy
+    memberGroupId
+    password
+    username
+  }
+}
+ `
+export const changePasswordMutation = `mutation($op: String!,$np: String!,$cp: String! ){
+  memberPasswordUpdate(oldPassword: $op,newPassword: $np, confirmPassword: $cp)
+}
+ `
+
+// channel entries Slug list
+
+export const ChannelEntriesSlugListQuery = `query($slug:String){
+      channelEntryDetail(slug:$slug){
+        id
+        title
+        slug
+        description
+        userId
+        channelId
         status
-      }
-    }
-  }
-  `
-  export const GET_PRODUCT_DETAIL=`query($pid: Int,$pslug: String, $oid: Int!){
-    ecommerceProductOrderDetails(productId: $pid, productSlug: $pslug, orderId: $oid){
-      EcommerceProduct{
-        id
-        productName
-        categoriesId
-        productSlug
-        productDescription
-        productImagePath
-        productVimeoPath
-        productYoutubePath
-        sku
-        tax
-        totalcost
         isActive
+        createdOn
+        createdBy
+        modifiedBy
+        modifiedOn
+        coverImage
+        thumbnailImage
+        metaTitle
+        metaDescription
+        keyword
+        categoriesId
+        relatedArticles
+        featuredEntry
+        viewCount
+        readingTime
+       categories{
+        id
+        categoryName
+        description
+        categorySlug
+        imagePath
         createdOn
         createdBy
         modifiedOn
         modifiedBy
-        isDeleted
-        deletedBy
-        deletedOn
-        defaultPrice
-        discountPrice
-        specialPrice
-        productImageArray
-        orderId
-        orderUniqueId
-        orderQuantity
-        orderPrice
-        orderTax
-        orderStatus
-        orderCustomer
-        orderTime
-        paymentMode
-        shippingDetails
+        parentId
+        __typename
       }
-      OrderStatuses{
-        id
-        orderId
-        orderStatus
-        createdBy
-        createdOn
+      author
+        authorDetails{
+          AuthorId
+          FirstName
+          LastName
+          ProfileImagePath
+        }
       }
-  }
-  }`
-
-
-
-
-  export const GET_ADDRESS_DETAIL=`query{
-    ecommerceCustomerDetails{
-      id
-      firstName
-      lastName
-      mobileNo
-      email
-      username
-      isActive
-      profileImage
-      profileImagePath
-      modifiedOn
-      modifiedBy
-      houseNo
-      Area
-      city
-      state
-      country
-      zipCode
-      streetAddress
-    }
-  }
-  `
+    }`

@@ -1,10 +1,14 @@
 'use client'
 
- export const handleCartStore=()=>{
-    localStorage.removeItem("add-cart-list")
+   
+export function AdminGetTokenSessions() {
+    const Admintoken = sessionStorage.getItem('AdminToken')
+    // if (token) {
+        return Admintoken
+    // }
 }
 
-// export const handleOrderClient=()=>{
-//     let orderValue=useSelector(s=>s.cartReducer.orderid)
-//     return orderValue
-//     }
+
+export async function SetAdminTokenSession(value){
+    sessionStorage.setItem('AdminToken', value)
+}
