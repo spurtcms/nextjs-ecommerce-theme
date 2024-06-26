@@ -1,278 +1,16 @@
 'use client'
-import React, { useEffect, useRef, useState, useSyncExternalStore } from 'react'
-import moment from 'moment';
-import NoDataFound from './NoDataFound'
-import { fetchGraphQl, fetchGraphQlClient } from '@/api/graphicql';
-import { ChannelEntriesListQuery } from '@/api/query';
-import { owndeskChannel, owndeskImage } from '@/api/url';
-import { useDispatch, useSelector } from 'react-redux';
-import { GetProfile, SetSearch } from '@/api/serverActions/cookies';
-import { ChannelClaimStatus, ChannelEntryId, ChannelEntryPersonName, ChannelSearch, ChannelSearchButton, ChannelSkeletonLoader, ChannelpublishedTime, EntryClaimed } from '../../../store/slices/channel';
-import { useRouter, useSearchParams } from 'next/navigation';
+
+import { owndeskImage } from '@/api/url';
 import Link from 'next/link';
 import Masonry from '@mui/lab/Masonry';
 
 
 
-export default function ChannelEntries({slug, childslug,channelEntries  }) {
+export default function ChannelEntries({channelEntries  }) {
 
 console.log(channelEntries,'channelEntries');
 
-    const skeleton = useSelector((s) => s.channelReducer.ChannelSkeletonLoader)
-    const router = useRouter();
-    const dispatch = useDispatch();
-    const searchParam = useSearchParams()
-    const search = searchParam.get('keyword')
-
-    const [readMoreshow, setReadMoreshow] = useState([])
-    const [allchannelEntries, setChannelEntries] = useState([])
-    const [hasMore, sethasMore] = useState(true);
-    const [offset, setOffset] = useState(0);
-    const [limit, setLimit] = useState(10)
-    const [skeletonLoader, setSkeletonLoader] = useState(false)
-    const [scrolCheck,setScrollCheck]=useState(false)
-    const [scrollLoader,setScrollLoader]=useState(false)
-    const [skeletonLoading,setSkeletonLoading]=useState(true)
     
-
-
-    
-    // useEffect(() => {
-    //     if (channelEntriesList) {
-    //         setChannelEntries(channelEntriesList)
-    //         setSkeletonLoading(false)
-            
-    //         setSkeletonLoader(true)
-    //         setScrollCheck(true)
-    //         if (!search) {
-    //             dispatch(ChannelSkeletonLoader(false))
-    //         }
-    //     }
-    // }, [channelEntriesList])
-
-    useEffect(() => {
-
-        if (skeleton) {
-            setSkeletonLoader(false)
-        }
-
-    }, [skeleton])
-    useEffect(() => {
-
-
-        let variable = {
-            "limit": 20,
-            "offset": 0,
-             "categorySlug": slug, "keyword": search!=null?search:"", "categoryChildSlug": childslug, "channelId": +owndeskChannel, "requireData": {
-                "memberProfile": true
-            }
-        }
-        async function ChannelEntries() {
-            if(offset==0||search){
-                try {
-                    let channel = await fetchGraphQl(ChannelEntriesListQuery, variable)
-                    let channelEntriesList = channel?.data?.channelEntriesList?.channelEntriesList
-                    setChannelEntries(channelEntriesList)
-                   
-                    dispatch(ChannelSearchButton(false))
-                    dispatch(ChannelSkeletonLoader(false))
-                    setSkeletonLoader(true)
-                 
-    
-                } catch (error) {
-                }
-            }
-            else{
-                try {
-                    let channel = await fetchGraphQl(ChannelEntriesListQuery, variable)
-                    let channelEntriesList = channel?.data?.channelEntriesList?.channelEntriesList
-                    setChannelEntries(channelEntriesList)
-                   
-                    dispatch(ChannelSearchButton(false))
-                    dispatch(ChannelSkeletonLoader(false))
-                    setSkeletonLoader(true)
-                 
-    
-                } catch (error) {
-                }
-            }
-            }
-            
-
-        if (search) {
-            ChannelEntries()
-        }
-        else{
-            ChannelEntries()
-        }
-
-
-    }, [search])
-
-
-    const convertLink = (link) => {
-        if (!/^https?:\/\//i.test(link)) {
-            link = 'http://' + link;
-            return link
-        } else {
-            return link
-        }
-
-    }
-
-
-
-    const toggleDescription = (index) => {
-        const newShowFullDescriptions = [...readMoreshow];
-        newShowFullDescriptions[index] = !newShowFullDescriptions[index];
-        setReadMoreshow(newShowFullDescriptions);
-    };
-
-    const getDescription = (description, index) => {
-        const removeHtml = description
-
-        const cleanHtml = removeHtml?.replace(/<p><br>&nbsp;<\/p>|<p>&nbsp;<\/p>| class="[^"]*"| style="[^"]*"/g, '');
-
-        if (cleanHtml?.length > 62 && !readMoreshow[index]) {
-             return `${cleanHtml?.slice(0, 62)}... `;
-
-        }
-        
-        return `${cleanHtml} `;
-
-    };
-
-    
-    const fetchData =  () => {
-       
-        let variable = {
-            "limit": 20, "offset": offset,
-             "categorySlug": slug, "keyword": search, "categoryChildSlug": childslug, "channelId": +owndeskChannel, "requireData": {
-                "memberProfile": true
-            }
-        }
-     fetchGraphQlClient(ChannelEntriesListQuery, variable,channelEntries,setSkeletonLoading,setScrollLoader,setChannelEntries)
-     
-    };
-
-    const handleScroll = (e) => {
-  
-        const scrollHeight = e.target.documentElement.scrollHeight;
-        const currentHeight = Math.ceil(
-          e.target.documentElement.scrollTop + window.innerHeight
-        );
-        if (currentHeight + 1 >= scrollHeight) {  
-  
-          setOffset(offset+20) 
-          
-        }
-      };
-    
-      useEffect(() => {
-        if(scrollLoader==false){
-          window.addEventListener("scroll", handleScroll);
-        }
-        
-      }, [handleScroll]);
-
-
-      useEffect(()=>{
-        // if(offset!=0){
-        fetchData()
-    // }
-      },[offset])
-
-    const handleCompanyEntryDetail = async (member, profilePage, profileName, id, publishedTime, modifiedOn) => {
-        const MemberProfile = await GetProfile()
-        if (profilePage) {
-            dispatch(ChannelClaimStatus(member?.claimStatus))
-            dispatch(ChannelEntryId(id))
-            if (MemberProfile) {
-                if (member.memberId == MemberProfile.memberId) {
-                    dispatch(EntryClaimed(true))
-                } else {
-                    dispatch(EntryClaimed(false))
-                }
-            } else {
-                dispatch(EntryClaimed(false))
-            }
-
-            dispatch(ChannelEntryPersonName(profilePage))
-            dispatch(ChannelSearch(''))
-            
-            if (publishedTime) {
-                dispatch(ChannelpublishedTime(publishedTime))
-            } else {
-                dispatch(ChannelpublishedTime(modifiedOn))
-            }
-        }
-        else {
-            router.push('/not-found.jsx')
-        }
-    }
-
-    
-
-    const windowCheck = useSyncExternalStore(
-        (listener) => {
-            window.addEventListener("resize", listener);
-            return () => {
-                window.removeEventListener("resize", listener);
-            };
-        },
-        () => window.innerWidth,
-        () => -1
-    );
-
-
-    const handleChangeTime = (timedata) => {
-
-        const userDateTime = timedata;
-        const dateTimeWithOffset = moment().add({ hours: 5, minutes: 30 });
-        const newDifference = moment(userDateTime).diff(dateTimeWithOffset);
-
-        // Format the difference
-        const duration = moment.duration(newDifference);
-
-        // Extract individual components of the duration
-        const years = duration.years();
-        const months = duration.months();
-        const days = duration.days();
-        const hours = duration.hours();
-        const minutes = duration.minutes();
-        const seconds = duration.seconds()
-
-        let timesshow;
-        if (years != 0) {
-            timesshow = `${Math.abs(years)} years`;
-            return timesshow;
-        }
-        if (months !== 0) {
-            timesshow = `${Math.abs(months)} months`;
-            return timesshow;
-        }
-        if (days !== 0) {
-            timesshow = `${Math.abs(days)} days`;
-            return timesshow;
-        }
-        if (hours !== 0) {
-            timesshow = `${Math.abs(hours)} hours`;
-            return timesshow;
-        }
-        if (minutes !== 0) {
-            timesshow = `${Math.abs(minutes)} minutes`;
-            return timesshow;
-        }
-        if (seconds !== 0) {
-            timesshow = `${Math.abs(seconds)} seconds`;
-            return timesshow;
-        }
-
-    }
-    // const imageloader = ({ src }) => {
-    //     return src
-    // }
-
     return (
         <>
           
@@ -343,10 +81,10 @@ console.log(channelEntries,'channelEntries');
                                                 ?
                                                
                                                 <>
-                                                    <Link href={`/company/${encodeURIComponent(channel.memberProfile?.profileSlug)}`}
+                                                    <Link href={`/company/${channel.memberProfile?.profileSlug}`}
                                                         
                                                         className="block mb-3 rounded-lg overflow-hidden cursor-pointer"
-                                                        onClick={(e) => handleCompanyEntryDetail(channel?.memberProfile, channel?.memberProfile?.profileSlug, channel?.memberProfile?.profileName, channel?.id, channel?.publishedTime, channel?.modifiedOn)}
+                                                       
                                                     >
                                                         <img src={`${owndeskImage.trimEnd()}${channel?.coverImage.trimStart()}`} alt={channel?.title} className="w-full" />
                                                     </Link>
@@ -356,7 +94,7 @@ console.log(channelEntries,'channelEntries');
                                                     <a
 
                                                         className="block mb-3 rounded-lg overflow-hidden cursor-pointer"
-                                                        onClick={(e) => handleCompanyEntryDetail(channel?.memberProfile, channel?.memberProfile?.profileSlug, channel?.memberProfile?.profileName, channel?.id, channel?.publishedTime, channel?.modifiedOn)}
+                                                        
                                                     >
                                                         <img src={`${owndeskImage.trimEnd()}${channel?.coverImage.trimStart()}`} alt={channel?.title} className="w-full" width={100} height={100} quality={100} />
                                                     </a>
@@ -376,7 +114,7 @@ console.log(channelEntries,'channelEntries');
 
 
                                                                 className="text-sm text-black font-medium block dark:text-light-1 cursor-pointer"
-                                                                onClick={(e) => handleCompanyEntryDetail(channel?.memberProfile, channel?.memberProfile?.profileSlug, channel?.memberProfile?.profileName, channel?.id, channel?.publishedTime, channel?.modifiedOn)}
+                                                               
                                                             >
                                                                 {channel?.title}
                                                             </Link>
@@ -384,13 +122,13 @@ console.log(channelEntries,'channelEntries');
                                                             <a
 
                                                                 className="text-sm text-black font-medium block dark:text-light-1 cursor-pointer"
-                                                                onClick={(e) => handleCompanyEntryDetail(channel?.memberProfile, channel?.memberProfile?.profileSlug, channel?.memberProfile?.profileName, channel?.id, channel?.publishedTime, channel?.modifiedOn)}
+                                                               
                                                             >
                                                                 {channel?.title}
                                                             </a>
                                                         </>}
 
-                                                        <div className="flex gap-1 flex-nowrap">
+                                                        {/* <div className="flex gap-1 flex-nowrap">
                                                             {channel && channel?.memberProfile &&
                                                                 <>
 
@@ -451,10 +189,10 @@ console.log(channelEntries,'channelEntries');
                                                                 </>
                                                             }
 
-                                                        </div>
+                                                        </div> */}
                                                     </div>
 
-                                                    <div className="flex justify-between items-center">
+                                                    {/* <div className="flex justify-between items-center">
                                                         <div className="flex items-baseline gap-1">
                                                           
                                                             {channel && channel?.memberProfile && <>
@@ -469,24 +207,23 @@ console.log(channelEntries,'channelEntries');
                                                         </div>
 
 
-                                                    </div>
+                                                    </div> */}
                                                 </div>
                                             </div>
 
-                                            <p className=" default-font text-sm leading-4 font-normal text-grey-3 mb-4 overflow-hidden  dark:text-light-2 relative">
+                                            {/* <p className=" default-font text-sm leading-4 font-normal text-grey-3 mb-4 overflow-hidden  dark:text-light-2 relative">
 
                                                 <div dangerouslySetInnerHTML={{ __html: getDescription(channel?.description, channelindex) }} />
                                                 {channel?.description?.length > 50 &&
                                                     <>
                                                         <a role="button" onClick={() => toggleDescription(channelindex)} className=" text-blue-1 cursor-pointer font-light text-xs m-0 ">
-                                                            {/* <span>...</span> */}
                                                             {readMoreshow[channelindex] ? 'see less' : 'see more'}
                                                         </a>
                                                     </>}
-                                            </p>
+                                            </p> */}
                                            
                                         
-                                            {channel?.tags !== "" ? <>
+                                            {/* {channel?.tags !== "" ? <>
 
                                                 {channel?.tags?.includes(',') ? <>
                                                     <div className='flex gap-1 flex-wrap'>
@@ -502,7 +239,7 @@ console.log(channelEntries,'channelEntries');
                                                     </div>
                                                 </>}
 
-                                            </> : <></>}
+                                            </> : <></>} */}
                                         </div>
                                     </>))}
                                 </Masonry>

@@ -26,9 +26,7 @@ export default async function Home() {
 
       <ChannelEntries
         channelEntries={channelEntriesList}
-        title={''}
-        slug={''}
-        childslug={''}
+       
       />
 
     </>
