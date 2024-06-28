@@ -12,6 +12,7 @@ import HomePageSkeleton from '@/utils/SkeletonLoader/HomePage';
 import { useSelector,useDispatch } from "react-redux";
 import { catagoryId, catagoryName } from "@/redux/slices/catgorySlice";
 import { fetchGraphQl } from '@/api/graphicql';
+import { imageUrl } from '@/api/url';
 
 const people = [
     {
@@ -188,8 +189,11 @@ const handleLoad=(data)=>{
       fetchGraphQl(GET_POST_VIEWCOUNT_QUERY,variable_count)
     }
 
+    console.log(imageUrl,'imageUrl')
+
   return (
     <>
+
 {skeleton==true?
 <HomePageSkeleton/>
 :
@@ -286,7 +290,7 @@ const handleLoad=(data)=>{
                
               <Link href={`/product-detail/${data?.productSlug}`} prefetch className="grid place-items-center" onClick={()=>handleCount(data?.productSlug)}>
                 
-                <ImageComponets path={data?.productImageArray?.[0]} alt={data?.productName} w={300} h={200} styAdd={`h-40`}/>
+                <ImageComponets path={`${imageUrl}${data?.productImageArray?.[0]}`} alt={data?.productName} w={300} h={200} styAdd={`h-40`}/>
               </Link>
               
               <div className="text-center">
