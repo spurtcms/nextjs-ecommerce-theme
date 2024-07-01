@@ -1,4 +1,5 @@
 'use client'
+import ProfileImageCroper from '@/Components/ImageCroperModel/ProfileImageCroper'
 import ToastMessage from '@/Components/ToastMessage/ToastMessage'
 import { fetchGraphQl, postGraphQl } from '@/api/graphicql'
 import { GET_ADDRESS_DETAIL, GET_POST_ADDRESS_QUERY } from '@/api/query'
@@ -23,6 +24,8 @@ export default function MyProfileServerActions() {
     const [newDp,setNewDp]=useState();
     const [dataImg,setDataImg]=useState()
     const [proChange,setProChange]=useState(0)
+    const [modelset,setModelset]=useState(false)
+    const [formDataStore, setFormDataStore] = useState("");
 
     const reloadCount=useSelector((state)=>state.cartReducer.reloadCount)
 
@@ -112,6 +115,9 @@ export default function MyProfileServerActions() {
     const changeDP = (e) => {
         const { files } = e.target;
         if (files && files[0] && files[0].name.match(/\.(jpg|jpeg|png|svg)$/)) {
+          setModelset(true)
+          setFormDataStore(window.URL.createObjectURL(files[0]))
+          
           const fsize = files[0].size;
           const file = Math.round(fsize / 1024);
     
@@ -161,7 +167,11 @@ export default function MyProfileServerActions() {
                             </>}
                             
                             <input type='file' className='absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer' onChange={changeDP} />
+                            
                         </div>
+                               {/* {modelset==true&&
+                                    <ProfileImageCroper Image={formDataStore} setImage={setFormDataStore} modelset={modelset} setModelset={setModelset} setcompanyProfile={setcompanyProfile}/>
+                                } */}
                         <div className='grid sm:grid-cols-2 grid-cols-1 gap-4 sm:gap-6'>
                             <div className='flex flex-col gap-2'>
                                 <p className='text-base leading-5 text-black font-light'>Name </p>

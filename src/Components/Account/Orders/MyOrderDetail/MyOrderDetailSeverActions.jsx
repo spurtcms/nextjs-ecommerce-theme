@@ -2,6 +2,7 @@
 import ImageComponets from '@/Components/ImageComponent'
 import { fetchGraphQLDa } from '@/api/clientGraphicql'
 import { GET_PRODUCT_DETAIL, GET_PRODUCT_DETAIL_STATUSNAME } from '@/api/query'
+import { imageUrl } from '@/api/url'
 import moment from 'moment/moment'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
@@ -129,7 +130,7 @@ orderTime).format("DD MMMM YYYY")}</span>
             <div className="flex items-start justify-between flex-wrap gap-4">
                 <div className="flex items-start flex-col sm:flex-row">
                     {/* <img src="/img/checkList-product2.svg" className="w-[135.98px] h-[160px]" /> */}
-                    <ImageComponets path={productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.productImageArray?.[0]} w={135.98} h={160}/>
+                    <ImageComponets path={`${imageUrl}${productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.productImageArray?.[0]}`} w={135.98} h={160}/>
                     <div className="flex flex-col gap-2 px-4">
                         <h4 className="text-base text-black-500 font-normal">{productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.productName}</h4>
                         <p className="text-1-light text-sm font-light">Black Titanium, 256GB</p>

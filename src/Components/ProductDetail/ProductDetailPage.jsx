@@ -14,8 +14,10 @@ import CoverImageModel from "./model";
 import ReactPlayer from "react-player";
 import { fetchGraphQLDa } from "@/api/clientGraphicql";
 import ToastMessage from "../ToastMessage/ToastMessage";
+import { imageUrl } from "@/api/url";
 
 export default function ProductDetailPage({ productDetail, tokenCheck, slug }) {
+  console.log(productDetail,'productDetail')
   const dispatch = useDispatch();
   const reloadCount = useSelector((state) => state.cartReducer.reloadCount);
   const [open, setOpen] = useState(false);
@@ -45,7 +47,8 @@ export default function ProductDetailPage({ productDetail, tokenCheck, slug }) {
         quantity: parseInt(quantity),
       };
       fetchGraphQl(GET_ADD_TO_CART, variable);
-    } else {
+    }
+     else {
       let qytArr = [];
       productDetail.quantity = parseInt(quantity);
       if (localStorage.getItem("add-cart-list")) {
@@ -130,7 +133,7 @@ export default function ProductDetailPage({ productDetail, tokenCheck, slug }) {
                       </div>
                       <div className="w-full ">
                         <ImageComponets
-                          path={data}
+                          path={`${imageUrl}${data}`}
                           w={600}
                           h={600}
                           alt={productDetail.productName}
@@ -150,7 +153,7 @@ export default function ProductDetailPage({ productDetail, tokenCheck, slug }) {
                       </div>
                       <div className="w-full ">
                         <ImageComponets
-                          path={data}
+                          path={`${imageUrl}${data}`}
                           w={200}
                           h={200}
                           alt={productDetail.productName}
@@ -200,21 +203,21 @@ export default function ProductDetailPage({ productDetail, tokenCheck, slug }) {
                   {TaxPriceValidation(
                     productDetail.specialPrice,
                     productDetail.discountPrice,
-                    productDetail.defaultPrice,
+                    productDetail.productPrice,
                     productDetail.tax,
                     ""
                   )}
-                  {/* {TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.defaultPrice,productDetail.tax,"")} */}
+                  {/* {TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.productPrice,productDetail.tax,"")} */}
                 </strong>
                 <del className="text-base font-normal text-3-light leading-5">
                   {TaxPriceValidation(
                     productDetail.specialPrice,
                     productDetail.discountPrice,
-                    productDetail.defaultPrice,
+                    productDetail.productPrice,
                     productDetail.tax,
                     "strike"
                   )}
-                  {/* {TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.defaultPrice,productDetail.tax,"strike")} */}
+                  {/* {TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.productPrice,productDetail.tax,"strike")} */}
                 </del>
               </div>
               <h3 className="text-1-dark text-base leading-5 font-medium mt-8">

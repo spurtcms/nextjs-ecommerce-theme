@@ -61,7 +61,9 @@ export default function HomePage() {
 
 const listData = async ()=>{
   let list_varab={"limit":25,"offset":offset,"filter":{"categoryId":catgorId}}
+  console.log(catgorId,'catgorId')
   let postData = await fetchGraphQLDa(GET_POSTS_LIST_QUERY,list_varab)
+  console.log(postData,'postData')
   setCount(postData?.ecommerceProductList)
   setCardListData(postData?.ecommerceProductList?.productList)
   if(postData){
@@ -189,7 +191,7 @@ const handleLoad=(data)=>{
       fetchGraphQl(GET_POST_VIEWCOUNT_QUERY,variable_count)
     }
 
-    console.log(imageUrl,'imageUrl')
+    console.log(imageUrl,'imageUrl',cardListData)
 
   return (
     <>
@@ -286,6 +288,7 @@ const handleLoad=(data)=>{
             {cardListData?.map((data,index)=>(
               
                <>
+               {console.log(data,'data222')}
               <div key={index} class="group p-5 hover:shadow-3xl transition-shadow border-e border-b border-grey">
                
               <Link href={`/product-detail/${data?.productSlug}`} prefetch className="grid place-items-center" onClick={()=>handleCount(data?.productSlug)}>
@@ -308,13 +311,13 @@ const handleLoad=(data)=>{
                 <div className="flex gap-2 items-center justify-center mt-3">
                   <strong className="flex gap-1 items-center text-base font-semibold leading-5 text-black before:content-[''] before:inline-block before:w-2 before:h-3 before:bg-[url('/img/rupee.svg')]   ">
                   {/* {data.discountPrice} */}
-                  {TaxPriceValidation(data?.specialPrice,data?.discountPrice,data?.defaultPrice,data?.tax,"")} 
+                  {TaxPriceValidation(data?.specialPrice,data?.discountPrice,data?.productPrice,data?.tax,"")} 
                   
                   </strong>
                  
                   <del className="text-xs font-normal text-1-light leading-4 ">
                   {/* {data.specialPrice} */}
-                 {TaxPriceValidation(data?.specialPrice,data?.discountPrice,data?.defaultPrice,data?.tax,"strike")}
+                 {TaxPriceValidation(data?.specialPrice,data?.discountPrice,data?.productPrice,data?.tax,"strike")}
                   </del>
                 </div>
                 <div className="flex items-center rounded h-9 overflow-hidden border border-black max-w-56 mx-auto mt-4 invisible transition-opacity duration-200 opacity-0 group-hover:visible group-hover:opacity-100">

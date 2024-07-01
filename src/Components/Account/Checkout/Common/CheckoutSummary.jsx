@@ -1,6 +1,7 @@
 import ImageComponets from '@/Components/ImageComponent'
 import { fetchGraphQLDa } from '@/api/clientGraphicql'
 import { GET_MY_CART_QUERY } from '@/api/query'
+import { imageUrl } from '@/api/url'
 import { TaxPriceValidation } from '@/utils/regexValidation'
 import React, { useEffect, useState } from 'react'
 
@@ -14,10 +15,10 @@ export default function CheckoutSummary({setCartCount}) {
           }
         let mycartlist=await fetchGraphQLDa(GET_MY_CART_QUERY,variable)
         mycartlist=mycartlist?.ecommerceCartList?.cartList
-        mycartlist?.map((sdata)=>{
-          sdata.quantity=sdata.ecommerceCart?.quantity
+        // mycartlist?.map((sdata)=>{
+        //   sdata.quantity=sdata.ecommerceCart?.quantity
     
-        })
+        // })
         setCartCount(mycartlist)
         setProductSummary(mycartlist)
     }
@@ -27,7 +28,7 @@ export default function CheckoutSummary({setCartCount}) {
     const subtotalPrice=()=>{
         let priceStart=0
         productSummary?.map((sdata)=>{
-           let priceStore = TaxPriceValidation(sdata.specialPrice,sdata.discountPrice,sdata.defaultPrice,0,"")*sdata.quantity
+           let priceStore = TaxPriceValidation(sdata.specialPrice,sdata.discountPrice,sdata.productPrice,0,"")*sdata.quantity
            priceStart=priceStart+priceStore
             })
             return priceStart
@@ -54,21 +55,24 @@ export default function CheckoutSummary({setCartCount}) {
                             <div className="p-4">
                                
                                     {productSummary?.map((data)=>(
+                                       
                                          <div className="flex items-start gap-2 mb-4">
+                                             {console.log(data,'data')}
                                          {/* <img src="/img/detail-product1.svg" className="w-[100px] h-[64px]" /> */}
-                                         <ImageComponets path={data?.productImageArray?.[0]} w={100} h={100}/>
+                                         <ImageComponets path={`${imageUrl}${data?.productImageArray?.[0]}`} w={100} h={100}/>
                                          <div>
                                          <p className="text-xs text-black-500 font-light mb-3">{data.productName}</p>
                                          <div className="flex items-center gap-2 mb-2">
                                              <p className="text-xs font-light text-3-light">Qty</p>
+                                             {console.log(data.quantity,'dataquantity')}
                                              <span className="text-xs font-light text-3-light">{data.quantity}</span>
                                          </div>
                                          <div className="flex items-center gap-2">
                                              <p className="flex items-center gap-1.5 text-base font-normal leading-5 text-black-500">
                                                  <img src="/img/rupee.svg" />
-                                                 {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")*data.quantity} 
+                                                 {TaxPriceValidation(data.specialPrice,data.discountPrice,data.productPrice,data.tax,"")*data.quantity} 
                                              </p>
-                                             <span className="text-3-light text-sm font-light line-through">  {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"strike")?TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"strike")*data.quantity:""}</span>
+                                             <span className="text-3-light text-sm font-light line-through">  {TaxPriceValidation(data.specialPrice,data.discountPrice,data.productPrice,data.tax,"strike")?TaxPriceValidation(data.specialPrice,data.discountPrice,data.productPrice,data.tax,"strike")*data.quantity:""}</span>
                                          </div>
                                      </div>
                                      </div>

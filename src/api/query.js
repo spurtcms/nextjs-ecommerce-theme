@@ -57,7 +57,7 @@
         productYoutubePath
         productVimeoPath
         sku
-        defaultPrice
+        productPrice
         isActive
         discountPrice
         specialPrice 
@@ -90,7 +90,7 @@
       createdOn
       discountPrice
       specialPrice 
-      defaultPrice
+      productPrice
   }
   }
   `;
@@ -98,44 +98,50 @@
 
  
 
-  export const GET_MY_CART_QUERY=`query($limit: Int!,$offset: Int!){
-    ecommerceCartList(limit: $limit,offset: $offset){
-      cartList{
-        id
-        categoriesId
-        productName
-        productDescription
-        productImagePath
-        productImageArray
-        sku
-        tax
-        totalcost
-        isActive
-        createdOn
-        createdBy
-        modifiedOn
-        modifiedBy
-        isDeleted
-        deletedOn
-        deletedBy
-        defaultPrice
-        discountPrice
-        specialPrice
-        ecommerceCart{
-          id
-          productId
-          customerId
-          quantity
-          createdOn
-          modifiedOn
-          isDeleted
-          deletedOn
-        }
-      }
-    
-      
+  export const GET_MY_CART_QUERY=`query ecomCartList($limit:Int!,$offset:Int!){
+  ecommerceCartList(limit:$limit,offset:$offset){
+    cartList{
+      id
+      productSlug
+      categoriesId
+      productName
+      productDescription
+      productImagePath
+      productYoutubePath
+      productVimeoPath
+      sku
+      tax
+      totalcost
+      isActive
+      createdOn
+      createdBy
+      modifiedOn
+      modifiedBy
+      productSlug
+      viewCount
+      productPrice
+      discountPrice
+      specialPrice
+      productImageArray
+      cartId
+      productId
+      customerId
+      quantity
+      cartCreatedOn
+      cartModifiedOn
+      cartDeletedOn
+      cartIsDeleted
+      orderId
+      orderTax
+      orderStatus
+      orderCustomer
+      orderTime
+      paymentMode
+      shippingDetails
     }
+    Count
   }
+}
   `;
 
   export const Get_CATEGORIES_LIST = `query(){
@@ -180,7 +186,7 @@
         isDeleted
         deletedBy
         deletedOn
-        defaultPrice
+        productPrice
         discountPrice
         specialPrice
         productImageArray
@@ -237,7 +243,7 @@
         isDeleted
         deletedBy
         deletedOn
-        defaultPrice
+        productPrice
         discountPrice
         specialPrice
         productImageArray

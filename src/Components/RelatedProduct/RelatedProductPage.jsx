@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import ImageComponets from '../ImageComponent'
 import Link from 'next/link'
+import { imageUrl } from '@/api/url'
 
 export default function RelatedProductPage({slug}) {
 
@@ -49,7 +50,7 @@ export default function RelatedProductPage({slug}) {
                                    index<4&&
                                     <div class=" p-5 transition-shadow border-e border-b border-grey">
                                     <Link href={`/product-detail/${data?.productSlug}`} prefetch className="grid place-items-center">
-                                    <ImageComponets path={data?.productImageArray?.[0]} alt={data.productName} w={300} h={200}/>
+                                    <ImageComponets path={`${imageUrl}${data?.productImageArray?.[0]}`} alt={data.productName} w={300} h={200}/>
                                     </Link>
                                     <div className="text-center">
                                         <Link href={`/product-detail/${data?.productSlug}`} prefetch
@@ -63,10 +64,10 @@ export default function RelatedProductPage({slug}) {
                                         </p>
                                         <div className="flex gap-2 items-center justify-center mt-3">
                                         <strong className="flex gap-1 items-center text-base font-semibold leading-5 text-black before:content-[''] before:inline-block before:w-2 before:h-3 before:bg-[url('/img/rupee.svg')]   ">
-                                        {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"")} 
+                                        {TaxPriceValidation(data.specialPrice,data.discountPrice,data.productPrice,data.tax,"")} 
                                         </strong>
                                         <del className="text-xs font-normal text-1-light leading-4   ">
-                                        {TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,data.tax,"strike")}
+                                        {TaxPriceValidation(data.specialPrice,data.discountPrice,data.productPrice,data.tax,"strike")}
                                         </del>
                                         </div>
                                     </div>

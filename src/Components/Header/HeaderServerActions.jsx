@@ -13,6 +13,7 @@ import { RemoveToken } from "@/api/serverActions";
 import { catagoryId, catagoryName } from "@/redux/slices/catgorySlice";
 import { checkCartName, getTrriger, reloadCartCount } from "@/redux/slices/cartSlice";
 import ToastMessage from "../ToastMessage/ToastMessage";
+import { imageUrl } from "@/api/url";
 
 
 
@@ -302,12 +303,17 @@ const handleKeyDown = (event) => {
                     <Menu as="div" className="relative">
                       <div>
                         <Menu.Button className="relative flex rounded-full text-sm">
-                          {dataImg?.ecommerceCustomerDetails?.profileImage&&
+                          {console.log(dataImg?.ecommerceCustomerDetails?.profileImagePath,'dataImg')}
+                          {dataImg?.ecommerceCustomerDetails?.profileImagePath?
+                          <>
                           <img
                           className="w-6 h-6 rounded-full"
-                          src={dataImg?.ecommerceCustomerDetails?.profileImage}
+                          src={`${imageUrl}${dataImg?.ecommerceCustomerDetails?.profileImagePath}`}
                           alt="profile"
-                        />}
+                          />
+                          </>
+                          :
+                          <>
                          {dataImg?.ecommerceCustomerDetails?.firstName!=undefined
                          ?
                          <div className='flex    text-black items-center justify-center relative h-6 w-6 overflow-hidden rounded-full bg-slate-300'>
@@ -316,12 +322,9 @@ const handleKeyDown = (event) => {
                         :
                         <img className="w-6 h-6 rounded-full" src='/img/user1.jpg' />
                          }
-                        
-                           {/* <img
-                            className="w-6 h-6 rounded-full"
-                            src="/img/profile.svg"
-                            alt="profile"
-                          /> */}
+                         </>
+                         }
+                          
                         </Menu.Button>
                       </div>
                       <Transition

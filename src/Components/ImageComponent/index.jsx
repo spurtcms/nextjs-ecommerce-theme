@@ -10,7 +10,7 @@ export default function ImageComponets({path,w,h,alt,styAdd}) {
    <>
                     <Image
                       loader={imageLoader}
-                      src={path}
+                        src={path}
                         alt={alt}
                         width={w}
                         height={h}

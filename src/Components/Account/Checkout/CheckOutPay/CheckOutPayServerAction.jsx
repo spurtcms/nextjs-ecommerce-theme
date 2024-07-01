@@ -32,7 +32,7 @@ function CheckOutPayServerAction() {
     const subtotalPrice=()=>{
         let priceStart=0
         cartCount?.map((sdata)=>{
-           let priceStore = TaxPriceValidation(sdata.specialPrice,sdata.discountPrice,sdata.defaultPrice,0,"")*sdata.quantity
+           let priceStore = TaxPriceValidation(sdata.specialPrice,sdata.discountPrice,sdata.productPrice,0,"")*sdata.quantity
            priceStart=priceStart+priceStore
            
             })
@@ -96,11 +96,11 @@ function CheckOutPayServerAction() {
        
         cartCount?.map((data)=>{
             let obj={}
-            obj.productId=data?.ecommerceCart?.productId
+            obj.productId=data?.productId
             obj.quantity=data?.quantity
-            obj.price=TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,0,"")*data.quantity
+            obj.price=TaxPriceValidation(data.specialPrice,data.discountPrice,data.productPrice,0,"")*data.quantity
             obj.tax=data.tax*data.quantity
-            obj.totalCost=TaxPriceValidation(data.specialPrice,data.discountPrice,data.defaultPrice,0,"")*data.quantity+data.tax*data.quantity
+            obj.totalCost=TaxPriceValidation(data.specialPrice,data.discountPrice,data.productPrice,0,"")*data.quantity+data.tax*data.quantity
             checkArr.push(obj)
               }
               

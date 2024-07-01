@@ -13,6 +13,7 @@ import MyOrderList from '@/utils/SkeletonLoader/MyOrderList'
 import { handleOrder } from '@/api/clientActions'
 import { useDispatch } from 'react-redux'
 import { orderIdValue } from '@/redux/slices/cartSlice'
+import { imageUrl } from '@/api/url'
 
 const Status=[   
     {id:0, name: "Choose Status",apiName:""}, 
@@ -530,11 +531,12 @@ const Filters = [
                                 <>
                                 {productList?.length>0?productList?.map((result,index)=>(
                                 <>
+                                {console.log(productList,'productList')}
                                 <tr>
                                     <td className="px-4 py-2 border-b border-grey text-start">
                                         <div className="flex gap-6 items-center md:flex-row flex-col">
                                            
-                                            <ImageComponets path={result?.productImageArray?.[0]}  w={60} h={38}/>
+                                            <ImageComponets path={`${imageUrl}${result?.productImageArray?.[0]}`}  w={60} h={38}/>
                                             {/* <img src={"https://demo.spurtcms.com/"+result?.productImagePath} className="w-20 h-15"
                                             onError={({ currentTarget }) => {
                                             currentTarget.onerror = null;

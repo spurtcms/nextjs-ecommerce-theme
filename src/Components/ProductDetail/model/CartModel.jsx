@@ -1,4 +1,5 @@
 import ImageComponets from '@/Components/ImageComponent'
+import { imageUrl } from '@/api/url'
 import { TaxPriceValidation } from '@/utils/regexValidation'
 import Link from 'next/link'
 import React from 'react'
@@ -11,16 +12,16 @@ export default function CartModel({open,productDetail,quantity}) {
                             <h3 className="text-black-500 text-base pb-3 border-b border-1-light text-start">Added to cart</h3>
                             
                                 <div className="flex gap-2 items-center mt-3 mb-7">
-                                  <ImageComponets path={productDetail?.productImageArray?.[0]} w={80} h={80} alt={productDetail.productName} />
+                                  <ImageComponets path={`${imageUrl}${productDetail?.productImageArray?.[0]}`} w={80} h={80} alt={productDetail.productName} />
                                   <div>
                                     <h3 className="text-black-500 font-normal text-base mb-3 line-clamp-1">{productDetail.productName}</h3>
                                     <div className="flex items-center gap-5">
                                       <p className="flex items-center gap-1.5 text-lg font-medium text-black-500">
                                         <img src="/img/rupee.svg" />
-                                        {TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.defaultPrice,productDetail.tax,"")*quantity}
+                                        {TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.productPrice,productDetail.tax,"")*quantity}
                                       
                                       </p>
-                                      <span className="text-3-light text-sm font-light line-through"> {TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.defaultPrice,productDetail.tax,"strike")?TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.defaultPrice,productDetail.tax,"strike")*quantity:""}</span>
+                                      <span className="text-3-light text-sm font-light line-through"> {TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.productPrice,productDetail.tax,"strike")?TaxPriceValidation(productDetail.specialPrice,productDetail.discountPrice,productDetail.productPrice,productDetail.tax,"strike")*quantity:""}</span>
                                     </div>
                                   </div>
                                 </div>
