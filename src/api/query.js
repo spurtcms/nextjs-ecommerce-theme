@@ -214,10 +214,9 @@
   export const GET_PRODUCT_DETAIL_STATUSNAME=`
   query{
     ecommerceOrderStatusNames{
-      OrderStatusNames{
         id
         status
-      }
+        priority
     }
   }
   `

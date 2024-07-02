@@ -10,11 +10,13 @@ import React, { useEffect, useState } from 'react'
 export default function MyOrderDetailSeverActions({params}) {
 
     const [productDetail,setProductDetail]=useState()
+    const [detailStatus,setDetailStatus]=useState([])
 
-    // const detailName=async()=>{
-    //    let detailstatus= await fetchGraphQLDa(GET_PRODUCT_DETAIL_STATUSNAME)
-    //    console.log(detailstatus,'detailstatus')
-    // }
+    const detailName=async()=>{
+       let detailstatus= await fetchGraphQLDa(GET_PRODUCT_DETAIL_STATUSNAME)
+       setDetailStatus(detailstatus?.ecommerceOrderStatusNames)
+       console.log(detailstatus?.ecommerceOrderStatusNames,'detailstatus')
+    }
 
     const detailApi=async()=>{
         let detail_var={"pslug":params?.slug?.[0],"oid":params?.slug?.[1]}
@@ -24,7 +26,7 @@ export default function MyOrderDetailSeverActions({params}) {
 
     useEffect(()=>{
         detailApi()
-        // detailName()
+        detailName()
     },[])
 
     let AddressData;
@@ -57,12 +59,37 @@ let statusData=[
         date:"07 Oct 2023, 06:12 PM"
     },
 ]
+
+// detailStatus.map((data)=>{
+//     productDetail?.ecommerceProductOrderDetails?.OrderStatuses.map((res)=>{
+//         console.log(res,'sadasdasd')
+//         if(res?.orderStatus!=data?.status){
+//             console.log(res,"p90uio")
+//            data.date=""
+//         }
+//         else{
+//             console.log(res,"o79878u")
+            
+//             data.date=res?.createdOn
+//         }
+//     })
+// })
+
+detailStatus.map((data) => {
+    const matchingStatus = productDetail?.ecommerceProductOrderDetails?.OrderStatuses.find((res) => res?.orderStatus === data?.status);
+    console.log(matchingStatus?.createdOn,'saasdasdasdsad')
+    data.date = matchingStatus&&matchingStatus?.createdOn || "";
+  });
+
+console.log(detailStatus,'detailStatus')
 // if(statusData)
 // {result?.status=="Order Placed"&&statusData.indexOf(result?.status)}
 
-let statusCheck=statusData.findIndex((data,index)=>data.status=="Out of Delivery"
-)
+let statusCheck=detailStatus.findIndex((data,index)=>data.date!=""&&index)
 
+console.log(statusCheck,'statusCheck',detailStatus)
+
+console.log(productDetail?.ecommerceProductOrderDetails,'productDetail',detailStatus)
   return (
     <div className="sm:px-10 px-4 py-4 ">
     <Link href="/account/my-orders?offset=0" className="flex gap-1.5 items-center text-grey-300 text-xs font-light mb-6">
