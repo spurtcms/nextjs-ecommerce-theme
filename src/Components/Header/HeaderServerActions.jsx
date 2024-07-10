@@ -64,7 +64,7 @@ export default function HeaderServerActions({tokenCheck}) {
   }
 
   const categorieList= async () =>{
-    let catgo_variab={"categoryGroupId":147}
+    let catgo_variab={"categoryGroupId":10}
     let postData= await fetchGraphQLDa(Get_CATEGORIES_LIST,catgo_variab)
     setCatgoData(postData)
     if(postData){
@@ -73,7 +73,7 @@ export default function HeaderServerActions({tokenCheck}) {
   }
 
   const categorieList1 = async ()=>{
-    let catgo_variab={"categoryGroupId":147}
+    let catgo_variab={"categoryGroupId":10}
     let postData= await fetchGraphQLDa(Get_CATEGORIES_LIST,catgo_variab)
     handlecatData(postData)
   }
@@ -303,7 +303,6 @@ const handleKeyDown = (event) => {
                     <Menu as="div" className="relative">
                       <div>
                         <Menu.Button className="relative flex rounded-full text-sm">
-                          {console.log(dataImg?.ecommerceCustomerDetails?.profileImagePath,'dataImg')}
                           {dataImg?.ecommerceCustomerDetails?.profileImagePath?
                           <>
                           <img

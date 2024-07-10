@@ -15,7 +15,7 @@ export default async function viewDetails({params}) {
 
   
   
-  let detail_var={"pslug":params?.slug?.[0],"oid":params?.slug?.[1]}
+  let detail_var={"productSlug":params?.slug?.[0],"orderId":params?.slug?.[1]}
   let postData= await fetchGraphQLDa(GET_PRODUCT_DETAIL,detail_var)
 
 if(!postData){

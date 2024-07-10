@@ -14,17 +14,54 @@ export default function CheckoutSummary({setCartCount}) {
             "offset":0,
           }
         let mycartlist=await fetchGraphQLDa(GET_MY_CART_QUERY,variable)
+
         mycartlist=mycartlist?.ecommerceCartList?.cartList
         // mycartlist?.map((sdata)=>{
         //   sdata.quantity=sdata.ecommerceCart?.quantity
     
         // })
-        setCartCount(mycartlist)
-        setProductSummary(mycartlist)
+        // setCartCount(mycartlist)
+        // setProductSummary(mycartlist)
+
+
+        let localData=[]
+        if(localStorage.getItem("add-cart-list")!=undefined&&localStorage.getItem("add-cart-list")!="undefined"){
+        localData=JSON.parse(localStorage.getItem("add-cart-list"))
+        }
+     
+    
+      if(localData!=null){
+        localData.map((result)=>{
+            result.productId=result.id
+        })
+        const mergedArray = mycartlist?.map((item1) => {
+            const item2 = localData?.find((item) => item?.id === item1.id);
+            if (item2) {
+    
+                item1.quantity=item1?.quantity + (item2?.quantity || 0)
+              return item1;
+    
+            } else {
+              return item1;
+              
+            }
+          }).concat(
+            localData?.filter((item) => mycartlist?.every((item1) => item1?.id != item?.id))
+          );
+
+
+          setProductSummary(mergedArray)
+          setCartCount(mergedArray)
+        }
+        else{
+            setProductSummary(mycartlist)
+            setCartCount(mycartlist)
+        }
     }
     useEffect(()=>{
         handleMycart()
     },[])
+
     const subtotalPrice=()=>{
         let priceStart=0
         productSummary?.map((sdata)=>{
@@ -57,14 +94,12 @@ export default function CheckoutSummary({setCartCount}) {
                                     {productSummary?.map((data)=>(
                                        
                                          <div className="flex items-start gap-2 mb-4">
-                                             {console.log(data,'data')}
                                          {/* <img src="/img/detail-product1.svg" className="w-[100px] h-[64px]" /> */}
                                          <ImageComponets path={`${imageUrl}${data?.productImageArray?.[0]}`} w={100} h={100}/>
                                          <div>
                                          <p className="text-xs text-black-500 font-light mb-3">{data.productName}</p>
                                          <div className="flex items-center gap-2 mb-2">
                                              <p className="text-xs font-light text-3-light">Qty</p>
-                                             {console.log(data.quantity,'dataquantity')}
                                              <span className="text-xs font-light text-3-light">{data.quantity}</span>
                                          </div>
                                          <div className="flex items-center gap-2">

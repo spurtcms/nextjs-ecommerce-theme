@@ -15,14 +15,14 @@ export default function MyOrderDetailSeverActions({params}) {
     const detailName=async()=>{
        let detailstatus= await fetchGraphQLDa(GET_PRODUCT_DETAIL_STATUSNAME)
        setDetailStatus(detailstatus?.ecommerceOrderStatusNames)
-       console.log(detailstatus?.ecommerceOrderStatusNames,'detailstatus')
     }
 
     const detailApi=async()=>{
-        let detail_var={"pslug":params?.slug?.[0],"oid":params?.slug?.[1]}
+        let detail_var={"productSlug":params?.slug?.[0],"orderId":params?.slug?.[1]}
         let postData= await fetchGraphQLDa(GET_PRODUCT_DETAIL,detail_var)
         setProductDetail(postData)
     }
+
 
     useEffect(()=>{
         detailApi()
@@ -33,42 +33,42 @@ export default function MyOrderDetailSeverActions({params}) {
     if(productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.shippingDetails&&productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.shippingDetails!=undefined){
         AddressData=JSON.parse(productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.shippingDetails)
     }
+    // if (typeof productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.shippingDetails === 'string') {
+    //     AddressData = JSON.parse(productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.shippingDetails);
+    //   }
 
 
 
 
-let statusData=[
-    {
-        id:1,
-        status:"Order Confirmed",
-        date:"07 Oct 2023, 06:12 PM"
-    },
-    {
-        id:2,
-        status:"Shipped",
-        date:"07 Oct 2023, 06:12 PM"
-    },
-    {
-        id:3,
-        status:"Out of Delivery",
-        date:"07 Oct 2023, 06:12 PM"
-    },
-    {
-        id:4,
-        status:"Delivered",
-        date:"07 Oct 2023, 06:12 PM"
-    },
-]
+// let statusData=[
+//     {
+//         id:1,
+//         status:"Order Confirmed",
+//         date:"07 Oct 2023, 06:12 PM"
+//     },
+//     {
+//         id:2,
+//         status:"Shipped",
+//         date:"07 Oct 2023, 06:12 PM"
+//     },
+//     {
+//         id:3,
+//         status:"Out of Delivery",
+//         date:"07 Oct 2023, 06:12 PM"
+//     },
+//     {
+//         id:4,
+//         status:"Delivered",
+//         date:"07 Oct 2023, 06:12 PM"
+//     },
+// ]
 
 // detailStatus.map((data)=>{
 //     productDetail?.ecommerceProductOrderDetails?.OrderStatuses.map((res)=>{
-//         console.log(res,'sadasdasd')
 //         if(res?.orderStatus!=data?.status){
-//             console.log(res,"p90uio")
 //            data.date=""
 //         }
 //         else{
-//             console.log(res,"o79878u")
             
 //             data.date=res?.createdOn
 //         }
@@ -76,21 +76,19 @@ let statusData=[
 // })
 
 detailStatus.map((data) => {
-    const matchingStatus = productDetail?.ecommerceProductOrderDetails?.OrderStatuses.find((res) => res?.orderStatus === data?.status);
-    console.log(matchingStatus?.createdOn,'saasdasdasdsad')
+    const matchingStatus = productDetail?.ecommerceProductOrderDetails?.OrderStatuses.find((res) => res?.orderStatus === data?.id);
     data.date = matchingStatus&&matchingStatus?.createdOn || "";
   });
 
-console.log(detailStatus,'detailStatus')
 // if(statusData)
 // {result?.status=="Order Placed"&&statusData.indexOf(result?.status)}
 
 let statusCheck=detailStatus.findIndex((data,index)=>data.date!=""&&index)
 
-console.log(statusCheck,'statusCheck',detailStatus)
 
-console.log(productDetail?.ecommerceProductOrderDetails,'productDetail',detailStatus)
-  return (
+let apiStatus=detailStatus.find(res=>res.id==productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.orderStatus&&res.status)
+
+return (
     <div className="sm:px-10 px-4 py-4 ">
     <Link href="/account/my-orders?offset=0" className="flex gap-1.5 items-center text-grey-300 text-xs font-light mb-6">
         <img src="/img/back.svg" />
@@ -100,7 +98,8 @@ console.log(productDetail?.ecommerceProductOrderDetails,'productDetail',detailSt
         <h3 className="text-black-500 text-base font-normal">Order ID -{productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.orderUniqueId}</h3>
         <div className="px-2 py-[3px] bg-sucess text-sucess text-xs font-normal rounded">
             {/* Out of Delivery */}
-            {productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.orderStatus}
+            {apiStatus&&apiStatus?.status}
+            
         </div>
     </div>
     <div className="flex gap-3 items-center mb-6">
@@ -116,13 +115,13 @@ orderTime).format("DD MMMM YYYY")}</span>
     </div>
     <div className="border border-grey3 rounded p-6">
         <div className=" flex whitespace-nowrap overflow-auto pb-6">
-            {statusData.map((result,index)=>(
+            {detailStatus.map((result,index)=>(
                 
                 <>
             <div className="flex flex-col items-center justify-center w-full relative pe-6 md:pe-0 active-border">
                 <img src={`${index<=statusCheck?"/img/submit.svg":"/img/not-submit.svg"}` }className="relative z-10" />
                 <h5 className="text-sm font-normal text-light-black mb-1 mt-2">{result?.status}</h5>
-                <p className="text-xs text-3-light font-light">07 Oct 2023, 06:12 PM</p>
+                <p className="text-xs text-3-light font-light">{result?.date?moment(result?.date).format("YYYY-MM-DD hh:mm A"):""}</p>
                 <div className="w-full h-px bg-grey3 absolute top-2.5 left-0 line"></div>
             </div>
             </>

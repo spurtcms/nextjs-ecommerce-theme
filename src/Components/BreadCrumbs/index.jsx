@@ -15,7 +15,7 @@ export default function BreadCrubs({productDetail}) {
 
 
     const handleHome=async()=>{
-      let catgo_variab={"categoryGroupId":147}
+      let catgo_variab={"categoryGroupId":10}
       let postData= await fetchGraphQLDa(Get_CATEGORIES_LIST,catgo_variab)
       dispatch(checkCartName(""),dispatch(catagoryName(postData?.categoriesList?.categories[0]?.categoryName)),
                     dispatch(catagoryId(postData?.categoriesList?.categories[0]?.id)))

@@ -58,12 +58,9 @@ export default function HomePage() {
 
 
 
-
 const listData = async ()=>{
   let list_varab={"limit":25,"offset":offset,"filter":{"categoryId":catgorId}}
-  console.log(catgorId,'catgorId')
   let postData = await fetchGraphQLDa(GET_POSTS_LIST_QUERY,list_varab)
-  console.log(postData,'postData')
   setCount(postData?.ecommerceProductList)
   setCardListData(postData?.ecommerceProductList?.productList)
   if(postData){
@@ -88,8 +85,8 @@ const offsetListData =async()=>{
 
  const categorieList= async () =>{
 
-  // let catgo_variab={"categoryGroupId":147}
-  let postData= await fetchGraphQLDa(Get_CATEGORIES_LIST)
+  let catgo_variab={"categoryGroupId":10}
+  let postData= await fetchGraphQLDa(Get_CATEGORIES_LIST,catgo_variab)
   setCatagoryList(postData?.categoriesList?.categories[0]?.categoryName)
   
   if(catgorId==null){
@@ -98,7 +95,7 @@ const offsetListData =async()=>{
 }
 const sortBy = async () =>{
   if(selected.id==0){
-    let catgo_variab={"categoryGroupId":147}
+    let catgo_variab={"categoryGroupId":10}
   let postData= await fetchGraphQLDa(Get_CATEGORIES_LIST,catgo_variab)
   setCatagoryList(postData?.categoriesList?.categories[0]?.categoryName)
   }
@@ -191,7 +188,6 @@ const handleLoad=(data)=>{
       fetchGraphQl(GET_POST_VIEWCOUNT_QUERY,variable_count)
     }
 
-    console.log(imageUrl,'imageUrl',cardListData)
 
   return (
     <>
@@ -288,7 +284,6 @@ const handleLoad=(data)=>{
             {cardListData?.map((data,index)=>(
               
                <>
-               {console.log(data,'data222')}
               <div key={index} class="group p-5 hover:shadow-3xl transition-shadow border-e border-b border-grey">
                
               <Link href={`/product-detail/${data?.productSlug}`} prefetch className="grid place-items-center" onClick={()=>handleCount(data?.productSlug)}>

@@ -49,7 +49,6 @@ export const quantityList = () => {
 }
 
 export const TaxPriceValidation=(specialPrice,discountPrice,productPrice,tax,strike)=>{
-    console.log(specialPrice,discountPrice,productPrice,tax,strike,'89787877')
        if(strike==="strike"){
         if(discountPrice){
             return discountPrice+tax

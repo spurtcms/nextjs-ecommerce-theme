@@ -103,6 +103,16 @@ export const postGraphQl = async (GET_POSTS_QUERY,varia,check,setLoader,cartName
       }
      
     }
+    if(check==="myprofile"){
+      if(entries?.customerProfileUpdate){
+        setLoader(false)
+        dispatch(reloadCartCount(reloadCount+1))
+        ToastMessage({type:'success',message:"Address Update Successfull"})
+      }
+      else{
+        setLoader(false)
+      }
+    }
   } catch (error) {
     throw error;
   }

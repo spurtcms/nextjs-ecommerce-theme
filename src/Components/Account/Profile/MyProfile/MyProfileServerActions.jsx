@@ -3,6 +3,7 @@ import ProfileImageCroper from '@/Components/ImageCroperModel/ProfileImageCroper
 import ToastMessage from '@/Components/ToastMessage/ToastMessage'
 import { fetchGraphQl, postGraphQl } from '@/api/graphicql'
 import { GET_ADDRESS_DETAIL, GET_POST_ADDRESS_QUERY } from '@/api/query'
+import { imageUrl } from '@/api/url'
 import { profileChange, reloadCartCount } from '@/redux/slices/cartSlice'
 import { EmailValidator } from '@/utils/regexValidation'
 import Link from 'next/link'
@@ -26,6 +27,7 @@ export default function MyProfileServerActions() {
     const [proChange,setProChange]=useState(0)
     const [modelset,setModelset]=useState(false)
     const [formDataStore, setFormDataStore] = useState("");
+    const [loader,setLoader]=useState(false);
 
     const reloadCount=useSelector((state)=>state.cartReducer.reloadCount)
 
@@ -43,15 +45,15 @@ export default function MyProfileServerActions() {
           setHouseNo(myAddress.ecommerceCustomerDetails.zipCode)
           setCity(myAddress.ecommerceCustomerDetails.city)
           setCountry(myAddress.ecommerceCustomerDetails.country)
+          setNewDp(myAddress.ecommerceCustomerDetails.profileImagePath)
   
         }
       }
       useEffect(()=>{
          hadlegetAddress()
-         dispatch(reloadCartCount(reloadCount+1))
-
-      },[proChange])
-
+         
+      },[reloadCount])
+      //  dispatch(reloadCartCount(reloadCount+1))
 
     useEffect(()=>{
         if(valid==1){
@@ -64,6 +66,7 @@ export default function MyProfileServerActions() {
       const dispatch=useDispatch()
 
     const handleSubmit=()=>{
+      setModelset(false)
         setValid(1)
         if(validCheck()){
             setValid(0)
@@ -77,15 +80,16 @@ export default function MyProfileServerActions() {
                 "zipCode":houseNo,
                 "city":city,
                 "country":country,
-                "profileImage":"",
+                "profileImage":newDp,
                 "isActive": 1,
               }  
               }
               // dispatch(getAddress(obj))
               // router.push("/account/checkout-payment")
               ToastMessage({type:'success',message:"Update Successfull"})
-              postGraphQl(GET_POST_ADDRESS_QUERY,obj)
+              postGraphQl(GET_POST_ADDRESS_QUERY,obj,"myprofile",setLoader,"",reloadCount,dispatch)
               setProChange(proChange+1)
+              
         }
         }
         const validCheck=()=>{
@@ -146,6 +150,7 @@ export default function MyProfileServerActions() {
           }
         }
       }
+
   return (
   <>
    <div className='p-4 sm:p-10 md:pr-[118px] '>
@@ -154,7 +159,7 @@ export default function MyProfileServerActions() {
                     <div className='grid grid-cols-1 sm:grid-1auto gap-5 sm:gap-[70px] items-start mb-8'>
                         <div className='relative w-[120px] h-[120px] m-auto sm:m-0'>
                             {newDp?
-                            <img src={newDp} className='w-full h-full rounded-full' />
+                            <img src={modelset==false?`${imageUrl}${newDp}`:`${newDp}`} className='w-full h-full rounded-full' />
                             :
                             <>
                             {dataImg?.ecommerceCustomerDetails?.firstName ?
@@ -166,7 +171,7 @@ export default function MyProfileServerActions() {
                             }
                             </>}
                             
-                            <input type='file' className='absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer' onChange={changeDP} />
+                            <input type='file' className='absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer' onChange={(e)=>changeDP(e)} />
                             
                         </div>
                                {/* {modelset==true&&

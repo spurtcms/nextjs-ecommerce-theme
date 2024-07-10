@@ -1,4 +1,5 @@
 import ImageComponets from '@/Components/ImageComponent';
+import { imageUrl } from '@/api/url';
 import React, { useEffect } from 'react'
 import ReactPlayer from 'react-player';
 
@@ -27,11 +28,11 @@ export default function CoverImageModel({viewModel,setViewModel,videoPath}) {
           
             {videoPath==""?
             <div class="p-4 md:p-5 space-y-4" style={{height: "calc(100% - 5rem)"}}>
-            <ImageComponets path={viewModel} w={1000} h={1000} alt={"cover-image"} styAdd={"m-auto h-full w-auto"}/>
+            <ImageComponets path={`${imageUrl}${viewModel}`} w={1000} h={1000} alt={"cover-image"} styAdd={"m-auto h-full w-auto"}/>
             </div>
             :
             <div class="p-4 md:p-5 space-y-4" style={{height: "calc(100% - 5rem)"}}>
-            <ReactPlayer url={viewModel} height={"100%"} width={"100%"} controls/>
+            <ReactPlayer url={`${imageUrl}${viewModel}`} height={"100%"} width={"100%"} controls/>
             </div>
            } 
             

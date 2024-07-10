@@ -89,7 +89,6 @@ const handleMycart=async()=>{
     },[tokenCheck])
 
     const handleQuantityChange=(qty,data)=>{
-        console.log(qty,'qty')
         cartItmeList?.map((sdata)=>{
         if(sdata.id==data.id){
             sdata.quantity= parseInt(qty)
@@ -107,7 +106,6 @@ const handleMycart=async()=>{
         cartItmeList?.map((sdata)=>{
            let priceStore = TaxPriceValidation(sdata?.specialPrice,sdata?.discountPrice,sdata?.productPrice,0,"")*sdata?.quantity
            priceStart=priceStart+priceStore
-           console.log(priceStart,'priceStart')
             })
             return priceStart
              
@@ -202,7 +200,6 @@ const router=useRouter()
                                 {cartItmeList?.map((data,index)=>(
                                     
                                     <div className="p-6 pb-9 border-b border-grey3 grid grid-cols-1 sm:grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-6 last:border-0">
-                                        {console.log(data,'data121312')}
                                     <div className="align-top">
                                     <div className="flex gap-6 items-center sm:items-start md:flex-row flex-col">
                                     <ImageComponets path={`${imageUrl}${data?.productImageArray?.[0]}`} w={80} h={80} alt={data?.productName} />
@@ -217,18 +214,22 @@ const router=useRouter()
                                 </div>
                                 <div className="align-top">
                                     <a  className="flex items-center gap-2 min-w-20  min-h-9 w-fit justify-center rounded-5 " >
-                                    <select id="countries" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-300 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:[box-shadow:none]" onChange={(e)=>handleQuantityChange(e.target.value,data)} value={data?.quantity}>
+                                    {/* <select id="countries" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-300 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:[box-shadow:none]" onChange={(e)=>handleQuantityChange(e.target.value,data)} value={data?.quantity}>
                         {quantityList().map((sdata)=>(
                         <option value={sdata}> Qty {sdata}</option>
-                        ))}
+                        ))} */}
+                    <div id="countries" class="bg-gray-50 border border-gray-300 text-center text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-gray-300 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:[box-shadow:none]">
+                    Qty {data?.quantity}
+                        </div>
+                        {/* <option value={data?.quantity}> Qty {data?.quantity}</option> */}
+                       
                         
-                    </select>
+                  
                                     </a>
                                 </div>
                                 <div className="align-top flex lg:flex-col flex-row lg:justify-normal justify-between flex-wrap">
                                     <p className="flex items-center gap-1.5 text-lg font-medium text-black-500">
                                         <img src="/img/rupee.svg" />
-                                        {console.log(data?.quantity,'dataSQQWQW')}
                                         {TaxPriceValidation(data?.specialPrice,data?.discountPrice,data?.productPrice,data?.tax,"")*data?.quantity} 
 
                                         
@@ -252,7 +253,6 @@ const router=useRouter()
                                     <h3 className="text-black-500 text-base font-normal">Order Summary</h3>
                                 </div>
                                 <div className="px-4 py-5">
-                                    {console.log(cartItmeList,'cartItmeList11')}
                                     {cartItmeList?.map((data)=>(
                                         <div className="flex items-center justify-between mb-4">
                                         <div className="flex items-center gap-[15px]">

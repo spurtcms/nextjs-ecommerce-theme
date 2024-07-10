@@ -1,7 +1,7 @@
 "use client"
 import ImageComponets from '@/Components/ImageComponent'
 import { fetchGraphQLDa } from '@/api/clientGraphicql'
-import { GET_MY_ORDERED_LIST } from '@/api/query'
+import { GET_MY_ORDERED_LIST, GET_PRODUCT_DETAIL_STATUSNAME } from '@/api/query'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import "react-datepicker/dist/react-datepicker.css";
@@ -58,6 +58,7 @@ const Filters = [
     const [validCheck,setValidCheck]=useState(0)
     const [skeleton,setSkeleton]=useState(true)
     const [inputData,setInputData]=useState()
+    // const [detailStatus,setDetailStatus]=useState([])
     const router=useRouter()
 
 
@@ -67,7 +68,6 @@ const Filters = [
         setTotalRecords(0)
         let list_var={"lim":10,"off":offset,"filter":{"upcomingOrders": 1}}
         let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
-
         if(postData){
             setSkeleton(false)
         }
@@ -380,14 +380,27 @@ const Filters = [
      setStartDate(date)
      Filters[2].date=false
     }
+
+    // const detailName=async()=>{
+    //     let detailstatus= await fetchGraphQLDa(GET_PRODUCT_DETAIL_STATUSNAME)
+    //     setDetailStatus(detailstatus?.ecommerceOrderStatusNames)
+    //  }
     useEffect(()=>{
         setCurrentPage(offset/10+1)
+        // detailName()
     },[])
 
     //  let disptach=useDispatch()
     // const handleClick=(id)=>{
     //     disptach(orderIdValue(id))
     // }
+
+    // let apiStatus=detailStatus&&detailStatus.find(res=>res.id==productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.orderStatus&&res.status)
+    // productList.map((result)=>{
+    //     detailStatus&&detailStatus.find(res=>res?.id==result?.orderStatus)
+    // })
+
+
     
   return (
     <>
@@ -529,9 +542,10 @@ const Filters = [
                                     <MyOrderList/>
                                     :
                                 <>
+                                
                                 {productList?.length>0?productList?.map((result,index)=>(
                                 <>
-                                {console.log(productList,'productList')}
+                                
                                 <tr>
                                     <td className="px-4 py-2 border-b border-grey text-start">
                                         <div className="flex gap-6 items-center md:flex-row flex-col">

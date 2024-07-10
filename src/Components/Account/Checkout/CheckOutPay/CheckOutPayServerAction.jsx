@@ -93,7 +93,6 @@ function CheckOutPayServerAction() {
         // setLoader(true)
         let add=JSON.stringify(addressObj)
         let checkArr=[]
-       
         cartCount?.map((data)=>{
             let obj={}
             obj.productId=data?.productId
@@ -107,10 +106,10 @@ function CheckOutPayServerAction() {
         )
         if(checkArr&&checkArr?.length!=0){
             let variableList={
-                "mode": "cash on delivery",
-                "addr": add,
-                "prod":checkArr,
-                "summ": {
+                "paymentMode": "cash on delivery",
+                "shippingAddress": add,
+                "orderProducts":checkArr,
+                "orderSummary": {
                   "subTotal": subtotalPrice(),
                   "totalTax": salesTaxPrice(),
                   "totalCost": subtotalPrice()+salesTaxPrice(),
@@ -127,7 +126,7 @@ function CheckOutPayServerAction() {
     }
 
     const categorieList= async () =>{
-        let catgo_variab={"categoryGroupId":147}
+        let catgo_variab={"categoryGroupId":10}
         let postData= await fetchGraphQLDa(Get_CATEGORIES_LIST,catgo_variab)
         setCatgoData(postData)
        

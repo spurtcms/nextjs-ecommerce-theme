@@ -17,7 +17,6 @@ import ToastMessage from "../ToastMessage/ToastMessage";
 import { imageUrl } from "@/api/url";
 
 export default function ProductDetailPage({ productDetail, tokenCheck, slug }) {
-  console.log(productDetail,'productDetail')
   const dispatch = useDispatch();
   const reloadCount = useSelector((state) => state.cartReducer.reloadCount);
   const [open, setOpen] = useState(false);

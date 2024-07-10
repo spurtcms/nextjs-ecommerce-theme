@@ -144,16 +144,29 @@
 }
   `;
 
-  export const Get_CATEGORIES_LIST = `query(){
-    categoriesList(){
-      categories{
-        id
-        categoryName
-        categorySlug
-        parentId
+  export const Get_CATEGORIES_LIST = `query categoryList($limit: Int
+    $offset: Int $categoryGroupId: Int $categoryGroupSlug: String
+    $hierarchyLevel: Int $checkEntriesPresence: Int ){
+      categoriesList(limit:$limit,offset:$offset,
+        categoryGroupId:$categoryGroupId,
+        categoryGroupSlug:$categoryGroupSlug, 
+        hierarchyLevel:$hierarchyLevel,
+        checkEntriesPresence:$checkEntriesPresence){
+        categories{
+          id
+          categoryName
+          categorySlug
+          description
+          imagePath
+          createdOn
+          createdBy
+          modifiedOn
+          modifiedBy
+          parentId
+        }
+        count
       }
-    }
-  }`
+    }`
 
   export const GET_REMOVE_CART_LIST=`mutation($pid: Int!){
     removeProductFromCartlist(productId: $pid)
@@ -206,10 +219,22 @@
 
   }`
 
-  export const GET_CHECKOUT=`mutation ecommerceOrderPlacement($summ:OrderSummary,$mode: String!,$addr: String!,$prod: [orderProduct!]!){
-    ecommerceOrderPlacement(paymentMode: $mode,shippingAddress: $addr,orderProducts: $prod, orderSummary: $summ)
-  }`
+  // export const GET_CHECKOUT=`mutation ecommerceOrderPlacement($summ:OrderSummary,$mode: String!,$addr: String!,$prod: [orderProduct!]!){
+  //   ecommerceOrderPlacement(paymentMode: $mode,shippingAddress: $addr,orderProducts: $prod, orderSummary: $summ)
+  // }`
 
+  export const GET_CHECKOUT=`
+  mutation placeOrder($paymentMode: String!
+    $shippingAddress: String!
+    $orderProducts: [orderProduct!]!
+    $orderSummary: OrderSummary){
+      ecommerceOrderPlacement(paymentMode:$paymentMode,
+        shippingAddress:$shippingAddress,
+        orderProducts:$orderProducts,
+        orderSummary:$orderSummary
+          )
+    }
+  `
 
   export const GET_PRODUCT_DETAIL_STATUSNAME=`
   query{
@@ -220,55 +245,103 @@
     }
   }
   `
-  export const GET_PRODUCT_DETAIL=`query($pid: Int,$pslug: String, $oid: Int!){
-    ecommerceProductOrderDetails(productId: $pid, productSlug: $pslug, orderId: $oid){
-      EcommerceProduct{
-        id
-        productName
-        categoriesId
-        productSlug
-        productDescription
-        productImagePath
-        productVimeoPath
-        productYoutubePath
-        sku
-        tax
-        totalcost
-        isActive
-        createdOn
-        createdBy
-        modifiedOn
-        modifiedBy
-        isDeleted
-        deletedBy
-        deletedOn
-        productPrice
-        discountPrice
-        specialPrice
-        productImageArray
-        orderId
-        orderUniqueId
-        orderQuantity
-        orderPrice
-        orderTax
-        orderStatus
-        orderCustomer
-        orderTime
-        paymentMode
-        shippingDetails
+  export const GET_PRODUCT_DETAIL=`query productOrderDetails($productId: Int
+    $productSlug: String
+    $orderId: Int!){
+      ecommerceProductOrderDetails(productId:$productId,
+        productSlug:$productSlug,orderId:$orderId){
+        EcommerceProduct{
+            id
+            productName
+            categoriesId
+            productSlug
+            productDescription
+            productImagePath
+            productVimeoPath
+            productYoutubePath
+            sku
+            tax
+            totalcost
+            isActive
+            createdOn
+            createdBy
+            modifiedOn
+            modifiedBy
+            isDeleted
+            deletedBy
+            deletedOn
+            productPrice
+            discountPrice
+            specialPrice
+            productImageArray
+            orderId
+            orderUniqueId
+            orderQuantity
+            orderPrice
+            orderTax
+            orderStatus
+            orderCustomer
+            orderTime
+            paymentMode
+            shippingDetails
+        }
+        OrderStatuses{
+          id
+          orderId
+          orderStatus
+          createdBy
+          createdOn
+        }
       }
-      OrderStatuses{
-        id
-        orderId
-        orderStatus
-        createdBy
-        createdOn
-      }
-  }
-  }`
+    }`
 
 
-
+  // query($pid: Int,$pslug: String, $oid: Int!){
+  //   ecommerceProductOrderDetails(productId: $pid, productSlug: $pslug, orderId: $oid){
+  //     EcommerceProduct{
+  //       id
+  //       productName
+  //       categoriesId
+  //       productSlug
+  //       productDescription
+  //       productImagePath
+  //       productVimeoPath
+  //       productYoutubePath
+  //       sku
+  //       tax
+  //       totalcost
+  //       isActive
+  //       createdOn
+  //       createdBy
+  //       modifiedOn
+  //       modifiedBy
+  //       isDeleted
+  //       deletedBy
+  //       deletedOn
+  //       productPrice
+  //       discountPrice
+  //       specialPrice
+  //       productImageArray
+  //       orderId
+  //       orderUniqueId
+  //       orderQuantity
+  //       orderPrice
+  //       orderTax
+  //       orderStatus
+  //       orderCustomer
+  //       orderTime
+  //       paymentMode
+  //       shippingDetails
+  //     }
+  //     OrderStatuses{
+  //       id
+  //       orderId
+  //       orderStatus
+  //       createdBy
+  //       createdOn
+  //     }
+  // }
+  // }
 
   export const GET_ADDRESS_DETAIL=`query{
     ecommerceCustomerDetails{
