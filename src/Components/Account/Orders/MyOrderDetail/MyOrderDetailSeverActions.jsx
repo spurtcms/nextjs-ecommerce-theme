@@ -3,12 +3,15 @@ import ImageComponets from '@/Components/ImageComponent'
 import { fetchGraphQLDa } from '@/api/clientGraphicql'
 import { GET_PRODUCT_DETAIL, GET_PRODUCT_DETAIL_STATUSNAME } from '@/api/query'
 import { imageUrl } from '@/api/url'
+import { changePath } from '@/redux/slices/cartSlice'
 import moment from 'moment/moment'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 export default function MyOrderDetailSeverActions({params}) {
 
+    const currenPathName=useSelector((state)=>state.cartReducer.changepath)
     const [productDetail,setProductDetail]=useState()
     const [detailStatus,setDetailStatus]=useState([])
 
@@ -28,7 +31,7 @@ export default function MyOrderDetailSeverActions({params}) {
         detailApi()
         detailName()
     },[])
-
+console.log(productDetail,'productDetail');
     let AddressData;
     if(productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.shippingDetails&&productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.shippingDetails!=undefined){
         AddressData=JSON.parse(productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.shippingDetails)
@@ -74,7 +77,7 @@ export default function MyOrderDetailSeverActions({params}) {
 //         }
 //     })
 // })
-
+console.log(productDetail?.ecommerceProductOrderDetails?.OrderStatuses,'0909889');
 detailStatus.map((data) => {
     const matchingStatus = productDetail?.ecommerceProductOrderDetails?.OrderStatuses.find((res) => res?.orderStatus === data?.id);
     data.date = matchingStatus&&matchingStatus?.createdOn || "";
@@ -83,14 +86,21 @@ detailStatus.map((data) => {
 // if(statusData)
 // {result?.status=="Order Placed"&&statusData.indexOf(result?.status)}
 
-let statusCheck=detailStatus.findIndex((data,index)=>data.date!=""&&index)
+let statusCheck=detailStatus.findLastIndex((data,index)=>data.date!="")
 
 
 let apiStatus=detailStatus.find(res=>res.id==productDetail?.ecommerceProductOrderDetails?.EcommerceProduct?.orderStatus&&res.status)
 
+console.log(currenPathName,'currenPathName');
+
+const dispatch=useDispatch()
+
+const handleRemovePath=()=>{
+    dispatch(changePath(""))
+}
 return (
     <div className="sm:px-10 px-4 py-4 ">
-    <Link href="/account/my-orders?offset=0" className="flex gap-1.5 items-center text-grey-300 text-xs font-light mb-6">
+    <Link href={currenPathName=="/account/my-orders"?`/account/my-orders?offset=0`:`/account/my-history?offset=0`} onClick={handleRemovePath} className="flex gap-1.5 items-center text-grey-300 text-xs font-light mb-6">
         <img src="/img/back.svg" />
         Back
     </Link>

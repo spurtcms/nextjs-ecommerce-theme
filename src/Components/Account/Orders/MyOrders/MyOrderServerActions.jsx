@@ -12,7 +12,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import MyOrderList from '@/utils/SkeletonLoader/MyOrderList'
 import { handleOrder } from '@/api/clientActions'
 import { useDispatch } from 'react-redux'
-import { orderIdValue } from '@/redux/slices/cartSlice'
+import { changePath, orderIdValue } from '@/redux/slices/cartSlice'
 import { imageUrl } from '@/api/url'
 
 const Status=[   
@@ -60,7 +60,9 @@ const Filters = [
     const [inputData,setInputData]=useState()
     // const [detailStatus,setDetailStatus]=useState([])
     const router=useRouter()
+    const dispatch=useDispatch()
 
+    const pathname=usePathname()
 
     const orderList= async ()=>{
         if(pathNameHistory==="/account/my-orders"){
@@ -68,6 +70,7 @@ const Filters = [
         setTotalRecords(0)
         let list_var={"lim":10,"off":offset,"filter":{"upcomingOrders": 1}}
         let postData= await fetchGraphQLDa(GET_MY_ORDERED_LIST,list_var)
+        console.log(postData,'postData');
         if(postData){
             setSkeleton(false)
         }
@@ -85,6 +88,7 @@ const Filters = [
         setTotalRecords(postData?.ecommerceProductOrdersList?.count)  
     }
     }
+
 
     const searchData= async ()=>{
         if(pathNameHistory==="/account/my-orders"){
@@ -401,6 +405,10 @@ const Filters = [
     // })
 
 
+
+const handlePathName=(data)=>{
+dispatch(changePath(pathname))
+}
     
   return (
     <>
@@ -548,7 +556,7 @@ const Filters = [
                                 
                                 <tr>
                                     <td className="px-4 py-2 border-b border-grey text-start">
-                                        <div className="flex gap-6 items-center md:flex-row flex-col">
+                                        <div className="flex gap-6 items-center md:flex-row flex-col img-h">
                                            
                                             <ImageComponets path={`${imageUrl}${result?.productImageArray?.[0]}`}  w={60} h={38}/>
                                             {/* <img src={"https://demo.spurtcms.com/"+result?.productImagePath} className="w-20 h-15"
@@ -582,7 +590,7 @@ const Filters = [
                                         </div>
                                     </td>
                                     <td className="px-4 py-2 border-b border-grey text-center">
-                                        <Link href={`/account/my-order-detail/${result?.productSlug}/${result?.orderId}`} className="text-3-light font-medium text-sm hover:underline">View Details</Link>
+                                        <Link href={`/account/my-order-detail/${result?.productSlug}/${result?.orderId}`} onClick={handlePathName("myorder")} className="text-3-light font-medium text-sm hover:underline">View Details</Link>
                                     </td>
                                 </tr>
                                 
@@ -617,9 +625,9 @@ const Filters = [
                                 <>
                                 <tr>
                                     <td className="px-4 py-2 border-b border-grey text-start">
-                                        <div className="flex gap-6 items-center md:flex-row flex-col">
+                                        <div className="flex gap-6 items-center md:flex-row flex-col img-h">
                                             {/* <img src="/img/checkList-product1.svg" className="w-[60px] h-[38px]s" /> */}
-                                            <ImageComponets path={"https://demo.spurtcms.com/"+result?.productImagePath}  w={60} h={38}/>
+                                            <ImageComponets path={"https://demo.spurtcms.com/"+result?.productImagePath}  w={60} h={38} />
                                             <h3 className="text-sm font-normal text-black-500">{result?.productName}</h3>
                                         </div>
                                     </td>
@@ -646,7 +654,7 @@ const Filters = [
                                         </div>
                                     </td>
                                     <td className="px-4 py-2 border-b border-grey text-center">
-                                        <Link href={`/account/my-order-detail/${result?.productSlug}/${result?.orderId}`} className="text-3-light font-medium text-sm hover:underline">View Details</Link>
+                                        <Link href={`/account/my-order-detail/${result?.productSlug}/${result?.orderId}`} onClick={handlePathName("myorder")} className="text-3-light font-medium text-sm hover:underline">View Details</Link>
                                     </td>
                                 </tr>
                                 </>))

@@ -291,3 +291,8 @@
 @keyframes l26 {
   100% {transform:rotate(1turn)}
 }
+
+.img-h img{
+  height: 38px;
+  object-fit: contain;
+}

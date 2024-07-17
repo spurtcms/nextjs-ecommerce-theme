@@ -105,6 +105,7 @@ function CheckOutPayServerAction() {
               
         )
         if(checkArr&&checkArr?.length!=0){
+            setLoader(true)
             let variableList={
                 "paymentMode": "cash on delivery",
                 "shippingAddress": add,

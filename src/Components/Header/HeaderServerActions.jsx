@@ -18,9 +18,7 @@ import { imageUrl } from "@/api/url";
 
 
 
-
 export default function HeaderServerActions({tokenCheck}) {
-
 
     const dispatch=useDispatch()
     const reloadCount=useSelector((state)=>state.cartReducer.reloadCount)
@@ -46,13 +44,12 @@ export default function HeaderServerActions({tokenCheck}) {
   const router=useRouter()
   const resultsRef = useRef(null);
 
-
-
   const hadlegetAddress=async()=>{
     let myAddress=await fetchGraphQl(GET_ADDRESS_DETAIL)
     setDataImg(myAddress)
  
   }
+
 
   useEffect(()=>{
      hadlegetAddress()
@@ -96,6 +93,7 @@ export default function HeaderServerActions({tokenCheck}) {
 
   let localLengthvalue;
   const handleCartCountCheck=async()=>{
+  
     if(tokenCheck){
         let variable={
             "limit":10,
